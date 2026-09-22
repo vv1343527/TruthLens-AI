@@ -209,8 +209,8 @@ export default function Sidebar({ activeTab, onSelectTab, onOpenCreditsModal }) 
         })}
       </nav>
 
-      {/* Footer Info Box */}
-      <div style={styles.footerBox}>
+      {/* Laboratory Status Box (ISSUE 6) */}
+      <div className="sidebar-status" style={styles.footerBox}>
         <div style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--text-subtle)', letterSpacing: '0.5px', marginBottom: '4px' }}>
           LABORATORY STATUS
         </div>
@@ -302,6 +302,6 @@ const styles = {
     borderRadius: 'var(--radius-md)',
     backgroundColor: 'rgba(5, 7, 14, 0.6)',
     border: '1px solid var(--border)',
-    marginTop: '16px'
+    marginTop: '20px'
   }
 }

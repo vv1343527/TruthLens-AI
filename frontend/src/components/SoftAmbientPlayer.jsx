@@ -229,8 +229,8 @@ export default function SoftAmbientPlayer({ defaultVolume = 0.08, autoStart = tr
   }
 
   return (
-    <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
-      {/* Compact Secondary Utility Control (ISSUE 7) */}
+    <div className="audio-control-group" style={styles.audioControlGroup}>
+      {/* Ambient Audio Toggle */}
       <button
         type="button"
         className="btn btn-ghost ambient-audio-control"
@@ -242,37 +242,28 @@ export default function SoftAmbientPlayer({ defaultVolume = 0.08, autoStart = tr
         }
         onClick={togglePlay}
         title={isPlaying ? 'Pause ambient audio' : 'Play ambient audio'}
+        style={styles.ambientAudioBtn}
       >
         <span aria-hidden="true" style={{ color: isPlaying ? 'var(--accent)' : 'var(--text-muted)', fontSize: '13px' }}>
           {isPlaying ? '◉' : '○'}
         </span>
         <span>Ambient audio: {isPlaying ? 'On' : 'Off'}</span>
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation()
-            setShowMenu(!showMenu)
-          }}
-          style={{
-            marginLeft: '4px',
-            background: 'none',
-            border: 'none',
-            color: 'var(--text-muted)',
-            cursor: 'pointer',
-            padding: '2px',
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            lineHeight: 1
-          }}
-          title="Audio Soundscape & Volume Settings"
-          aria-label="Audio Soundscape and Volume Settings"
-        >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="3" />
-            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0 2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-          </svg>
-        </button>
+      </button>
+
+      {/* Audio Soundscape & Volume Settings Gear (ISSUE 5) */}
+      <button
+        type="button"
+        className="btn btn-ghost audio-settings-btn"
+        onClick={() => setShowMenu(!showMenu)}
+        title="Audio Soundscape & Volume Settings"
+        aria-label="Audio soundscape and volume settings"
+        aria-expanded={showMenu}
+        style={styles.audioSettingsBtn}
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="3" />
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0 2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+        </svg>
       </button>
 
       {/* Dropdown Settings Menu */}
@@ -383,4 +374,42 @@ export default function SoftAmbientPlayer({ defaultVolume = 0.08, autoStart = tr
       `}</style>
     </div>
   )
+}
+
+const styles = {
+  audioControlGroup: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '4px',
+    padding: '3px',
+    border: '1px solid var(--border)',
+    borderRadius: 'var(--radius-md)',
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    position: 'relative'
+  },
+  ambientAudioBtn: {
+    minHeight: '30px',
+    padding: '0 8px',
+    fontSize: 'var(--text-xs)',
+    fontWeight: '600',
+    borderRadius: 'var(--radius-sm)',
+    border: 'none',
+    gap: '6px',
+    display: 'inline-flex',
+    alignItems: 'center',
+    background: 'transparent',
+    color: 'var(--text-secondary)'
+  },
+  audioSettingsBtn: {
+    minHeight: '30px',
+    width: '30px',
+    padding: 0,
+    borderRadius: 'var(--radius-sm)',
+    border: 'none',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'var(--text-muted)',
+    background: 'transparent'
+  }
 }

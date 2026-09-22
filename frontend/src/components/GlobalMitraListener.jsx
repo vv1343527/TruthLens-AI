@@ -458,8 +458,8 @@ export default function GlobalMitraListener({ onNavigateTab, user, selectedLang:
 
   return (
     <>
-      {/* Floating Interactive Voice Assistant Bar & Status (ISSUE 3, 4) */}
-      <div style={styles.floatingWidget}>
+      {/* Floating Interactive Voice Assistant Bar & Status (ISSUE 4) */}
+      <div className="mitra-floating-widget" style={styles.floatingWidget}>
         <button
           type="button"
           aria-label="Open TruthLens AI voice assistant"
@@ -468,21 +468,21 @@ export default function GlobalMitraListener({ onNavigateTab, user, selectedLang:
           style={{
             ...styles.capsule,
             border: '1px solid',
-            borderColor: isSessionActive ? 'var(--success)' : isSpeaking ? 'var(--accent)' : 'var(--border-accent)',
+            borderColor: isSessionActive ? 'var(--success)' : isSpeaking ? 'var(--accent)' : 'var(--border)',
             boxShadow: isSessionActive
-              ? '0 0 25px rgba(34, 197, 94, 0.6), 0 8px 32px rgba(0, 0, 0, 0.6)'
+              ? '0 4px 16px rgba(52, 211, 153, 0.25)'
               : isSpeaking
-                ? '0 0 25px rgba(0, 217, 255, 0.6), 0 8px 32px rgba(0, 0, 0, 0.6)'
-                : '0 8px 32px rgba(0, 0, 0, 0.4)'
+                ? '0 4px 16px rgba(0, 217, 255, 0.25)'
+                : '0 4px 14px rgba(0, 0, 0, 0.35)'
           }}
         >
           {/* Animated Avatar Box */}
           <div style={styles.avatarBox}>
-            <div style={{
+            <div className="mitra-pulse-ring" style={{
               ...styles.pulseRing,
               backgroundColor: isSessionActive ? 'var(--success)' : 'var(--accent)',
-              transform: isSessionActive || isSpeaking ? 'scale(1.35)' : 'scale(1)',
-              opacity: isSessionActive || isSpeaking ? 0.9 : 0.4
+              transform: isSessionActive || isSpeaking ? 'scale(1.2)' : 'scale(1)',
+              opacity: isSessionActive || isSpeaking ? 0.6 : 0.25
             }} />
             <span style={{ fontSize: '18px', zIndex: 2 }}>🎙️</span>
           </div>
@@ -567,7 +567,7 @@ const styles = {
     position: 'fixed',
     bottom: '24px',
     right: '24px',
-    zIndex: 9999,
+    zIndex: 900,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-end',
@@ -577,9 +577,9 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     gap: '10px',
-    backgroundColor: 'rgba(15, 23, 42, 0.94)',
-    border: '1px solid',
-    borderRadius: '30px',
+    backgroundColor: 'rgba(11, 18, 32, 0.94)',
+    border: '1px solid var(--border)',
+    borderRadius: 'var(--radius-pill)',
     padding: '6px 14px 6px 8px',
     cursor: 'pointer',
     backdropFilter: 'blur(12px)',
@@ -615,14 +615,14 @@ const styles = {
     fontSize: '11px',
     fontWeight: '700',
     padding: '4px 6px',
-    borderRadius: '6px',
+    borderRadius: 'var(--radius-sm)',
     outline: 'none',
     cursor: 'pointer'
   },
   quickCommandsCard: {
     backgroundColor: '#0f172a',
-    border: '1px solid rgba(56, 189, 248, 0.3)',
-    borderRadius: '12px',
+    border: '1px solid var(--border-accent)',
+    borderRadius: 'var(--radius-md)',
     padding: '12px 14px',
     maxWidth: '340px',
     boxShadow: '0 10px 30px rgba(0, 0, 0, 0.7)',

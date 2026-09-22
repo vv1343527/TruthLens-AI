@@ -27,7 +27,7 @@ export default function Header({ user, onLogout, onOpenMitra, onOpenCreditsModal
 
       {/* Right: Header Utilities Group (ISSUE 4, 6, 8) */}
       <div className="header-utilities" style={styles.headerUtilities}>
-        {/* Credits Group: Balance & Add (ISSUE 8) */}
+        {/* Credits Group: Balance & Add (ISSUE 3, 7) */}
         <div className="credit-group" style={styles.creditGroup}>
           <button
             type="button"
@@ -42,7 +42,7 @@ export default function Header({ user, onLogout, onOpenMitra, onOpenCreditsModal
           <button
             type="button"
             onClick={onOpenCreditsModal}
-            className="btn btn-primary credit-add"
+            className="btn btn-ghost credit-add"
             style={styles.creditAddBtn}
             title="Add forensic analysis credits"
             aria-label="Add forensic analysis credits"
@@ -197,19 +197,21 @@ const styles = {
     display: 'inline-flex',
     alignItems: 'center',
     gap: '4px',
-    padding: '3px 4px 3px 10px',
-    backgroundColor: 'rgba(0, 217, 255, 0.08)',
-    border: '1px solid var(--border-accent)',
+    padding: '3px 4px 3px 8px',
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    border: '1px solid var(--border)',
     borderRadius: 'var(--radius-md)'
   },
   creditBalanceBtn: {
     display: 'inline-flex',
     alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: '32px',
     gap: '6px',
     background: 'none',
     border: 'none',
     cursor: 'pointer',
-    padding: '0 4px',
+    padding: '0 6px',
     font: 'inherit'
   },
   creditAmount: {
@@ -219,11 +221,17 @@ const styles = {
     fontFamily: 'var(--font-mono)'
   },
   creditAddBtn: {
-    minHeight: '30px',
-    padding: '0 12px',
+    minHeight: '32px',
+    padding: '0 10px',
     fontSize: 'var(--text-xs)',
     fontWeight: '700',
-    borderRadius: 'var(--radius-sm)'
+    borderRadius: 'var(--radius-sm)',
+    border: '1px solid var(--border)',
+    backgroundColor: 'transparent',
+    color: 'var(--text-secondary)',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   headerSettings: {
     display: 'flex',
