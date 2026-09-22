@@ -252,13 +252,15 @@ const styles = {
     alignItems: 'center',
     gap: '12px',
     width: '100%',
-    padding: '9px 12px',
+    minHeight: '44px',
+    padding: '0 12px',
     borderRadius: 'var(--radius-md)',
     border: '1px solid transparent',
     backgroundColor: 'transparent',
     cursor: 'pointer',
     transition: 'all 0.2s ease',
-    textAlign: 'left'
+    textAlign: 'left',
+    boxSizing: 'border-box'
   },
   activeItemCyan: {
     backgroundColor: 'rgba(0, 217, 255, 0.12)',

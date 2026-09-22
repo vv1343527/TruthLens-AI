@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import CreditConfirmationModal from './CreditConfirmationModal.jsx'
 import BottomAssistantBar from './BottomAssistantBar.jsx'
 
@@ -291,10 +291,19 @@ export function ForensicReportsView({ onCheckCredits, onCreditsUpdated, user }) 
   const [selectedReport, setSelectedReport] = useState(null)
   const [showReportConfirmModal, setShowReportConfirmModal] = useState(false)
   const [pendingReportItem, setPendingReportItem] = useState(null)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [filterVerdict, setFilterVerdict] = useState('ALL')
+  const [currentPage, setCurrentPage] = useState(1)
+  const REPORTS_PER_PAGE = 10
 
   useEffect(() => {
     fetchReports()
   }, [])
+
+  // Reset page when search or filter changes
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchQuery, filterVerdict])
 
   const fetchReports = async () => {
     try {
@@ -310,6 +319,35 @@ export function ForensicReportsView({ onCheckCredits, onCreditsUpdated, user }) 
       setLoading(false)
     }
   }
+
+  // Filter and search reports (ISSUE 2)
+  const filteredReports = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase()
+    return reports.filter((rep) => {
+      const matchesSearch =
+        !q ||
+        [
+          rep.dossier_id,
+          rep.filename,
+          rep.verdict,
+          rep.media_type,
+          rep.op_type,
+          rep.summary
+        ].some((val) => String(val ?? '').toLowerCase().includes(q))
+
+      const matchesFilter =
+        filterVerdict === 'ALL' ||
+        (rep.verdict && rep.verdict.toUpperCase().includes(filterVerdict.toUpperCase()))
+
+      return matchesSearch && matchesFilter
+    })
+  }, [reports, searchQuery, filterVerdict])
+
+  const totalPages = Math.max(1, Math.ceil(filteredReports.length / REPORTS_PER_PAGE))
+  const paginatedReports = useMemo(() => {
+    const start = (currentPage - 1) * REPORTS_PER_PAGE
+    return filteredReports.slice(start, start + REPORTS_PER_PAGE)
+  }, [filteredReports, currentPage])
 
   const handleRefreshReports = async () => {
     try {
@@ -448,50 +486,159 @@ export function ForensicReportsView({ onCheckCredits, onCreditsUpdated, user }) 
             Exportable compliance dossiers, cryptographic frame hashes, and signed verification records.
           </p>
         </div>
-        <button onClick={handleRefreshReports} style={styles.refreshBtn}>
+        <button
+          type="button"
+          onClick={handleRefreshReports}
+          className="btn btn-secondary"
+          style={styles.refreshBtn}
+          title="Refresh reports catalog"
+        >
           🔄 REFRESH
         </button>
       </div>
 
+      {/* Search & Filter Controls (ISSUE 2) */}
+      <div style={styles.filterToolbar}>
+        <div style={styles.searchBox}>
+          <label htmlFor="report-search" className="sr-only">
+            Search reports
+          </label>
+          <input
+            id="report-search"
+            type="search"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search reports by ID, file, verdict..."
+            aria-label="Search forensic reports"
+            style={styles.reportSearchInput}
+          />
+        </div>
+
+        <div style={styles.filterBox}>
+          <label htmlFor="report-filter" className="sr-only">
+            Filter reports
+          </label>
+          <select
+            id="report-filter"
+            value={filterVerdict}
+            onChange={(e) => setFilterVerdict(e.target.value)}
+            aria-label="Filter reports by verdict"
+            style={styles.reportFilterSelect}
+          >
+            <option value="ALL">All Verdicts</option>
+            <option value="REAL">Authentic / Real</option>
+            <option value="AI">AI / Manipulated</option>
+            <option value="INCONCLUSIVE">Inconclusive</option>
+          </select>
+        </div>
+
+        <div style={styles.reportCount}>
+          Showing {filteredReports.length} {filteredReports.length === 1 ? 'report' : 'reports'}
+        </div>
+      </div>
+
       {loading ? (
         <div style={styles.loadingState}>Loading forensic audit report records...</div>
-      ) : reports.length === 0 ? (
+      ) : filteredReports.length === 0 ? (
         <div style={styles.emptyState}>
           <div style={{ fontSize: '32px', marginBottom: '8px' }}>📑</div>
-          <div style={{ fontSize: '15px', color: '#f8fafc', fontWeight: 700 }}>No audit reports available</div>
+          <div style={{ fontSize: '15px', color: '#f8fafc', fontWeight: 700 }}>
+            {reports.length === 0 ? 'No audit reports available' : 'No matching reports found'}
+          </div>
           <div style={{ fontSize: '12px', color: '#64748b', marginTop: '4px' }}>
-            Completed media forensic scans will automatically generate official audit certificates here.
+            {reports.length === 0
+              ? 'Completed media forensic scans will automatically generate official audit certificates here.'
+              : 'Try adjusting your search query or verdict filter.'}
           </div>
         </div>
       ) : (
-        <div style={styles.reportList}>
-          {reports.map((rep) => {
-            const isReal = rep.verdict === 'REAL'
-            return (
-              <div key={rep.id} style={styles.reportCard}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                  <div style={styles.reportIcon}>📄</div>
-                  <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span style={styles.dossierId}>{rep.dossier_id}</span>
-                      <span style={isReal ? styles.pillRealSmall : styles.pillAiSmall}>{rep.verdict}</span>
+        <>
+          {/* Compact Report Row List (ISSUE 3) */}
+          <div style={styles.reportList}>
+            {paginatedReports.map((rep) => {
+              const isReal = rep.verdict === 'REAL'
+              return (
+                <div key={rep.id} style={styles.reportCard}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={styles.reportIcon}>📄</div>
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={styles.dossierId}>{rep.dossier_id}</span>
+                        <span style={isReal ? styles.pillRealSmall : styles.pillAiSmall}>{rep.verdict}</span>
+                      </div>
+                      <div style={styles.reportName}>{rep.filename}</div>
                     </div>
-                    <div style={styles.reportName}>{rep.filename}</div>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    {rep.created_at && (
+                      <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>
+                        {formatTimeAgo(rep.created_at)}
+                      </span>
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => handleOpenReport(rep)}
+                      className="btn btn-secondary"
+                      style={styles.viewReportBtn}
+                      title={`View audit dossier for ${rep.dossier_id}`}
+                      aria-label={`View report for ${rep.dossier_id}`}
+                    >
+                      VIEW REPORT
+                    </button>
                   </div>
                 </div>
+              )
+            })}
+          </div>
 
-                <div style={{ display: 'flex', gap: '10px' }}>
+          {/* Pagination Controls (ISSUE 2) */}
+          {totalPages > 1 && (
+            <nav aria-label="Reports pagination" style={styles.paginationNav}>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                aria-label="Previous reports page"
+                style={styles.pageBtn}
+              >
+                Previous
+              </button>
+
+              <div style={styles.pageNumbers}>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
                   <button
-                    onClick={() => handleOpenReport(rep)}
-                    style={styles.primaryActionBtn}
+                    key={num}
+                    type="button"
+                    onClick={() => setCurrentPage(num)}
+                    aria-label={`Page ${num}`}
+                    aria-current={currentPage === num ? 'page' : undefined}
+                    style={{
+                      ...styles.pageNumBtn,
+                      backgroundColor: currentPage === num ? 'var(--accent)' : 'rgba(255, 255, 255, 0.05)',
+                      color: currentPage === num ? '#05070e' : 'var(--text-primary)',
+                      borderColor: currentPage === num ? 'var(--accent)' : 'var(--border)'
+                    }}
                   >
-                    VIEW REPORT
+                    {num}
                   </button>
-                </div>
+                ))}
               </div>
-            )
-          })}
-        </div>
+
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                aria-label="Next reports page"
+                style={styles.pageBtn}
+              >
+                Next
+              </button>
+            </nav>
+          )}
+        </>
       )}
 
       {selectedReport && (
@@ -2146,29 +2293,73 @@ const styles = {
     borderRadius: '8px',
     border: '1px solid rgba(255, 255, 255, 0.04)'
   },
+  filterToolbar: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    marginBottom: '16px',
+    flexWrap: 'wrap'
+  },
+  searchBox: {
+    flex: 1,
+    minWidth: '220px'
+  },
+  reportSearchInput: {
+    width: '100%',
+    minHeight: '38px',
+    padding: '0 14px',
+    borderRadius: 'var(--radius-md)',
+    backgroundColor: 'var(--surface-3)',
+    border: '1px solid var(--border)',
+    color: 'var(--text-primary)',
+    fontSize: '13px',
+    outline: 'none'
+  },
+  filterBox: {
+    minWidth: '160px'
+  },
+  reportFilterSelect: {
+    width: '100%',
+    minHeight: '38px',
+    padding: '0 12px',
+    borderRadius: 'var(--radius-md)',
+    backgroundColor: 'var(--surface-3)',
+    border: '1px solid var(--border)',
+    color: 'var(--text-primary)',
+    fontSize: '13px',
+    cursor: 'pointer',
+    outline: 'none'
+  },
+  reportCount: {
+    fontSize: '12px',
+    color: 'var(--text-muted)',
+    fontWeight: 600
+  },
   reportList: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '12px'
+    gap: '8px'
   },
   reportCard: {
     backgroundColor: '#0e131d',
     border: '1px solid rgba(255, 255, 255, 0.07)',
-    borderRadius: '12px',
-    padding: '16px 20px',
+    borderRadius: 'var(--radius-md)',
+    padding: '10px 16px',
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'center'
+    alignItems: 'center',
+    gap: '12px'
   },
   reportIcon: {
-    width: '42px',
-    height: '42px',
-    borderRadius: '10px',
+    width: '36px',
+    height: '36px',
+    borderRadius: 'var(--radius-sm)',
     backgroundColor: '#1e293b',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    fontSize: '20px'
+    fontSize: '16px',
+    flexShrink: 0
   },
   dossierId: {
     fontSize: '12px',
@@ -2177,15 +2368,55 @@ const styles = {
     fontFamily: 'monospace'
   },
   reportName: {
-    fontSize: '14px',
+    fontSize: '13.5px',
     fontWeight: '600',
     color: '#ffffff',
-    marginTop: '2px'
+    marginTop: '1px'
   },
   reportMeta: {
     fontSize: '11px',
     color: '#64748b',
-    marginTop: '4px'
+    marginTop: '2px'
+  },
+  viewReportBtn: {
+    minHeight: '36px',
+    padding: '0 14px',
+    fontSize: '12px',
+    fontWeight: 600,
+    borderRadius: 'var(--radius-sm)'
+  },
+  paginationNav: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '12px',
+    marginTop: '20px',
+    paddingTop: '16px',
+    borderTop: '1px solid var(--border)'
+  },
+  pageNumbers: {
+    display: 'flex',
+    gap: '6px'
+  },
+  pageBtn: {
+    minHeight: '34px',
+    padding: '0 14px',
+    fontSize: '12px',
+    fontWeight: 600,
+    borderRadius: 'var(--radius-sm)'
+  },
+  pageNumBtn: {
+    width: '34px',
+    height: '34px',
+    borderRadius: 'var(--radius-sm)',
+    border: '1px solid var(--border)',
+    fontSize: '12px',
+    fontWeight: 700,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    transition: 'all 0.15s ease'
   },
   downloadBtn: {
     backgroundColor: '#1e293b',

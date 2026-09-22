@@ -190,6 +190,7 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     gap: '10px',
+    marginLeft: 'auto',
     minHeight: '44px',
     flexWrap: 'wrap'
   },

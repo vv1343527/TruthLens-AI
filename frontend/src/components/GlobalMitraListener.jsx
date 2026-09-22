@@ -565,8 +565,8 @@ export default function GlobalMitraListener({ onNavigateTab, user, selectedLang:
 const styles = {
   floatingWidget: {
     position: 'fixed',
-    bottom: '24px',
-    right: '24px',
+    bottom: '20px',
+    right: '20px',
     zIndex: 900,
     display: 'flex',
     flexDirection: 'column',
@@ -576,24 +576,26 @@ const styles = {
   capsule: {
     display: 'flex',
     alignItems: 'center',
-    gap: '10px',
+    gap: '8px',
     backgroundColor: 'rgba(11, 18, 32, 0.94)',
     border: '1px solid var(--border)',
     borderRadius: 'var(--radius-pill)',
-    padding: '6px 14px 6px 8px',
+    padding: '4px 12px 4px 6px',
+    minHeight: '44px',
     cursor: 'pointer',
     backdropFilter: 'blur(12px)',
-    transition: 'all 0.3s ease'
+    transition: 'all 0.2s ease'
   },
   avatarBox: {
     position: 'relative',
-    width: '34px',
-    height: '34px',
+    width: '32px',
+    height: '32px',
     borderRadius: '50%',
     backgroundColor: '#1e293b',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
+    flexShrink: 0
   },
   pulseRing: {
     position: 'absolute',

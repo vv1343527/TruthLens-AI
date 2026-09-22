@@ -394,13 +394,14 @@ input:-webkit-autofill:active {
   border: 1px solid var(--border);
 }
 
-/* Sidebar Nav Layout (ISSUE 13) */
+/* Sidebar Nav Layout (ISSUE 4) */
 .sidebar-nav-item {
   display: flex;
   align-items: center;
   gap: var(--space-3);
   width: 100%;
-  padding: 10px 14px;
+  min-height: 44px;
+  padding: 0 12px;
   border-radius: var(--radius-md);
   border: 1px solid transparent;
   background: transparent;
@@ -605,11 +606,11 @@ input:-webkit-autofill:active {
   outline-offset: 2px;
 }
 
-/* Floating AI Assistant (ISSUE 4) */
+/* Floating AI Assistant (ISSUE 6) */
 .mitra-floating-widget {
   position: fixed;
-  right: 24px;
-  bottom: 24px;
+  right: 20px;
+  bottom: 20px;
   z-index: 900;
   display: flex;
   flex-direction: column;
@@ -619,8 +620,8 @@ input:-webkit-autofill:active {
 
 .ai-assistant-floating {
   position: fixed;
-  right: 24px;
-  bottom: 24px;
+  right: 20px;
+  bottom: 20px;
   z-index: 900;
   width: 52px;
   height: 52px;
