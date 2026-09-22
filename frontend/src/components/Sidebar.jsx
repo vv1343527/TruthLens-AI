@@ -5,7 +5,7 @@ export default function Sidebar({ activeTab, onSelectTab, onOpenCreditsModal }) 
     {
       id: 'overview',
       label: 'Command Center',
-      tag: '3D HUB',
+      tag: '3D Hub',
       theme: 'cyan',
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -142,7 +142,7 @@ export default function Sidebar({ activeTab, onSelectTab, onOpenCreditsModal }) 
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="12" cy="12" r="3" />
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0 2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
         </svg>
       )
     }
@@ -150,7 +150,7 @@ export default function Sidebar({ activeTab, onSelectTab, onOpenCreditsModal }) 
 
   return (
     <aside style={styles.sidebar}>
-      {/* Navigation List */}
+      {/* Navigation List (ISSUE 13) */}
       <nav style={styles.nav}>
         {navItems.map((item) => {
           const isActive = activeTab === item.id
@@ -170,12 +170,13 @@ export default function Sidebar({ activeTab, onSelectTab, onOpenCreditsModal }) 
             }
           }
 
-          const activeColor = item.theme === 'green' ? '#10b981' : item.theme === 'blue' ? '#38bdf8' : item.theme === 'purple' ? '#7c4dff' : item.theme === 'cyan' ? '#00d9ff' : '#ffffff'
+          const activeColor = item.theme === 'green' ? 'var(--success)' : item.theme === 'blue' ? '#38bdf8' : item.theme === 'purple' ? '#a855f7' : item.theme === 'cyan' ? 'var(--accent)' : 'var(--text-primary)'
 
           return (
             <button
               key={item.id}
               onClick={() => onSelectTab(item.id)}
+              className={`sidebar-nav-item ${isActive ? 'active' : ''}`}
               style={{
                 ...styles.navItem,
                 ...activeStyle
@@ -183,23 +184,22 @@ export default function Sidebar({ activeTab, onSelectTab, onOpenCreditsModal }) 
             >
               <span style={{
                 ...styles.iconWrapper,
-                color: isActive ? activeColor : '#64748b'
+                color: isActive ? activeColor : 'var(--text-subtle)'
               }}>
                 {item.icon}
               </span>
               <span style={{
                 ...styles.itemLabel,
-                color: isActive ? activeColor : '#94a3b8',
+                color: isActive ? activeColor : 'var(--text-secondary)',
                 fontWeight: isActive ? 700 : 500
               }}>
                 {item.label}
               </span>
               {item.tag && (
-                <span style={{
-                  ...styles.tagBadge,
+                <span className="nav-badge" style={{
                   backgroundColor: isActive ? `${activeColor}22` : 'rgba(255, 255, 255, 0.05)',
-                  color: isActive ? activeColor : '#64748b',
-                  borderColor: isActive ? activeColor : 'rgba(255, 255, 255, 0.1)'
+                  color: isActive ? activeColor : 'var(--text-muted)',
+                  borderColor: isActive ? activeColor : 'var(--border)'
                 }}>
                   {item.tag}
                 </span>
@@ -211,14 +211,14 @@ export default function Sidebar({ activeTab, onSelectTab, onOpenCreditsModal }) 
 
       {/* Footer Info Box */}
       <div style={styles.footerBox}>
-        <div style={{ fontSize: '10px', fontWeight: 800, color: '#64748b', letterSpacing: '0.8px', marginBottom: '4px' }}>
+        <div style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--text-subtle)', letterSpacing: '0.5px', marginBottom: '4px' }}>
           LABORATORY STATUS
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11.5px', fontWeight: 700, color: '#10b981' }}>
-          <span style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: '#10b981', boxShadow: '0 0 8px #10b981' }} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--success)' }}>
+          <span style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: 'var(--success)', boxShadow: '0 0 8px var(--success)' }} />
           3D Forensic Engine v3.6 Active
         </div>
-        <div style={{ fontSize: '10px', color: '#64748b', marginTop: '4px' }}>
+        <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-subtle)', marginTop: '4px' }}>
           Real Hardware & AI Detectors Online
         </div>
       </div>
@@ -231,84 +231,77 @@ const styles = {
     width: '250px',
     backgroundColor: 'rgba(10, 16, 32, 0.75)',
     backdropFilter: 'blur(16px)',
-    borderRight: '1px solid rgba(0, 217, 255, 0.12)',
+    borderRight: '1px solid var(--border)',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
     padding: '16px 12px',
     boxSizing: 'border-box',
     flexShrink: 0,
+    height: '100%',
+    position: 'relative',
     zIndex: 20
   },
   nav: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '3px',
-    overflowY: 'auto',
-    maxHeight: 'calc(100vh - 170px)'
+    gap: '6px'
   },
   navItem: {
     display: 'flex',
     alignItems: 'center',
-    gap: '10px',
-    padding: '9px 12px',
-    borderRadius: '8px',
-    backgroundColor: 'transparent',
-    border: '1px solid transparent',
-    cursor: 'pointer',
-    textAlign: 'left',
+    gap: '12px',
     width: '100%',
-    transition: 'all 0.15s ease'
-  },
-  activeItemBlue: {
-    backgroundColor: 'rgba(56, 189, 248, 0.12)',
-    borderLeft: '3px solid #38bdf8',
-    borderColor: 'rgba(56, 189, 248, 0.25)'
-  },
-  activeItemGreen: {
-    backgroundColor: 'rgba(16, 185, 129, 0.12)',
-    borderLeft: '3px solid #10b981',
-    borderColor: 'rgba(16, 185, 129, 0.25)'
-  },
-  activeItemPurple: {
-    backgroundColor: 'rgba(124, 77, 255, 0.14)',
-    borderLeft: '3px solid #7c4dff',
-    borderColor: 'rgba(124, 77, 255, 0.3)'
+    padding: '9px 12px',
+    borderRadius: 'var(--radius-md)',
+    border: '1px solid transparent',
+    backgroundColor: 'transparent',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    textAlign: 'left'
   },
   activeItemCyan: {
     backgroundColor: 'rgba(0, 217, 255, 0.12)',
-    borderLeft: '3px solid #00d9ff',
-    borderColor: 'rgba(0, 217, 255, 0.3)'
+    borderColor: 'rgba(0, 217, 255, 0.4)',
+    boxShadow: '0 0 14px rgba(0, 217, 255, 0.15)'
+  },
+  activeItemGreen: {
+    backgroundColor: 'rgba(16, 185, 129, 0.12)',
+    borderColor: 'rgba(16, 185, 129, 0.4)',
+    boxShadow: '0 0 14px rgba(16, 185, 129, 0.15)'
+  },
+  activeItemBlue: {
+    backgroundColor: 'rgba(56, 189, 248, 0.12)',
+    borderColor: 'rgba(56, 189, 248, 0.4)',
+    boxShadow: '0 0 14px rgba(56, 189, 248, 0.15)'
+  },
+  activeItemPurple: {
+    backgroundColor: 'rgba(124, 77, 255, 0.15)',
+    borderColor: 'rgba(124, 77, 255, 0.4)',
+    boxShadow: '0 0 14px rgba(124, 77, 255, 0.2)'
   },
   activeItemDefault: {
     backgroundColor: 'rgba(255, 255, 255, 0.08)',
-    borderLeft: '3px solid #ffffff',
-    borderColor: 'rgba(255, 255, 255, 0.15)'
+    borderColor: 'rgba(255, 255, 255, 0.2)'
   },
   iconWrapper: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    width: '20px',
+    height: '20px',
     flexShrink: 0
   },
   itemLabel: {
-    fontSize: '12.5px',
-    letterSpacing: '-0.1px',
+    fontSize: 'var(--text-sm)',
+    letterSpacing: '-0.01em',
     flex: 1
   },
-  tagBadge: {
-    fontSize: '9px',
-    fontWeight: 800,
-    padding: '2px 6px',
-    borderRadius: '4px',
-    border: '1px solid',
-    letterSpacing: '0.6px'
-  },
   footerBox: {
-    backgroundColor: 'rgba(5, 7, 10, 0.6)',
-    border: '1px solid rgba(0, 217, 255, 0.12)',
-    borderRadius: '8px',
-    padding: '12px 14px',
-    marginTop: '10px'
+    padding: '12px',
+    borderRadius: 'var(--radius-md)',
+    backgroundColor: 'rgba(5, 7, 14, 0.6)',
+    border: '1px solid var(--border)',
+    marginTop: '16px'
   }
 }

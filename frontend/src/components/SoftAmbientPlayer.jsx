@@ -76,16 +76,14 @@ export default function SoftAmbientPlayer({ defaultVolume = 0.08, autoStart = tr
     const now = ctx.currentTime
     const preset = soundscapes[soundscape]
 
-    // Warm, silky lowpass filter (removes any harshness)
     const filter = ctx.createBiquadFilter()
     filter.type = 'lowpass'
     filter.frequency.setValueAtTime(preset.filterCutoff, now)
     filter.Q.setValueAtTime(1.0, now)
 
-    // Gentle LFO filter modulation
     const lfo = ctx.createOscillator()
     const lfoGain = ctx.createGain()
-    lfo.frequency.setValueAtTime(0.08, now) // Slow 12.5s cycle
+    lfo.frequency.setValueAtTime(0.08, now)
     lfoGain.gain.setValueAtTime(40, now)
     lfo.connect(lfoGain)
     lfoGain.connect(filter.frequency)
@@ -94,99 +92,108 @@ export default function SoftAmbientPlayer({ defaultVolume = 0.08, autoStart = tr
 
     const chordGain = ctx.createGain()
     chordGain.gain.setValueAtTime(0.0001, now)
-    chordGain.gain.linearRampToValueAtTime(0.045 / freqs.length, now + 2.5) // Gentle 2.5s attack
+    chordGain.gain.linearRampToValueAtTime(0.045 / freqs.length, now + 2.5)
     chordGain.gain.setValueAtTime(0.045 / freqs.length, now + duration - 2.5)
-    chordGain.gain.linearRampToValueAtTime(0.00001, now + duration) // Gentle 2.5s release
+    chordGain.gain.linearRampToValueAtTime(0.00001, now + duration)
 
-    filter.connect(chordGain)
-    chordGain.connect(masterGainRef.current)
+    const oscs = freqs.map((freq, i) => {
+      const osc = ctx.createOscillator()
+      osc.type = i % 2 === 0 ? 'sine' : 'triangle'
+      osc.frequency.setValueAtTime(freq, now)
+      osc.detune.setValueAtTime((Math.random() - 0.5) * 6, now)
 
-    // Ultra-smooth dual sine oscillators (pure mellow tones)
-    freqs.forEach((freq) => {
-      const osc1 = ctx.createOscillator()
-      osc1.type = 'sine'
-      osc1.frequency.setValueAtTime(freq, now)
-      osc1.connect(filter)
-      osc1.start(now)
-      osc1.stop(now + duration)
+      const panner = ctx.createStereoPanner ? ctx.createStereoPanner() : null
+      if (panner) {
+        panner.pan.setValueAtTime((i - (freqs.length - 1) / 2) * 0.35, now)
+        osc.connect(panner)
+        panner.connect(chordGain)
+      } else {
+        osc.connect(chordGain)
+      }
 
-      const osc2 = ctx.createOscillator()
-      osc2.type = 'sine'
-      osc2.frequency.setValueAtTime(freq * 1.001, now) // Ultra-subtle 1.7 cent chorus detune
-      osc2.connect(filter)
-      osc2.start(now)
-      osc2.stop(now + duration)
+      osc.start(now)
+      osc.stop(now + duration)
+      return osc
     })
 
-    // Delicate distant sparkle chime (very quiet and subtle)
-    if (Math.random() > 0.4) {
+    chordGain.connect(filter)
+    filter.connect(masterGainRef.current)
+
+    // Gentle crystal shimmer note
+    if (Math.random() > 0.45 && preset.sparkleNotes) {
       const sparkleFreq = preset.sparkleNotes[Math.floor(Math.random() * preset.sparkleNotes.length)]
       const sparkleOsc = ctx.createOscillator()
       const sparkleGain = ctx.createGain()
 
       sparkleOsc.type = 'sine'
-      sparkleOsc.frequency.setValueAtTime(sparkleFreq, now + 1.5)
+      sparkleOsc.frequency.setValueAtTime(sparkleFreq, now + 1.2)
 
-      sparkleGain.gain.setValueAtTime(0.0001, now + 1.5)
-      sparkleGain.gain.linearRampToValueAtTime(0.008, now + 1.8) // Very delicate
-      sparkleGain.gain.exponentialRampToValueAtTime(0.00001, now + 4.2)
+      sparkleGain.gain.setValueAtTime(0.00001, now + 1.2)
+      sparkleGain.gain.linearRampToValueAtTime(0.015, now + 2.2)
+      sparkleGain.gain.exponentialRampToValueAtTime(0.00001, now + 4.5)
 
       sparkleOsc.connect(sparkleGain)
       sparkleGain.connect(masterGainRef.current)
 
-      sparkleOsc.start(now + 1.5)
-      sparkleOsc.stop(now + 4.5)
+      sparkleOsc.start(now + 1.2)
+      sparkleOsc.stop(now + 4.6)
     }
+
+    activeNodesRef.current.push({ oscs, lfo, chordGain, filter })
+
+    setTimeout(() => {
+      activeNodesRef.current = activeNodesRef.current.filter((n) => n.chordGain !== chordGain)
+    }, duration * 1000 + 500)
   }
 
-  // Loop chords while playing
+  // Continuous Generative Progression Loop
   useEffect(() => {
     if (!isPlaying) {
-      if (timerRef.current) clearInterval(timerRef.current)
+      if (timerRef.current) {
+        clearInterval(timerRef.current)
+        timerRef.current = null
+      }
       return
     }
 
-    const preset = soundscapes[soundscape]
-    let chordIndex = 0
+    const chords = soundscapes[soundscape].chords
+    let chordIdx = 0
 
-    // Play first chord immediately
-    playAmbientChord(preset.chords[chordIndex], 5.8)
-    chordIndex = (chordIndex + 1) % preset.chords.length
+    playAmbientChord(chords[chordIdx], 6.0)
 
-    // Loop through chord progression every 5 seconds (with smooth 1s crossfade)
     timerRef.current = setInterval(() => {
-      playAmbientChord(preset.chords[chordIndex], 5.8)
-      chordIndex = (chordIndex + 1) % preset.chords.length
-    }, 5000)
+      chordIdx = (chordIdx + 1) % chords.length
+      playAmbientChord(chords[chordIdx], 6.0)
+    }, 5200)
 
     return () => {
-      if (timerRef.current) clearInterval(timerRef.current)
+      if (timerRef.current) {
+        clearInterval(timerRef.current)
+        timerRef.current = null
+      }
     }
   }, [isPlaying, soundscape])
 
-  // Sync volume change
+  // Volume Change Handler
   useEffect(() => {
     if (masterGainRef.current && audioCtxRef.current) {
-      masterGainRef.current.gain.setTargetAtTime(volume, audioCtxRef.current.currentTime, 0.05)
+      masterGainRef.current.gain.setTargetAtTime(volume, audioCtxRef.current.currentTime, 0.1)
     }
   }, [volume])
 
-  // Automatic start with fallback to first user interaction on the page
+  // Autoplay handler
   useEffect(() => {
-    if (!autoStart) return
-
-    const tryAutoStart = () => {
+    const tryAutoStart = async () => {
       try {
         const ctx = getAudioContext()
         if (ctx && ctx.state === 'running') {
-          // Audio running
+          // Running
         }
       } catch (e) {}
     }
 
     tryAutoStart()
 
-    // Global listener so first user interaction anywhere immediately starts audio if browser blocked initial autoplay
     const onFirstUserGesture = () => {
       try {
         const ctx = getAudioContext()
@@ -223,21 +230,25 @@ export default function SoftAmbientPlayer({ defaultVolume = 0.08, autoStart = tr
 
   return (
     <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
-      {/* Main Music Control Button */}
-      <div
+      {/* Main Music Control Button (ISSUE 6 & 7) */}
+      <button
+        type="button"
+        aria-pressed={isPlaying}
+        aria-label={isPlaying ? "Ambient audio enabled" : "Ambient audio disabled"}
         style={{
           display: 'flex',
           alignItems: 'center',
           gap: '8px',
           background: isPlaying ? 'rgba(0, 217, 255, 0.12)' : 'rgba(10, 16, 32, 0.75)',
-          border: isPlaying ? '1px solid #00d9ff' : '1px solid rgba(56, 189, 248, 0.25)',
+          border: isPlaying ? '1px solid var(--accent)' : '1px solid var(--border)',
           padding: '6px 14px',
-          borderRadius: '24px',
+          borderRadius: 'var(--radius-pill)',
           backdropFilter: 'blur(10px)',
           boxShadow: isPlaying ? '0 0 16px rgba(0, 217, 255, 0.25)' : 'none',
           transition: 'all 0.25s ease',
           cursor: 'pointer',
-          userSelect: 'none'
+          userSelect: 'none',
+          textAlign: 'left'
         }}
         onClick={togglePlay}
         title={isPlaying ? 'Pause Soft Ambient Music' : 'Play Soft Futuristic Ambient Music'}
@@ -246,26 +257,27 @@ export default function SoftAmbientPlayer({ defaultVolume = 0.08, autoStart = tr
         <div style={{ display: 'flex', alignItems: 'center', gap: '3px', height: '14px', width: '16px' }}>
           {isPlaying ? (
             <>
-              <span style={{ width: '3px', height: '100%', backgroundColor: '#00d9ff', borderRadius: '2px', animation: 'eqWave 1s ease-in-out infinite alternate', animationDelay: '0s' }} />
-              <span style={{ width: '3px', height: '60%', backgroundColor: '#00d9ff', borderRadius: '2px', animation: 'eqWave 1.2s ease-in-out infinite alternate', animationDelay: '0.2s' }} />
-              <span style={{ width: '3px', height: '80%', backgroundColor: '#00d9ff', borderRadius: '2px', animation: 'eqWave 0.9s ease-in-out infinite alternate', animationDelay: '0.4s' }} />
+              <span style={{ width: '3px', height: '100%', backgroundColor: 'var(--accent)', borderRadius: '2px', animation: 'eqWave 1s ease-in-out infinite alternate', animationDelay: '0s' }} />
+              <span style={{ width: '3px', height: '60%', backgroundColor: 'var(--accent)', borderRadius: '2px', animation: 'eqWave 1.2s ease-in-out infinite alternate', animationDelay: '0.2s' }} />
+              <span style={{ width: '3px', height: '80%', backgroundColor: 'var(--accent)', borderRadius: '2px', animation: 'eqWave 0.9s ease-in-out infinite alternate', animationDelay: '0.4s' }} />
             </>
           ) : (
-            <span style={{ fontSize: '13px', color: '#94a3b8' }}>▶</span>
+            <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>▶</span>
           )}
         </div>
 
+        {/* ISSUE 6 & 7 Standardized copy and typography */}
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontSize: '10.5px', fontWeight: 800, color: isPlaying ? '#00d9ff' : '#cbd5e1', letterSpacing: '0.6px', fontFamily: 'monospace' }}>
-            {isPlaying ? 'AMBIENT AUDIO: ON' : 'AMBIENT AUDIO'}
+          <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: isPlaying ? 'var(--accent)' : 'var(--text-secondary)', letterSpacing: '0.3px' }}>
+            Ambient audio: {isPlaying ? 'On' : 'Off'}
           </span>
-          <span style={{ fontSize: '9px', color: '#64748b', fontWeight: 600 }}>
+          <span className="audio-environment" style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)', fontWeight: 600 }}>
             {isPlaying ? soundscapes[soundscape].name : 'Soft Cyber Calming Sound'}
           </span>
         </div>
 
         {/* Settings / Volume Gear Icon */}
-        <div
+        <span
           onClick={(e) => {
             e.stopPropagation()
             setShowMenu(!showMenu)
@@ -273,17 +285,25 @@ export default function SoftAmbientPlayer({ defaultVolume = 0.08, autoStart = tr
           style={{
             marginLeft: '4px',
             padding: '2px 5px',
-            borderRadius: '4px',
+            borderRadius: 'var(--radius-sm)',
             background: showMenu ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.05)',
             fontSize: '11px',
-            color: '#94a3b8',
+            color: 'var(--text-muted)',
             transition: 'all 0.2s'
           }}
           title="Audio Soundscape & Volume Settings"
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.stopPropagation()
+              setShowMenu(!showMenu)
+            }
+          }}
         >
           ⚙️
-        </div>
-      </div>
+        </span>
+      </button>
 
       {/* Dropdown Settings Menu */}
       {showMenu && (
@@ -294,8 +314,8 @@ export default function SoftAmbientPlayer({ defaultVolume = 0.08, autoStart = tr
             right: 0,
             width: '240px',
             backgroundColor: '#0a1020',
-            border: '1px solid rgba(0, 217, 255, 0.3)',
-            borderRadius: '12px',
+            border: '1px solid var(--border-accent)',
+            borderRadius: 'var(--radius-md)',
             padding: '12px',
             boxShadow: '0 12px 30px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 217, 255, 0.15)',
             zIndex: 1000,
@@ -303,12 +323,15 @@ export default function SoftAmbientPlayer({ defaultVolume = 0.08, autoStart = tr
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-            <span style={{ fontSize: '11px', fontWeight: 800, color: '#00d9ff', letterSpacing: '0.8px' }}>
-              AMBIENT LAB SOUNDSCAPES
+            <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.5px' }}>
+              Ambient Lab Soundscapes
             </span>
             <span
               onClick={() => setShowMenu(false)}
-              style={{ cursor: 'pointer', fontSize: '11px', color: '#64748b' }}
+              style={{ cursor: 'pointer', fontSize: '12px', color: 'var(--text-subtle)' }}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && setShowMenu(false)}
             >
               ✕
             </span>
@@ -331,29 +354,37 @@ export default function SoftAmbientPlayer({ defaultVolume = 0.08, autoStart = tr
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     padding: '6px 10px',
-                    borderRadius: '6px',
+                    borderRadius: 'var(--radius-sm)',
                     backgroundColor: isSelected ? 'rgba(0, 217, 255, 0.15)' : 'rgba(255, 255, 255, 0.03)',
-                    border: isSelected ? '1px solid rgba(0, 217, 255, 0.5)' : '1px solid transparent',
+                    border: isSelected ? '1px solid var(--border-accent)' : '1px solid transparent',
                     cursor: 'pointer',
-                    fontSize: '11.5px',
-                    color: isSelected ? '#ffffff' : '#94a3b8'
+                    fontSize: 'var(--text-xs)',
+                    color: isSelected ? 'var(--text-primary)' : 'var(--text-muted)'
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      setSoundscape(key)
+                      if (!isPlaying) setIsPlaying(true)
+                    }
                   }}
                 >
                   <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <span>{sc.icon}</span>
                     <strong style={{ fontWeight: isSelected ? 700 : 500 }}>{sc.name}</strong>
                   </span>
-                  {isSelected && <span style={{ color: '#00d9ff', fontSize: '10px' }}>● ACTIVE</span>}
+                  {isSelected && <span style={{ color: 'var(--accent)', fontSize: '10px', fontWeight: 700 }}>● Active</span>}
                 </div>
               )
             })}
           </div>
 
           {/* Volume Slider */}
-          <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.08)', paddingTop: '10px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: '#94a3b8', marginBottom: '4px' }}>
+          <div style={{ borderTop: '1px solid var(--border)', paddingTop: '10px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'var(--text-xs)', color: 'var(--text-muted)', marginBottom: '4px' }}>
               <span>Volume</span>
-              <span style={{ color: '#00d9ff', fontFamily: 'monospace' }}>{Math.round(volume * 100)}%</span>
+              <span style={{ color: 'var(--accent)', fontFamily: 'var(--font-mono)' }}>{Math.round(volume * 100)}%</span>
             </div>
             <input
               type="range"
@@ -361,10 +392,11 @@ export default function SoftAmbientPlayer({ defaultVolume = 0.08, autoStart = tr
               max="1"
               step="0.05"
               value={volume}
+              aria-label="Ambient volume"
               onChange={(e) => setVolume(parseFloat(e.target.value))}
               style={{
                 width: '100%',
-                accentColor: '#00d9ff',
+                accentColor: 'var(--accent)',
                 cursor: 'pointer'
               }}
             />

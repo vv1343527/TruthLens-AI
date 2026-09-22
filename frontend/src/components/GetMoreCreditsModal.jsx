@@ -232,17 +232,62 @@ export default function GetMoreCreditsModal({ isOpen, onClose, user, onCreditsUp
   const [cardCvv, setCardCvv] = useState('')
   const [cardName, setCardName] = useState('')
   const cardInputRef = useRef(null)
+  const modalRef = useRef(null)
+  const previousFocusRef = useRef(null)
 
   // NetBanking State
   const [selectedBank, setSelectedBank] = useState('SBI')
   const [selectedBankName, setSelectedBankName] = useState('State Bank of India')
   const [bankSearchQuery, setBankSearchQuery] = useState('')
 
-  // Keyboard navigation
+  // Focus management & Escape listener & Focus Trap
+  useEffect(() => {
+    if (isOpen) {
+      previousFocusRef.current = document.activeElement
+      setTimeout(() => {
+        if (modalRef.current) {
+          const focusables = modalRef.current.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')
+          if (focusables.length > 0) {
+            focusables[0].focus()
+          } else {
+            modalRef.current.focus()
+          }
+        }
+      }, 50)
+    } else {
+      if (previousFocusRef.current && typeof previousFocusRef.current.focus === 'function') {
+        previousFocusRef.current.focus()
+      }
+    }
+  }, [isOpen])
+
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape' && isOpen) {
+      if (!isOpen) return
+      if (e.key === 'Escape') {
+        e.preventDefault()
         onClose()
+      } else if (e.key === 'Tab' && modalRef.current) {
+        const focusableElements = modalRef.current.querySelectorAll(
+          'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        )
+        const focusable = Array.from(focusableElements)
+        if (focusable.length === 0) return
+
+        const firstElement = focusable[0]
+        const lastElement = focusable[focusable.length - 1]
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            e.preventDefault()
+            lastElement.focus()
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            e.preventDefault()
+            firstElement.focus()
+          }
+        }
       }
     }
     if (isOpen) {
@@ -650,6 +695,8 @@ export default function GetMoreCreditsModal({ isOpen, onClose, user, onCreditsUp
   return (
     <div style={styles.overlay} onClick={onClose}>
       <div
+        ref={modalRef}
+        tabIndex={-1}
         role="dialog"
         aria-modal="true"
         aria-labelledby="credits-modal-title"
@@ -725,28 +772,33 @@ export default function GetMoreCreditsModal({ isOpen, onClose, user, onCreditsUp
 
             {/* PACKAGES TAB */}
             {activeTab === 'packages' && (
-              <div style={styles.packageList}>
+              <div role="radiogroup" aria-labelledby="credits-modal-title" style={styles.packageList}>
                 {config.packages.map((pkg) => {
                   const isSelected = selectedPackage === pkg.id
                   return (
-                    <div
+                    <label
                       key={pkg.id}
-                      tabIndex={0}
-                      role="button"
-                      aria-pressed={isSelected}
-                      onClick={() => setSelectedPackage(pkg.id)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault()
-                          setSelectedPackage(pkg.id)
-                        }
-                      }}
+                      className="credit-option"
                       style={{
                         ...styles.packageCard,
                         ...(isSelected ? styles.selectedPackageCard : {}),
                         ...(pkg.is_popular ? styles.popularBorder : {})
                       }}
+                      onKeyDown={(e) => {
+                        if (e.key === ' ' || e.key === 'Enter') {
+                          e.preventDefault()
+                          setSelectedPackage(pkg.id)
+                        }
+                      }}
                     >
+                      <input
+                        type="radio"
+                        name="credit-package"
+                        value={pkg.id}
+                        checked={isSelected}
+                        onChange={() => setSelectedPackage(pkg.id)}
+                        style={{ position: 'absolute', opacity: 0, width: 0, height: 0 }}
+                      />
                       {pkg.is_popular && <div style={styles.popularBadge}>{pkg.badge_text || 'POPULAR'}</div>}
                       <div style={styles.packageLeft}>
                         <div style={isSelected ? styles.radioCheckActive : styles.radioOuter}>
@@ -767,21 +819,8 @@ export default function GetMoreCreditsModal({ isOpen, onClose, user, onCreditsUp
 
                       <div style={styles.packageRight}>
                         <div style={styles.packagePrice}>₹{pkg.price.toLocaleString('en-IN')}</div>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            handleProceedToSummary(pkg.id, 'package')
-                          }}
-                          style={{
-                            ...styles.buyNowBtn,
-                            ...(isSelected ? styles.buyNowBtnActive : {})
-                          }}
-                        >
-                          Purchase Credits
-                        </button>
                       </div>
-                    </div>
+                    </label>
                   )
                 })}
               </div>
@@ -789,28 +828,33 @@ export default function GetMoreCreditsModal({ isOpen, onClose, user, onCreditsUp
 
             {/* SUBSCRIPTIONS TAB */}
             {activeTab === 'subscriptions' && (
-              <div style={styles.subscriptionGrid}>
+              <div role="radiogroup" aria-label="Monthly Subscription Plans" style={styles.subscriptionGrid}>
                 {config.subscriptions.map((sub) => {
                   const isSelected = selectedPlan === sub.id
                   return (
-                    <div
+                    <label
                       key={sub.id}
-                      tabIndex={0}
-                      role="button"
-                      aria-pressed={isSelected}
-                      onClick={() => setSelectedPlan(sub.id)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault()
-                          setSelectedPlan(sub.id)
-                        }
-                      }}
+                      className="credit-option"
                       style={{
                         ...styles.subCard,
                         ...(isSelected ? styles.selectedSubCard : {}),
                         ...(sub.recommended ? styles.recommendedSubCard : {})
                       }}
+                      onKeyDown={(e) => {
+                        if (e.key === ' ' || e.key === 'Enter') {
+                          e.preventDefault()
+                          setSelectedPlan(sub.id)
+                        }
+                      }}
                     >
+                      <input
+                        type="radio"
+                        name="subscription-plan"
+                        value={sub.id}
+                        checked={isSelected}
+                        onChange={() => setSelectedPlan(sub.id)}
+                        style={{ position: 'absolute', opacity: 0, width: 0, height: 0 }}
+                      />
                       {sub.recommended && (
                         <div style={styles.mostPopularBadge}>
                           {sub.badge_text || 'MOST POPULAR'}
@@ -834,25 +878,25 @@ export default function GetMoreCreditsModal({ isOpen, onClose, user, onCreditsUp
                           ))}
                         </div>
                       </div>
-
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleProceedToSummary(sub.id, 'subscription')
-                        }}
-                        style={{
-                          ...styles.subscribeBtn,
-                          ...(sub.recommended ? styles.recommendedBtn : {})
-                        }}
-                      >
-                        Subscribe
-                      </button>
-                    </div>
+                    </label>
                   )
                 })}
               </div>
             )}
+
+            {/* SINGLE PRIMARY PURCHASE BUTTON */}
+            <div style={{ marginTop: '18px' }}>
+              <button
+                type="button"
+                className="btn btn-primary"
+                style={{ width: '100%', minHeight: '44px', fontSize: 'var(--text-md)', fontWeight: 700 }}
+                onClick={() => handleProceedToSummary(isSub ? selectedPlan : selectedPackage, isSub ? 'subscription' : 'package')}
+              >
+                {isSub
+                  ? `Subscribe to ${currentItem?.name || 'Plan'} (₹${itemPrice.toLocaleString('en-IN')}/mo)`
+                  : `Purchase ${itemCredits} credits (₹${itemPrice.toLocaleString('en-IN')})`}
+              </button>
+            </div>
 
             {/* Security UX Footer */}
             <div style={styles.securityUxBox}>
@@ -860,7 +904,7 @@ export default function GetMoreCreditsModal({ isOpen, onClose, user, onCreditsUp
                 <span>🔒</span> Secure Checkout
               </div>
               <div style={styles.securityUxSupported}>
-                <span style={{ color: '#94a3b8' }}>Supported:</span> UPI • PhonePe • Google Pay • Paytm • Visa • Mastercard • RuPay
+                <span style={{ color: 'var(--text-muted)' }}>Supported:</span> UPI • PhonePe • Google Pay • Paytm • Visa • Mastercard • RuPay
               </div>
             </div>
           </div>

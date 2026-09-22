@@ -112,8 +112,10 @@ export default function DashboardView({ onNavigate, user, creditBalance, onOpenC
         <div style={styles.heroRight}>
           <div style={styles.creditCard}>
             <div style={styles.creditLabel}>AVAILABLE CREDITS</div>
-            <div style={styles.creditValue}>{creditBalance ?? 10} <span style={{ fontSize: '13px', color: '#94a3b8' }}>PTS</span></div>
-            <button style={styles.refillBtn} onClick={onOpenCreditsModal}>+ GET CREDITS</button>
+            <div style={styles.creditValue}>{creditBalance ?? 10} <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>PTS</span></div>
+            <button className="btn btn-primary" style={{ width: '100%' }} onClick={onOpenCreditsModal} title="Add forensic analysis credits">
+              + Add credits
+            </button>
           </div>
         </div>
       </div>
@@ -122,22 +124,22 @@ export default function DashboardView({ onNavigate, user, creditBalance, onOpenC
       <div style={styles.statsGrid}>
         <div style={styles.statCard}>
           <div style={styles.statLabel}>MEDIA INVESTIGATED</div>
-          <div style={{ ...styles.statNum, color: '#00f0ff' }}>{stats.totalScans}</div>
+          <div style={{ ...styles.statNum, color: 'var(--accent)' }}>{stats.totalScans}</div>
           <div style={styles.statSub}>Total forensic exhibits</div>
         </div>
         <div style={styles.statCard}>
           <div style={styles.statLabel}>AUTHENTIC VERIFIED</div>
-          <div style={{ ...styles.statNum, color: '#00ff9d' }}>{stats.authentic}</div>
+          <div style={{ ...styles.statNum, color: 'var(--success)' }}>{stats.authentic}</div>
           <div style={styles.statSub}>Sensor & optical matches</div>
         </div>
         <div style={styles.statCard}>
           <div style={styles.statLabel}>SYNTHETIC / MANIPULATED</div>
-          <div style={{ ...styles.statNum, color: '#ff0055' }}>{stats.manipulated}</div>
+          <div style={{ ...styles.statNum, color: 'var(--danger)' }}>{stats.manipulated}</div>
           <div style={styles.statSub}>Generative artifacts flagged</div>
         </div>
         <div style={styles.statCard}>
           <div style={styles.statLabel}>DETECTION ACCURACY</div>
-          <div style={{ ...styles.statNum, color: '#38bdf8' }}>{stats.accuracy}</div>
+          <div style={{ ...styles.statNum, color: 'var(--accent-hover)' }}>{stats.accuracy}</div>
           <div style={styles.statSub}>Multi-model consensus</div>
         </div>
       </div>
@@ -155,12 +157,12 @@ export default function DashboardView({ onNavigate, user, creditBalance, onOpenC
             style={styles.launchCard}
             onClick={() => onNavigate(card.id)}
             onMouseEnter={(e) => {
-              e.currentTarget.style.borderColor = card.color
+              e.currentTarget.style.borderColor = 'var(--border-accent)'
               e.currentTarget.style.transform = 'translateY(-4px)'
-              e.currentTarget.style.boxShadow = `0 12px 28px -6px ${card.color}33`
+              e.currentTarget.style.boxShadow = '0 12px 28px -6px rgba(0, 217, 255, 0.2)'
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
+              e.currentTarget.style.borderColor = 'var(--border)'
               e.currentTarget.style.transform = 'none'
               e.currentTarget.style.boxShadow = 'none'
             }}
@@ -173,9 +175,17 @@ export default function DashboardView({ onNavigate, user, creditBalance, onOpenC
             </div>
             <h3 style={styles.cardTitle}>{card.title}</h3>
             <p style={styles.cardDesc}>{card.desc}</p>
-            <div style={{ ...styles.cardAction, color: card.color }}>
-              Launch Workstation &rarr;
-            </div>
+            <button
+              type="button"
+              className="btn btn-primary"
+              style={{ width: '100%', marginTop: 'auto', gap: '8px' }}
+              onClick={(e) => {
+                e.stopPropagation()
+                onNavigate(card.id)
+              }}
+            >
+              Launch workstation <span aria-hidden="true">&rarr;</span>
+            </button>
           </div>
         ))}
       </div>
@@ -197,8 +207,8 @@ const styles = {
     flexWrap: 'wrap',
     gap: '20px',
     background: 'linear-gradient(135deg, rgba(11, 22, 38, 0.9) 0%, rgba(7, 17, 31, 0.95) 100%)',
-    border: '1px solid rgba(0, 240, 255, 0.2)',
-    borderRadius: '16px',
+    border: '1px solid var(--border-accent)',
+    borderRadius: 'var(--radius-xl)',
     padding: '28px 32px',
     marginBottom: '28px',
     boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
@@ -213,37 +223,36 @@ const styles = {
     marginBottom: '12px'
   },
   livePill: {
-    fontSize: '11px',
+    fontSize: '12px',
     fontWeight: '700',
-    letterSpacing: '1px',
-    color: '#00ff9d',
-    background: 'rgba(0, 255, 157, 0.12)',
-    border: '1px solid rgba(0, 255, 157, 0.3)',
+    letterSpacing: '0.5px',
+    color: 'var(--success)',
+    background: 'rgba(52, 211, 153, 0.12)',
+    border: '1px solid rgba(52, 211, 153, 0.3)',
     padding: '4px 10px',
-    borderRadius: '20px'
+    borderRadius: 'var(--radius-pill)'
   },
   isoPill: {
-    fontSize: '11px',
+    fontSize: '12px',
     fontWeight: '700',
-    letterSpacing: '1px',
-    color: '#00f0ff',
-    background: 'rgba(0, 240, 255, 0.1)',
-    border: '1px solid rgba(0, 240, 255, 0.3)',
+    letterSpacing: '0.5px',
+    color: 'var(--accent)',
+    background: 'rgba(0, 217, 255, 0.1)',
+    border: '1px solid rgba(0, 217, 255, 0.3)',
     padding: '4px 10px',
-    borderRadius: '20px'
+    borderRadius: 'var(--radius-pill)'
   },
   heroTitle: {
     margin: '0 0 8px',
-    fontSize: '30px',
+    fontSize: 'var(--text-2xl)',
     fontWeight: '800',
-    fontFamily: "'Space Grotesk', sans-serif",
-    color: '#ffffff',
+    color: 'var(--text-primary)',
     letterSpacing: '-0.5px'
   },
   heroDesc: {
     margin: 0,
-    fontSize: '14px',
-    color: '#94a3b8',
+    fontSize: 'var(--text-sm)',
+    color: 'var(--text-muted)',
     lineHeight: '1.5'
   },
   heroRight: {
@@ -252,36 +261,25 @@ const styles = {
   },
   creditCard: {
     background: 'rgba(0,0,0,0.35)',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
-    borderRadius: '12px',
+    border: '1px solid var(--border)',
+    borderRadius: 'var(--radius-md)',
     padding: '16px 20px',
     textAlign: 'center',
     minWidth: '160px'
   },
   creditLabel: {
-    fontSize: '10px',
+    fontSize: 'var(--text-xs)',
     fontWeight: '700',
     letterSpacing: '1px',
-    color: '#94a3b8',
+    color: 'var(--text-muted)',
     marginBottom: '6px'
   },
   creditValue: {
-    fontSize: '24px',
+    fontSize: 'var(--text-xl)',
     fontWeight: '800',
-    color: '#00f0ff',
-    marginBottom: '10px'
-  },
-  refillBtn: {
-    background: 'linear-gradient(135deg, #00f0ff, #0070f3)',
-    border: 'none',
-    color: '#05070e',
-    fontWeight: '700',
-    fontSize: '11px',
-    letterSpacing: '0.5px',
-    padding: '6px 14px',
-    borderRadius: '6px',
-    cursor: 'pointer',
-    width: '100%'
+    color: 'var(--accent)',
+    marginBottom: '10px',
+    fontFamily: 'var(--font-mono)'
   },
   statsGrid: {
     display: 'grid',
@@ -291,40 +289,40 @@ const styles = {
   },
   statCard: {
     background: 'rgba(11, 22, 38, 0.65)',
-    border: '1px solid rgba(255, 255, 255, 0.08)',
-    borderRadius: '14px',
+    border: '1px solid var(--border)',
+    borderRadius: 'var(--radius-lg)',
     padding: '20px',
     backdropFilter: 'blur(8px)'
   },
   statLabel: {
-    fontSize: '11px',
+    fontSize: 'var(--text-xs)',
     fontWeight: '700',
     letterSpacing: '1px',
-    color: '#94a3b8',
+    color: 'var(--text-muted)',
     marginBottom: '8px'
   },
   statNum: {
-    fontSize: '28px',
+    fontSize: 'var(--text-2xl)',
     fontWeight: '800',
-    fontFamily: "'Space Grotesk', sans-serif",
+    fontFamily: 'var(--font-mono)',
     marginBottom: '4px'
   },
   statSub: {
-    fontSize: '12px',
-    color: '#64748b'
+    fontSize: 'var(--text-xs)',
+    color: 'var(--text-subtle)'
   },
   sectionHeader: {
     marginBottom: '20px'
   },
   sectionTitle: {
     margin: '0 0 6px',
-    fontSize: '20px',
+    fontSize: 'var(--text-xl)',
     fontWeight: '700',
-    color: '#ffffff'
+    color: 'var(--text-primary)'
   },
   sectionSub: {
-    fontSize: '13px',
-    color: '#94a3b8'
+    fontSize: 'var(--text-sm)',
+    color: 'var(--text-muted)'
   },
   launchGrid: {
     display: 'grid',
@@ -334,8 +332,8 @@ const styles = {
   },
   launchCard: {
     background: 'rgba(11, 22, 38, 0.75)',
-    border: '1px solid rgba(255, 255, 255, 0.08)',
-    borderRadius: '14px',
+    border: '1px solid var(--border)',
+    borderRadius: 'var(--radius-lg)',
     padding: '24px',
     cursor: 'pointer',
     transition: 'all 0.25s ease',
@@ -352,32 +350,25 @@ const styles = {
     fontSize: '28px'
   },
   cardBadge: {
-    fontSize: '10px',
+    fontSize: 'var(--text-xs)',
     fontWeight: '700',
     letterSpacing: '0.5px',
     border: '1px solid',
     padding: '3px 8px',
-    borderRadius: '6px',
+    borderRadius: 'var(--radius-sm)',
     background: 'rgba(0,0,0,0.3)'
   },
   cardTitle: {
     margin: '0 0 8px',
-    fontSize: '18px',
+    fontSize: 'var(--text-lg)',
     fontWeight: '700',
-    color: '#ffffff'
+    color: 'var(--text-primary)'
   },
   cardDesc: {
     margin: '0 0 20px',
-    fontSize: '13px',
-    color: '#94a3b8',
+    fontSize: 'var(--text-sm)',
+    color: 'var(--text-muted)',
     lineHeight: '1.5',
     flex: '1'
-  },
-  cardAction: {
-    fontSize: '13px',
-    fontWeight: '700',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px'
   }
 }
