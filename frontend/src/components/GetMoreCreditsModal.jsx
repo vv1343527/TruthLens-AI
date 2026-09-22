@@ -706,12 +706,12 @@ export default function GetMoreCreditsModal({ isOpen, onClose, user, onCreditsUp
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Close Button */}
+        {/* Close Button (ISSUE 7) */}
         <button
           onClick={onClose}
-          aria-label="Close modal"
+          aria-label="Close credits and subscription dialog"
           style={styles.closeBtn}
-          title="Close"
+          title="Close credits and subscription dialog"
         >
           ✕
         </button>
@@ -871,7 +871,7 @@ export default function GetMoreCreditsModal({ isOpen, onClose, user, onCreditsUp
 
                         <div style={styles.subFeatures}>
                           {sub.features.map((feat, idx) => (
-                            <div key={idx} style={styles.featureItem}>
+                            <div key={idx} className="early-feature-access" style={styles.featureItem}>
                               <span style={styles.checkIcon}>✓</span>
                               <span>{feat}</span>
                             </div>
@@ -1752,13 +1752,14 @@ const styles = {
     fontWeight: '700'
   },
   subFeatures: {
-    fontSize: '10.5px',
-    color: '#cbd5e1',
+    fontSize: 'var(--text-xs)',
+    lineHeight: '1.4',
+    color: 'var(--text-secondary)',
     textAlign: 'left',
     marginBottom: '14px',
     display: 'flex',
     flexDirection: 'column',
-    gap: '5px'
+    gap: '6px'
   },
   featureItem: {
     display: 'flex',

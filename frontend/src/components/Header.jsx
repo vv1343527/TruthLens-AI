@@ -4,7 +4,7 @@ import SoftAmbientPlayer from './SoftAmbientPlayer.jsx'
 export default function Header({ user, onLogout, onOpenMitra, onOpenCreditsModal, creditBalance = 10, selectedLang = 'en-IN', onLanguageChange }) {
   return (
     <header style={styles.header}>
-      {/* Left Logo & Brand */}
+      {/* Left: Logo & Brand */}
       <div style={styles.brandRow}>
         <div style={styles.logoMark}>
           <div style={styles.logoGlowOrb} />
@@ -15,40 +15,30 @@ export default function Header({ user, onLogout, onOpenMitra, onOpenCreditsModal
         </div>
         <div>
           <div style={styles.title}>TRUTHLENS AI</div>
-          <div style={styles.subtitle}>DIGITAL FORENSICS LABORATORY</div>
+          <div style={styles.subtitle}>Digital Forensics Laboratory</div>
         </div>
       </div>
 
-      {/* Right Controls */}
-      <div style={styles.rightControls}>
-        {/* Soft Ambient Music Controller (ISSUE 7) */}
-        <SoftAmbientPlayer defaultVolume={0.25} />
+      {/* Center: Lab Status */}
+      <div style={styles.statusPill}>
+        <span style={styles.blinkingDot} />
+        <span style={styles.statusText}>Lab online · 6 engines</span>
+      </div>
 
-        {/* Mitra Voice Assistant Trigger Button */}
-        <button
-          onClick={onOpenMitra}
-          style={styles.mitraHeaderBtn}
-          title="Open Mitra AI Voice Assistant"
-          aria-label="Open Mitra AI Voice Assistant"
-        >
-          <span style={styles.mitraPulseOrb} />
-          <span style={styles.mitraText}>Mitra AI</span>
-          <span style={styles.mitraActiveDot} />
-        </button>
-
-        {/* Credit Balance Indicator & Primary Add Credits Button (ISSUE 10 & 12) */}
+      {/* Right: Header Utilities Group (ISSUE 6, 8, 10) */}
+      <div className="header-utilities" style={styles.headerUtilities}>
+        {/* Primary Action: Add Credits & Compact Balance */}
         <div className="credit-header" style={styles.creditsContainer}>
-          <div
-            style={styles.creditPill}
-            onClick={onOpenCreditsModal}
+          <button
+            type="button"
+            className="credit-control"
             title="View Credits & Billing"
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && onOpenCreditsModal()}
+            onClick={onOpenCreditsModal}
+            style={styles.creditPillBtn}
           >
-            <span style={styles.diamondIcon}>💎</span>
-            <span className="credit-balance" style={styles.creditAmount}>{creditBalance} Credits</span>
-          </div>
+            <span aria-hidden="true">💎</span>
+            <span className="credit-balance" style={styles.creditAmount}>{Number(creditBalance || 0).toLocaleString('en-IN')} Credits</span>
+          </button>
           <button
             type="button"
             onClick={onOpenCreditsModal}
@@ -61,14 +51,22 @@ export default function Header({ user, onLogout, onOpenMitra, onOpenCreditsModal
           </button>
         </div>
 
-        {/* Status Pill */}
-        <div style={styles.statusPill}>
-          <span style={styles.blinkingDot} />
-          <span style={styles.statusText}>Lab online · 6 engines</span>
-        </div>
+        {/* Secondary Action: Mitra Voice Assistant (ISSUE 10) */}
+        <button
+          type="button"
+          onClick={onOpenMitra}
+          style={styles.mitraHeaderBtn}
+          className="mitra-ai-control"
+          title="Open Mitra AI Voice Assistant"
+          aria-label="Open Mitra AI Voice Assistant"
+        >
+          <span style={styles.mitraPulseOrb} />
+          <span style={styles.mitraText}>Mitra AI</span>
+          <span style={styles.mitraActiveDot} />
+        </button>
 
-        {/* Language Selector in Header Utility Area (ISSUE 10) */}
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        {/* Settings Group: Language & Ambient Audio (ISSUE 10) */}
+        <div className="header-settings" style={styles.headerSettings}>
           <label htmlFor="language-selector" className="sr-only">
             Language
           </label>
@@ -87,16 +85,20 @@ export default function Header({ user, onLogout, onOpenMitra, onOpenCreditsModal
             <option value="ta-IN">தமிழ் (Tamil)</option>
             <option value="te-IN">తెలుగు (Telugu)</option>
           </select>
+
+          <SoftAmbientPlayer defaultVolume={0.25} />
         </div>
 
-        {/* User Card & Sign Out (ISSUE 14) */}
-        <div style={styles.userCard}>
-          <div style={styles.userAvatar}>
-            {(user?.name || user?.email || 'V')[0].toUpperCase()}
-          </div>
-          <div style={styles.userTextCol}>
-            <div style={styles.userEmail}>{user?.name || user?.email || 'Investigator'}</div>
-            <div style={styles.userRole}>{user?.role || 'Forensic Investigator'}</div>
+        {/* Profile Group: User Card & Sign Out (ISSUE 8, 10) */}
+        <div className="header-profile" style={styles.headerProfile}>
+          <div style={styles.userCard}>
+            <div style={styles.userAvatar}>
+              {(user?.name || user?.email || 'V')[0].toUpperCase()}
+            </div>
+            <div style={styles.userTextCol}>
+              <div style={styles.userEmail}>{user?.name || user?.email || 'Investigator'}</div>
+              <div style={styles.userRole}>{user?.role || 'Forensic Investigator'}</div>
+            </div>
           </div>
           <button
             type="button"
@@ -116,19 +118,21 @@ export default function Header({ user, onLogout, onOpenMitra, onOpenCreditsModal
 
 const styles = {
   header: {
-    height: '68px',
-    backgroundColor: 'rgba(10, 16, 32, 0.85)',
+    position: 'sticky',
+    top: 0,
+    minHeight: '64px',
+    backgroundColor: 'rgba(10, 16, 32, 0.9)',
     backdropFilter: 'blur(16px)',
     borderBottom: '1px solid var(--border)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: '0 28px',
+    padding: '10px 24px',
     boxSizing: 'border-box',
     width: '100%',
-    flexShrink: 0,
-    position: 'relative',
-    zIndex: 30
+    zIndex: 100,
+    gap: '12px',
+    flexWrap: 'wrap'
   },
   brandRow: {
     display: 'flex',
@@ -146,7 +150,8 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
-    overflow: 'hidden'
+    overflow: 'hidden',
+    flexShrink: 0
   },
   logoGlowOrb: {
     position: 'absolute',
@@ -167,17 +172,75 @@ const styles = {
   subtitle: {
     fontSize: 'var(--text-xs)',
     color: 'var(--accent)',
-    letterSpacing: '0.8px',
-    fontWeight: '700'
+    letterSpacing: '0.4px',
+    fontWeight: '700',
+    textTransform: 'none'
   },
-  rightControls: {
+  statusPill: {
     display: 'flex',
     alignItems: 'center',
-    gap: 'var(--space-4)',
+    gap: '8px',
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    border: '1px solid var(--border)',
+    borderRadius: 'var(--radius-pill)',
+    padding: '6px 14px',
+    minHeight: '34px'
+  },
+  blinkingDot: {
+    width: '6px',
+    height: '6px',
+    borderRadius: '50%',
+    backgroundColor: 'var(--success)',
+    boxShadow: '0 0 8px var(--success)',
+    animation: 'liveBlink 1.5s infinite'
+  },
+  statusText: {
+    fontSize: 'var(--text-xs)',
+    fontWeight: '700',
+    color: 'var(--text-secondary)',
+    letterSpacing: '0.3px'
+  },
+  headerUtilities: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    minHeight: '44px',
     flexWrap: 'wrap'
   },
-  mitraHeaderBtn: {
+  creditsContainer: {
     display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    backgroundColor: 'rgba(0, 217, 255, 0.08)',
+    border: '1px solid var(--border-accent)',
+    borderRadius: 'var(--radius-pill)',
+    padding: '4px 6px 4px 12px'
+  },
+  creditPillBtn: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px',
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    padding: 0,
+    font: 'inherit'
+  },
+  creditAmount: {
+    fontSize: 'var(--text-xs)',
+    fontWeight: '700',
+    color: 'var(--accent)',
+    fontFamily: 'var(--font-mono)'
+  },
+  getCreditsBtn: {
+    minHeight: '32px',
+    padding: '0 12px',
+    fontSize: 'var(--text-xs)',
+    fontWeight: '700',
+    borderRadius: 'var(--radius-pill)'
+  },
+  mitraHeaderBtn: {
+    display: 'inline-flex',
     alignItems: 'center',
     gap: '8px',
     backgroundColor: 'rgba(124, 77, 255, 0.15)',
@@ -188,7 +251,7 @@ const styles = {
     cursor: 'pointer',
     boxShadow: '0 0 16px rgba(124, 77, 255, 0.25)',
     transition: 'all 0.2s ease',
-    position: 'relative'
+    minHeight: '36px'
   },
   mitraPulseOrb: {
     width: '8px',
@@ -210,72 +273,35 @@ const styles = {
     backgroundColor: 'var(--success)',
     boxShadow: '0 0 6px var(--success)'
   },
-  creditsContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 'var(--space-4)',
-    backgroundColor: 'rgba(0, 217, 255, 0.08)',
-    border: '1px solid var(--border-accent)',
-    borderRadius: 'var(--radius-pill)',
-    padding: '4px 6px 4px 14px'
-  },
-  creditPill: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-    cursor: 'pointer'
-  },
-  diamondIcon: {
-    fontSize: '13px'
-  },
-  creditAmount: {
-    fontSize: 'var(--text-xs)',
-    fontWeight: '700',
-    color: 'var(--accent)',
-    fontFamily: 'var(--font-mono)'
-  },
-  getCreditsBtn: {
-    minHeight: '32px',
-    padding: '0 12px',
-    fontSize: 'var(--text-xs)',
-    fontWeight: '700',
-    borderRadius: 'var(--radius-pill)'
-  },
-  statusPill: {
+  headerSettings: {
     display: 'flex',
     alignItems: 'center',
     gap: '8px',
-    backgroundColor: 'rgba(255, 255, 255, 0.03)',
-    border: '1px solid var(--border)',
-    borderRadius: 'var(--radius-pill)',
-    padding: '6px 14px'
+    paddingLeft: '10px',
+    borderLeft: '1px solid var(--border)',
+    minHeight: '36px'
   },
-  blinkingDot: {
-    width: '6px',
-    height: '6px',
-    borderRadius: '50%',
-    backgroundColor: 'var(--success)',
-    boxShadow: '0 0 8px var(--success)',
-    animation: 'liveBlink 1.5s infinite'
-  },
-  statusText: {
-    fontSize: 'var(--text-xs)',
-    fontWeight: '700',
-    color: 'var(--text-secondary)',
-    letterSpacing: '0.3px'
+  headerProfile: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    paddingLeft: '10px',
+    borderLeft: '1px solid var(--border)',
+    minHeight: '36px'
   },
   userCard: {
     display: 'flex',
     alignItems: 'center',
-    gap: '10px',
+    gap: '8px',
     backgroundColor: 'rgba(10, 16, 32, 0.7)',
     border: '1px solid var(--border)',
     borderRadius: 'var(--radius-md)',
-    padding: '5px 12px'
+    padding: '4px 10px',
+    minHeight: '36px'
   },
   userAvatar: {
-    width: '28px',
-    height: '28px',
+    width: '26px',
+    height: '26px',
     borderRadius: '50%',
     backgroundColor: '#7C4DFF',
     color: '#ffffff',
@@ -284,7 +310,8 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    boxShadow: '0 0 8px rgba(124, 77, 255, 0.4)'
+    boxShadow: '0 0 8px rgba(124, 77, 255, 0.4)',
+    flexShrink: 0
   },
   userTextCol: {
     display: 'flex',
@@ -295,18 +322,20 @@ const styles = {
     fontSize: 'var(--text-xs)',
     fontWeight: '700',
     color: 'var(--text-primary)',
-    maxWidth: '130px',
+    maxWidth: '120px',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     whiteSpace: 'nowrap'
   },
   userRole: {
-    fontSize: '11px',
+    fontSize: '12px',
     color: 'var(--text-subtle)',
     fontWeight: '600'
   },
   signOutBtn: {
-    marginLeft: '6px',
-    cursor: 'pointer'
+    minHeight: '32px',
+    padding: '0 10px',
+    fontSize: 'var(--text-xs)',
+    alignSelf: 'center'
   }
 }

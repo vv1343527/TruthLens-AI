@@ -32,22 +32,22 @@ export default function DigitalGridBackground() {
       return
     }
 
-    // 1. Perspective Horizon Grid Plane
+    // 1. Perspective Horizon Grid Plane (ISSUE 9)
     const gridHelper = new THREE.GridHelper(120, 60, 0x00d9ff, 0x0a1f38)
     gridHelper.position.y = -4
-    gridHelper.material.opacity = 0.35
+    gridHelper.material.opacity = 0.12
     gridHelper.material.transparent = true
     scene.add(gridHelper)
 
     // Top subtle ceiling grid for high-tech cage effect
     const topGrid = new THREE.GridHelper(120, 60, 0x7c4dff, 0x0c1424)
     topGrid.position.y = 18
-    topGrid.material.opacity = 0.2
+    topGrid.material.opacity = 0.08
     topGrid.material.transparent = true
     scene.add(topGrid)
 
-    // 2. Floating Cyber Particles (Data Points)
-    const particleCount = 240
+    // 2. Floating Cyber Particles (Data Points) (ISSUE 9)
+    const particleCount = 120
     const particleGeo = new THREE.BufferGeometry()
     const positions = new Float32Array(particleCount * 3)
     const colors = new Float32Array(particleCount * 3)
@@ -75,7 +75,7 @@ export default function DigitalGridBackground() {
       size: 0.35,
       vertexColors: true,
       transparent: true,
-      opacity: 0.75,
+      opacity: 0.15,
       blending: THREE.AdditiveBlending
     })
 
@@ -147,6 +147,7 @@ export default function DigitalGridBackground() {
   return (
     <div
       ref={mountRef}
+      className="matrix-grid background-particles animated-background"
       style={{
         position: 'fixed',
         top: 0,

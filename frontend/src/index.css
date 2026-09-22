@@ -367,18 +367,90 @@ input:-webkit-autofill:active {
   border-width: 0;
 }
 
-/* Eyebrow Label (ISSUE 3) */
+/* Eyebrow Label (ISSUE 4) */
 .lab-eyebrow {
-  display: inline-block;
+  display: block;
   font-size: var(--text-xs);
   font-weight: 700;
   color: var(--accent);
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  text-transform: none;
   margin-bottom: var(--space-2);
 }
 
-/* Quick Forensic Demo Exhibits (ISSUE 4, 5, 11) */
+/* Early Feature Access (ISSUE 5) */
+.early-feature-access {
+  font-size: var(--text-xs);
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+/* Background Atmosphere & Forensic Card (ISSUE 9) */
+.background-particles {
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.matrix-grid {
+  opacity: 0.10;
+  pointer-events: none;
+}
+
+.forensic-card {
+  background: rgba(11, 18, 32, 0.88);
+  backdrop-filter: blur(8px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .background-particles,
+  .matrix-grid,
+  .animated-background {
+    animation: none !important;
+  }
+}
+
+/* Header Utilities & Grouping (ISSUE 6, 8, 10) */
+.header-utilities {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+}
+
+.header-secondary {
+  display: flex;
+  align-items: center;
+}
+
+.header-settings {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 8px;
+  border-left: 1px solid var(--border);
+  min-height: 36px;
+}
+
+.header-profile {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 8px;
+  border-left: 1px solid var(--border);
+  min-height: 36px;
+}
+
+.ambient-audio-control,
+.mitra-ai-control,
+.credit-control,
+.language-selector,
+.profile-control {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+}
+
+/* Quick Forensic Demo Exhibits */
 .quick-forensic-demo {
   padding: 20px 16px;
   margin: 8px 0 24px;
@@ -412,7 +484,7 @@ input:-webkit-autofill:active {
   gap: 10px;
 }
 
-/* Section Heading (ISSUE 6) */
+/* Section Heading */
 .section-heading {
   margin: 0;
   font-size: var(--text-lg);
@@ -421,7 +493,7 @@ input:-webkit-autofill:active {
   letter-spacing: -0.01em;
 }
 
-/* Compact Ambient Audio Header Control (ISSUE 7) */
+/* Compact Ambient Audio Header Control */
 .ambient-audio-control {
   min-height: 36px;
   padding: 0 10px;
@@ -446,7 +518,7 @@ input:-webkit-autofill:active {
   outline-offset: 2px;
 }
 
-/* Floating AI Assistant (ISSUE 8) */
+/* Floating AI Assistant */
 .ai-assistant-floating {
   position: fixed;
   right: 24px;
@@ -483,7 +555,7 @@ input:-webkit-autofill:active {
   }
 }
 
-/* Language Selector (ISSUE 10) */
+/* Language Selector */
 .language-selector {
   min-height: 36px;
   padding: 0 10px;
