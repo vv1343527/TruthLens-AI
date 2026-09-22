@@ -476,11 +476,11 @@ export default function MitraVoiceAssistant({ onNavigateTab, user, selectedLang:
 
   return (
     <div style={styles.container}>
-      {/* Header Bar */}
-      <div style={styles.header}>
-        <div>
+      {/* Header Bar (ISSUE 5, 10) */}
+      <div className="mitra-header" style={styles.header}>
+        <div className="mitra-title">
           <div style={styles.badge}>
-            {isSessionActive ? '🟢 ACTIVE CONVERSATION SESSION' : '🎙️ ALWAYS LISTENING · CALL "HELLO MITRA"'}
+            {isSessionActive ? '🟢 Active conversation session' : '🎙️ Always listening · Call "Hello Mitra"'}
           </div>
           <h1 style={styles.title}>Mitra — Multilingual AI Voice Assistant</h1>
           <p style={styles.subtitle}>
@@ -488,23 +488,29 @@ export default function MitraVoiceAssistant({ onNavigateTab, user, selectedLang:
           </p>
         </div>
 
-        {/* Language Selector Dropdown */}
-        <div style={styles.langSelector}>
-          <label style={styles.langLabel}>Voice Language:</label>
-          <select
-            value={selectedLang}
-            onChange={(e) => {
-              setSelectedLang(e.target.value)
-              synthRef.current?.cancel()
-            }}
-            style={styles.langDropdown}
-          >
-            {SUPPORTED_LANGUAGES.map(lang => (
-              <option key={lang.id} value={lang.id}>
-                {lang.native} ({lang.label})
-              </option>
-            ))}
-          </select>
+        {/* Voice Language Selector Dropdown (ISSUE 5, 10) */}
+        <div className="mitra-controls" style={styles.mitraControls}>
+          <div className="voice-language-control" style={styles.voiceLanguageControl}>
+            <label htmlFor="voice-language-selector" className="field-label" style={styles.langLabel}>
+              Voice language
+            </label>
+            <select
+              id="voice-language-selector"
+              aria-label="Mitra AI voice language"
+              value={selectedLang}
+              onChange={(e) => {
+                setSelectedLang(e.target.value)
+                synthRef.current?.cancel()
+              }}
+              style={styles.langDropdown}
+            >
+              {SUPPORTED_LANGUAGES.map(lang => (
+                <option key={lang.id} value={lang.id}>
+                  {lang.native} ({lang.label})
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
@@ -540,7 +546,8 @@ export default function MitraVoiceAssistant({ onNavigateTab, user, selectedLang:
           </div>
 
           <div style={styles.orbStatusBlock}>
-            <h3 style={styles.orbName}>Mitra AI</h3>
+            {/* Semantic Heading level (ISSUE 4) */}
+            <h2 className="section-heading" style={styles.orbName}>Mitra AI</h2>
             <p style={styles.orbStatusText}>
               {isSpeaking
                 ? 'Speaking response...'
@@ -550,61 +557,71 @@ export default function MitraVoiceAssistant({ onNavigateTab, user, selectedLang:
             </p>
           </div>
 
-          {/* Interactive Push-to-Talk Button */}
+          {/* Interactive Push-to-Talk Button (ISSUE 2, 3) */}
           <button
+            type="button"
+            aria-label={isSessionActive ? `Listening to ${firstName}` : 'Click to speak'}
             onClick={triggerManualTalk}
+            className="btn btn-primary"
             style={{
               ...styles.manualSpeakBtn,
-              backgroundColor: isSessionActive ? '#16a34a' : '#0284c7',
-              boxShadow: isSessionActive ? '0 0 20px rgba(34, 197, 94, 0.5)' : '0 0 20px rgba(2, 132, 199, 0.5)'
+              backgroundColor: isSessionActive ? '#16a34a' : 'var(--accent)',
+              color: isSessionActive ? '#ffffff' : '#041018',
+              boxShadow: isSessionActive ? '0 0 20px rgba(34, 197, 94, 0.5)' : '0 0 20px rgba(0, 217, 255, 0.4)'
             }}
           >
-            <span>🎙️</span>
-            <span>{isSessionActive ? `LISTENING TO ${firstName.toUpperCase()}...` : 'CLICK TO SPEAK NOW'}</span>
+            <span aria-hidden="true">🎙️</span>
+            <span>{isSessionActive ? `Listening to ${firstName}...` : 'Click to speak'}</span>
           </button>
 
-          {/* Quick Voice Prompt Action Chips */}
+          {/* Quick Voice Prompt Action Chips (ISSUE 6) */}
           <div style={{ width: '100%', marginTop: '16px' }}>
-            <div style={{ fontSize: '11px', fontWeight: 800, color: '#94a3b8', letterSpacing: '0.6px', marginBottom: '8px' }}>
-              QUICK VOICE ACTIONS:
+            <div style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '0.4px', marginBottom: '8px' }}>
+              Quick voice actions:
             </div>
             <div style={styles.chipsGrid}>
-              <button onClick={() => handleUserSpeech('Capture live camera photo')} style={styles.actionChip}>
+              <button type="button" onClick={() => handleUserSpeech('Capture live camera photo')} className="quick-voice-action">
                 📸 Capture Live Photo
               </button>
-              <button onClick={() => handleUserSpeech('Open image analysis')} style={styles.actionChip}>
+              <button type="button" onClick={() => handleUserSpeech('Open image analysis')} className="quick-voice-action">
                 🖼️ Image Workspace
               </button>
-              <button onClick={() => handleUserSpeech('Open video analysis')} style={styles.actionChip}>
+              <button type="button" onClick={() => handleUserSpeech('Open video analysis')} className="quick-voice-action">
                 🎥 Video Workspace
               </button>
-              <button onClick={() => handleUserSpeech('Open audio analysis')} style={styles.actionChip}>
+              <button type="button" onClick={() => handleUserSpeech('Open audio analysis')} className="quick-voice-action">
                 🎙️ Audio & Voice
               </button>
-              <button onClick={() => handleUserSpeech('Open mutation tree')} style={styles.actionChip}>
+              <button type="button" onClick={() => handleUserSpeech('Open mutation tree')} className="quick-voice-action">
                 🧬 Mutation Tree
               </button>
-              <button onClick={() => handleUserSpeech('Open generation fingerprint')} style={styles.actionChip}>
+              <button type="button" onClick={() => handleUserSpeech('Open generation fingerprint')} className="quick-voice-action">
                 🧬 Generation Fingerprint
               </button>
-              <button onClick={() => handleUserSpeech('What is a deepfake?')} style={styles.actionChip}>
+              <button type="button" onClick={() => handleUserSpeech('What is a deepfake?')} className="quick-voice-action">
                 🛡️ What is Deepfake?
               </button>
             </div>
           </div>
         </div>
 
-        {/* Right Side: Live Voice Conversation Transcript HUD */}
+        {/* Right Side: Live Voice Conversation Transcript HUD (ISSUE 7) */}
         <div style={styles.chatCard}>
-          <div style={styles.chatHeader}>
+          <div className="transcript-header" style={styles.chatHeader}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: isSessionActive ? '#4ade80' : '#a855f7' }} />
               <span style={{ fontSize: '13px', fontWeight: 800, color: '#f8fafc', letterSpacing: '0.5px' }}>
-                LIVE VOICE CONVERSATION TRANSCRIPT
+                Live voice conversation transcript
               </span>
             </div>
-            <button onClick={() => setConversation([])} style={styles.clearBtn}>
-              Clear Log
+            <button
+              type="button"
+              className="btn btn-ghost clear-log-button"
+              aria-label="Clear transcript log"
+              onClick={() => setConversation([])}
+              style={styles.clearBtn}
+            >
+              Clear log
             </button>
           </div>
 
@@ -675,70 +692,75 @@ const styles = {
     padding: '16px 0 40px',
     maxWidth: '1280px',
     margin: '0 auto',
-    color: '#e2e8f0',
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    color: 'var(--text-primary)',
+    fontFamily: 'var(--font-primary)'
   },
   header: {
     display: 'flex',
     justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     marginBottom: '20px',
     flexWrap: 'wrap',
     gap: '16px'
   },
   badge: {
     display: 'inline-block',
-    padding: '6px 14px',
-    borderRadius: '20px',
+    padding: '4px 12px',
+    borderRadius: 'var(--radius-pill)',
     backgroundColor: 'rgba(168, 85, 247, 0.15)',
     border: '1px solid rgba(168, 85, 247, 0.4)',
     color: '#c084fc',
-    fontSize: '11px',
-    fontWeight: 800,
-    letterSpacing: '1px',
+    fontSize: 'var(--text-xs)',
+    fontWeight: 700,
+    letterSpacing: '0.4px',
     marginBottom: '8px'
   },
   title: {
-    fontSize: '26px',
+    fontSize: 'var(--text-xl)',
     fontWeight: '800',
-    color: '#f8fafc',
+    color: 'var(--text-primary)',
     margin: '0 0 6px 0',
     letterSpacing: '-0.5px'
   },
   subtitle: {
-    fontSize: '13.5px',
-    color: '#94a3b8',
+    fontSize: 'var(--text-sm)',
+    color: 'var(--text-muted)',
     margin: 0
   },
-  langSelector: {
+  mitraControls: {
     display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-end',
-    gap: '6px'
+    alignItems: 'center',
+    gap: '10px'
+  },
+  voiceLanguageControl: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px'
   },
   langLabel: {
-    fontSize: '11px',
+    fontSize: 'var(--text-xs)',
     fontWeight: 700,
-    color: '#94a3b8',
-    letterSpacing: '0.5px'
+    color: 'var(--text-muted)',
+    letterSpacing: '0.4px'
   },
   langDropdown: {
-    backgroundColor: '#131926',
-    border: '1px solid rgba(56, 189, 248, 0.3)',
-    color: '#ffffff',
+    backgroundColor: 'var(--surface-3)',
+    border: '1px solid var(--border)',
+    color: 'var(--text-primary)',
     padding: '8px 12px',
-    borderRadius: '8px',
-    fontSize: '12.5px',
+    borderRadius: 'var(--radius-md)',
+    fontSize: 'var(--text-xs)',
     fontWeight: 700,
-    cursor: 'pointer'
+    cursor: 'pointer',
+    minHeight: '38px'
   },
   errorAlert: {
     backgroundColor: 'rgba(56, 189, 248, 0.1)',
     border: '1px solid rgba(56, 189, 248, 0.3)',
-    color: '#38bdf8',
+    color: 'var(--accent)',
     padding: '10px 14px',
-    borderRadius: '8px',
-    fontSize: '12.5px',
+    borderRadius: 'var(--radius-md)',
+    fontSize: 'var(--text-xs)',
     marginBottom: '16px'
   },
   layout: {
@@ -754,7 +776,7 @@ const styles = {
     textAlign: 'center',
     background: 'radial-gradient(circle at center, rgba(124, 77, 255, 0.15) 0%, rgba(10, 16, 32, 0.85) 100%)',
     border: '1px solid rgba(124, 77, 255, 0.25)',
-    borderRadius: '16px',
+    borderRadius: 'var(--radius-xl)',
     padding: '28px 24px',
     backdropFilter: 'blur(16px)',
     boxShadow: '0 0 30px rgba(124, 77, 255, 0.15)'
@@ -786,54 +808,37 @@ const styles = {
   orbName: {
     fontSize: '22px',
     fontWeight: 900,
-    color: '#ffffff',
+    color: 'var(--text-primary)',
     margin: '0 0 4px 0',
-    letterSpacing: '0.5px',
-    fontFamily: "'Space Grotesk', sans-serif"
+    letterSpacing: '0.5px'
   },
   orbStatusText: {
-    fontSize: '12px',
-    color: '#94a3b8',
+    fontSize: 'var(--text-xs)',
+    color: 'var(--text-muted)',
     margin: 0
   },
   manualSpeakBtn: {
     width: '100%',
-    padding: '13px',
-    borderRadius: '10px',
-    border: 'none',
-    color: '#ffffff',
-    fontSize: '12.5px',
-    fontWeight: 800,
-    letterSpacing: '0.8px',
+    padding: '12px 16px',
+    borderRadius: 'var(--radius-md)',
+    fontSize: 'var(--text-sm)',
+    fontWeight: 700,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     gap: '8px',
     cursor: 'pointer',
-    transition: 'all 0.2s ease',
-    fontFamily: "'Space Grotesk', sans-serif"
+    minHeight: '44px'
   },
   chipsGrid: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '6px'
-  },
-  actionChip: {
-    backgroundColor: 'rgba(10, 16, 32, 0.6)',
-    border: '1px solid rgba(0, 217, 255, 0.15)',
-    color: '#cbd5e1',
-    padding: '9px 14px',
-    borderRadius: '8px',
-    fontSize: '11.5px',
-    fontWeight: 700,
-    textAlign: 'left',
-    cursor: 'pointer',
-    transition: 'all 0.15s ease'
+    gap: '8px'
   },
   chatCard: {
     backgroundColor: 'rgba(10, 16, 32, 0.75)',
     border: '1px solid rgba(0, 217, 255, 0.2)',
-    borderRadius: '16px',
+    borderRadius: 'var(--radius-xl)',
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
@@ -844,20 +849,16 @@ const styles = {
   chatHeader: {
     backgroundColor: 'rgba(5, 7, 10, 0.6)',
     borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-    padding: '16px 20px',
+    padding: '14px 20px',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center'
   },
   clearBtn: {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
-    color: '#94a3b8',
-    padding: '5px 12px',
-    borderRadius: '6px',
-    fontSize: '11px',
-    fontWeight: 700,
-    cursor: 'pointer'
+    minHeight: '36px',
+    padding: '0 12px',
+    borderRadius: 'var(--radius-md)',
+    fontSize: 'var(--text-sm)'
   },
   chatBody: {
     flex: 1,
@@ -871,8 +872,8 @@ const styles = {
   emptyState: {
     textAlign: 'center',
     padding: '80px 20px',
-    color: '#64748b',
-    fontSize: '13.5px'
+    color: 'var(--text-subtle)',
+    fontSize: 'var(--text-sm)'
   },
   chatRow: {
     display: 'flex',
@@ -881,31 +882,31 @@ const styles = {
   chatBubble: {
     maxWidth: '75%',
     padding: '12px 16px',
-    borderRadius: '12px'
+    borderRadius: 'var(--radius-lg)'
   },
   userBubble: {
     background: 'linear-gradient(135deg, #00d9ff, #0284c7)',
     color: '#05070a',
     fontWeight: 600,
-    borderBottomRightRadius: '2px',
+    borderBottomRightRadius: 'var(--radius-sm)',
     boxShadow: '0 0 14px rgba(0, 217, 255, 0.3)'
   },
   mitraBubble: {
     backgroundColor: 'rgba(15, 23, 42, 0.8)',
-    color: '#e2e8f0',
+    color: 'var(--text-primary)',
     border: '1px solid rgba(124, 77, 255, 0.3)',
-    borderBottomLeftRadius: '2px',
+    borderBottomLeftRadius: 'var(--radius-sm)',
     boxShadow: '0 0 14px rgba(124, 77, 255, 0.15)'
   },
   bubbleSender: {
-    fontSize: '10px',
+    fontSize: 'var(--text-xs)',
     fontWeight: 800,
-    letterSpacing: '0.6px',
+    letterSpacing: '0.4px',
     opacity: 0.8,
     marginBottom: '4px'
   },
   bubbleText: {
-    fontSize: '13px',
+    fontSize: 'var(--text-sm)',
     lineHeight: '1.4'
   },
   chatFooter: {
@@ -925,10 +926,10 @@ const styles = {
     borderRadius: '50%'
   },
   liveTranscriptText: {
-    fontSize: '12.5px',
-    color: '#00d9ff',
+    fontSize: 'var(--text-xs)',
+    color: 'var(--accent)',
     fontStyle: 'italic',
     minHeight: '18px',
-    fontFamily: "'JetBrains Mono', monospace"
+    fontFamily: 'var(--font-mono)'
   }
 }

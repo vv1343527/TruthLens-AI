@@ -65,18 +65,18 @@ export default function Header({ user, onLogout, onOpenMitra, onOpenCreditsModal
           <span style={styles.mitraActiveDot} />
         </button>
 
-        {/* Settings Group: Language & Ambient Audio (ISSUE 10) */}
+        {/* Settings Group: Language & Ambient Audio (ISSUE 8) */}
         <div className="header-settings" style={styles.headerSettings}>
           <label htmlFor="language-selector" className="sr-only">
-            Language
+            Application language
           </label>
           <select
             id="language-selector"
             value={selectedLang}
             onChange={(e) => onLanguageChange && onLanguageChange(e.target.value)}
             className="language-selector"
-            title="Select Language"
-            aria-label="Select Language"
+            title="Application language"
+            aria-label="Application language"
           >
             <option value="en-IN">English (India)</option>
             <option value="en-US">English (US)</option>
