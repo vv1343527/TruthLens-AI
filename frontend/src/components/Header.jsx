@@ -1,7 +1,7 @@
 import React from 'react'
 import SoftAmbientPlayer from './SoftAmbientPlayer.jsx'
 
-export default function Header({ user, onLogout, onOpenMitra, onOpenCreditsModal, creditBalance = 10 }) {
+export default function Header({ user, onLogout, onOpenMitra, onOpenCreditsModal, creditBalance = 10, selectedLang = 'en-IN', onLanguageChange }) {
   return (
     <header style={styles.header}>
       {/* Left Logo & Brand */}
@@ -21,7 +21,7 @@ export default function Header({ user, onLogout, onOpenMitra, onOpenCreditsModal
 
       {/* Right Controls */}
       <div style={styles.rightControls}>
-        {/* Soft Ambient Music Controller */}
+        {/* Soft Ambient Music Controller (ISSUE 7) */}
         <SoftAmbientPlayer defaultVolume={0.25} />
 
         {/* Mitra Voice Assistant Trigger Button */}
@@ -36,7 +36,7 @@ export default function Header({ user, onLogout, onOpenMitra, onOpenCreditsModal
           <span style={styles.mitraActiveDot} />
         </button>
 
-        {/* Credit Balance Indicator & Add Credits Button (ISSUE 10 & 12) */}
+        {/* Credit Balance Indicator & Primary Add Credits Button (ISSUE 10 & 12) */}
         <div className="credit-header" style={styles.creditsContainer}>
           <div
             style={styles.creditPill}
@@ -61,10 +61,32 @@ export default function Header({ user, onLogout, onOpenMitra, onOpenCreditsModal
           </button>
         </div>
 
-        {/* Status Pill (ISSUE 8) */}
+        {/* Status Pill */}
         <div style={styles.statusPill}>
           <span style={styles.blinkingDot} />
           <span style={styles.statusText}>Lab online · 6 engines</span>
+        </div>
+
+        {/* Language Selector in Header Utility Area (ISSUE 10) */}
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <label htmlFor="language-selector" className="sr-only">
+            Language
+          </label>
+          <select
+            id="language-selector"
+            value={selectedLang}
+            onChange={(e) => onLanguageChange && onLanguageChange(e.target.value)}
+            className="language-selector"
+            title="Select Language"
+            aria-label="Select Language"
+          >
+            <option value="en-IN">English (India)</option>
+            <option value="en-US">English (US)</option>
+            <option value="kn-IN">ಕನ್ನಡ (Kannada)</option>
+            <option value="hi-IN">हिन्दी (Hindi)</option>
+            <option value="ta-IN">தமிழ் (Tamil)</option>
+            <option value="te-IN">తెలుగు (Telugu)</option>
+          </select>
         </div>
 
         {/* User Card & Sign Out (ISSUE 14) */}

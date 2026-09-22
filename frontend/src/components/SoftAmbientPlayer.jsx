@@ -230,53 +230,23 @@ export default function SoftAmbientPlayer({ defaultVolume = 0.08, autoStart = tr
 
   return (
     <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}>
-      {/* Main Music Control Button (ISSUE 6 & 7) */}
+      {/* Compact Secondary Utility Control (ISSUE 7) */}
       <button
         type="button"
+        className="btn btn-ghost ambient-audio-control"
         aria-pressed={isPlaying}
-        aria-label={isPlaying ? "Ambient audio enabled" : "Ambient audio disabled"}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px',
-          background: isPlaying ? 'rgba(0, 217, 255, 0.12)' : 'rgba(10, 16, 32, 0.75)',
-          border: isPlaying ? '1px solid var(--accent)' : '1px solid var(--border)',
-          padding: '6px 14px',
-          borderRadius: 'var(--radius-pill)',
-          backdropFilter: 'blur(10px)',
-          boxShadow: isPlaying ? '0 0 16px rgba(0, 217, 255, 0.25)' : 'none',
-          transition: 'all 0.25s ease',
-          cursor: 'pointer',
-          userSelect: 'none',
-          textAlign: 'left'
-        }}
+        aria-label={
+          isPlaying
+            ? "Ambient audio enabled"
+            : "Ambient audio disabled"
+        }
         onClick={togglePlay}
-        title={isPlaying ? 'Pause Soft Ambient Music' : 'Play Soft Futuristic Ambient Music'}
+        title={isPlaying ? 'Pause ambient audio' : 'Play ambient audio'}
       >
-        {/* Animated Equalizer Wave / Play Icon */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '3px', height: '14px', width: '16px' }}>
-          {isPlaying ? (
-            <>
-              <span style={{ width: '3px', height: '100%', backgroundColor: 'var(--accent)', borderRadius: '2px', animation: 'eqWave 1s ease-in-out infinite alternate', animationDelay: '0s' }} />
-              <span style={{ width: '3px', height: '60%', backgroundColor: 'var(--accent)', borderRadius: '2px', animation: 'eqWave 1.2s ease-in-out infinite alternate', animationDelay: '0.2s' }} />
-              <span style={{ width: '3px', height: '80%', backgroundColor: 'var(--accent)', borderRadius: '2px', animation: 'eqWave 0.9s ease-in-out infinite alternate', animationDelay: '0.4s' }} />
-            </>
-          ) : (
-            <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>▶</span>
-          )}
-        </div>
-
-        {/* ISSUE 6 & 7 Standardized copy and typography */}
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: isPlaying ? 'var(--accent)' : 'var(--text-secondary)', letterSpacing: '0.3px' }}>
-            Ambient audio: {isPlaying ? 'On' : 'Off'}
-          </span>
-          <span className="audio-environment" style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)', fontWeight: 600 }}>
-            {isPlaying ? soundscapes[soundscape].name : 'Soft Cyber Calming Sound'}
-          </span>
-        </div>
-
-        {/* Settings / Volume Gear Icon */}
+        <span aria-hidden="true" style={{ color: isPlaying ? 'var(--accent)' : 'var(--text-muted)', fontSize: '13px' }}>
+          {isPlaying ? '◉' : '○'}
+        </span>
+        <span>Ambient audio: {isPlaying ? 'On' : 'Off'}</span>
         <span
           onClick={(e) => {
             e.stopPropagation()
@@ -284,12 +254,10 @@ export default function SoftAmbientPlayer({ defaultVolume = 0.08, autoStart = tr
           }}
           style={{
             marginLeft: '4px',
-            padding: '2px 5px',
-            borderRadius: 'var(--radius-sm)',
-            background: showMenu ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.05)',
             fontSize: '11px',
             color: 'var(--text-muted)',
-            transition: 'all 0.2s'
+            cursor: 'pointer',
+            lineHeight: 1
           }}
           title="Audio Soundscape & Volume Settings"
           role="button"

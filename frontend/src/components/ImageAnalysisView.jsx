@@ -409,7 +409,7 @@ export default function ImageAnalysisView({
         <>
           <div style={styles.heroSection}>
             <div style={styles.heroLeft}>
-              <span style={styles.breadcrumbTag}>DIGITAL FORENSIC LABORATORY</span>
+              <span className="lab-eyebrow">DIGITAL FORENSIC LABORATORY</span>
               <h1 style={styles.title}>AI Image Forensics & Origin Verification</h1>
               <p style={styles.subtitle}>
                 Upload any digital photograph or portrait to perform deep spectral, PRNU sensor noise, dermal micro-texture, and AI generation analysis.
@@ -417,7 +417,7 @@ export default function ImageAnalysisView({
             </div>
 
             <div style={styles.badgeGlowBox}>
-              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#00d9ff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="3" width="18" height="18" rx="3" ry="3" />
                 <circle cx="8.5" cy="8.5" r="1.5" />
                 <polyline points="21 15 16 10 5 21" />
@@ -437,7 +437,7 @@ export default function ImageAnalysisView({
             onClick={() => fileInputRef.current?.click()}
             style={{
               ...styles.dropZone,
-              borderColor: isDragOver ? '#00d9ff' : 'rgba(0, 217, 255, 0.35)',
+              borderColor: isDragOver ? 'var(--accent)' : 'var(--border-accent)',
               backgroundColor: isDragOver ? 'rgba(0, 217, 255, 0.08)' : 'rgba(7, 18, 36, 0.6)'
             }}
           >
@@ -452,7 +452,7 @@ export default function ImageAnalysisView({
             />
 
             <div style={styles.uploadIconBox}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#00d9ff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                 <polyline points="17 8 12 3 7 8" />
                 <line x1="12" y1="3" x2="12" y2="15" />
@@ -471,51 +471,39 @@ export default function ImageAnalysisView({
             )}
           </div>
 
-          {/* Quick Demo Test Exhibits Bar */}
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            background: 'rgba(5, 8, 22, 0.7)',
-            border: '1px solid rgba(0, 217, 255, 0.15)',
-            borderRadius: '12px',
-            padding: '12px 18px',
-            marginBottom: '28px',
-            flexWrap: 'wrap',
-            gap: '12px'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '15px' }}>⚡</span>
-              <span style={{ fontSize: '12px', fontWeight: 800, color: '#00d9ff', letterSpacing: '0.8px' }}>
-                QUICK FORENSIC DEMO EXHIBITS:
-              </span>
-              <span style={{ fontSize: '11.5px', color: '#94a3b8' }}>
+          {/* Quick Demo Test Exhibits Bar (ISSUES 4, 5, 11) */}
+          <div className="quick-forensic-demo">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span aria-hidden="true" style={{ fontSize: '15px' }}>⚡</span>
+                <span className="demo-exhibits-label">
+                  Quick forensic demo exhibits
+                </span>
+              </div>
+              <span className="demo-exhibits-description">
                 Test multi-signal decomposition immediately:
               </span>
             </div>
 
-            <div style={{ display: 'flex', gap: '10px' }}>
+            <div className="demo-exhibits-actions">
               <button
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation()
                   handleLoadSample('authentic')
                 }}
+                className="btn btn-secondary"
                 style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  background: 'rgba(16, 185, 129, 0.12)',
-                  border: '1px solid rgba(16, 185, 129, 0.4)',
-                  color: '#10b981',
-                  borderRadius: '8px',
-                  padding: '6px 14px',
-                  fontSize: '11.5px',
-                  fontWeight: 800,
-                  cursor: 'pointer'
+                  color: 'var(--success)',
+                  borderColor: 'rgba(52, 211, 153, 0.4)',
+                  background: 'rgba(52, 211, 153, 0.12)',
+                  minHeight: '38px',
+                  borderRadius: 'var(--radius-md)'
                 }}
+                title="Test Authentic DSLR Sample Image"
+                aria-label="Test Authentic DSLR Sample Image"
               >
-                <span>📸</span> Test Authentic DSLR Sample
+                <span aria-hidden="true">📸</span> Test Authentic DSLR Sample
               </button>
 
               <button
@@ -524,21 +512,18 @@ export default function ImageAnalysisView({
                   e.stopPropagation()
                   handleLoadSample('ai')
                 }}
+                className="btn btn-secondary"
                 style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  background: 'rgba(239, 68, 68, 0.12)',
-                  border: '1px solid rgba(239, 68, 68, 0.4)',
-                  color: '#ef4444',
-                  borderRadius: '8px',
-                  padding: '6px 14px',
-                  fontSize: '11.5px',
-                  fontWeight: 800,
-                  cursor: 'pointer'
+                  color: 'var(--danger)',
+                  borderColor: 'rgba(248, 113, 113, 0.4)',
+                  background: 'rgba(248, 113, 113, 0.12)',
+                  minHeight: '38px',
+                  borderRadius: 'var(--radius-md)'
                 }}
+                title="Test AI Headshot Sample Image"
+                aria-label="Test AI Headshot Sample Image"
               >
-                <span>🤖</span> Test AI Headshot Sample
+                <span aria-hidden="true">🤖</span> Test AI Headshot Sample
               </button>
             </div>
           </div>
@@ -547,25 +532,25 @@ export default function ImageAnalysisView({
           <div style={{
             marginTop: '28px',
             background: 'linear-gradient(145deg, rgba(7, 18, 36, 0.9), rgba(11, 18, 32, 0.85))',
-            border: '1px solid rgba(0, 217, 255, 0.2)',
-            borderRadius: '16px',
+            border: '1px solid var(--border-accent)',
+            borderRadius: 'var(--radius-xl)',
             padding: '24px 28px',
             boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)'
           }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '10px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <span style={{ fontSize: '20px' }}>🛡️</span>
-                <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: '#f8fafc', letterSpacing: '-0.01em' }}>
+                <h2 className="section-heading">
                   TruthLens Multi-Signal Verification Methodology
-                </h3>
+                </h2>
               </div>
               <span style={{
-                fontSize: '11px',
+                fontSize: '12px',
                 padding: '3px 10px',
-                borderRadius: '20px',
+                borderRadius: 'var(--radius-pill)',
                 background: 'rgba(0, 217, 255, 0.1)',
                 border: '1px solid rgba(0, 217, 255, 0.3)',
-                color: '#00d9ff',
+                color: 'var(--accent)',
                 fontWeight: 700
               }}>
                 ENTERPRISE LAB STANDARD

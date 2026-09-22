@@ -37,6 +37,7 @@ export default function App() {
   const [creditBalance, setCreditBalance] = useState(10)
   const [isCreditsModalOpen, setIsCreditsModalOpen] = useState(false)
   const [isWatchAdModalOpen, setIsWatchAdModalOpen] = useState(false)
+  const [selectedLang, setSelectedLang] = useState('en-IN')
   const [insufficientModal, setInsufficientModal] = useState({
     isOpen: false,
     requiredCredits: 1,
@@ -160,6 +161,8 @@ export default function App() {
         onOpenMitra={() => setActiveTab('mitra')}
         onOpenCreditsModal={() => setIsCreditsModalOpen(true)}
         creditBalance={creditBalance}
+        selectedLang={selectedLang}
+        onLanguageChange={setSelectedLang}
       />
 
       {/* Main Workspace Layout (Sidebar + Center Content) */}
@@ -249,7 +252,14 @@ export default function App() {
                 onSelectTab={setActiveTab}
               />
             )}
-            {activeTab === 'mitra' && <MitraVoiceAssistant onNavigateTab={setActiveTab} user={user} />}
+            {activeTab === 'mitra' && (
+              <MitraVoiceAssistant
+                onNavigateTab={setActiveTab}
+                user={user}
+                selectedLang={selectedLang}
+                onLanguageChange={setSelectedLang}
+              />
+            )}
             {activeTab === 'recent' && <RecentAnalysesView />}
             {activeTab === 'reports' && (
               <ReportsView
@@ -274,7 +284,12 @@ export default function App() {
 
       {/* Global Background Voice Assistant Listener across all views */}
       {activeTab !== 'mitra' && (
-        <GlobalMitraListener onNavigateTab={setActiveTab} user={user} />
+        <GlobalMitraListener
+          onNavigateTab={setActiveTab}
+          user={user}
+          selectedLang={selectedLang}
+          onLanguageChange={setSelectedLang}
+        />
       )}
 
       {/* Get More Credits Modal */}

@@ -139,8 +139,13 @@ const playMitraChime = (type = 'wake') => {
   } catch (e) { }
 }
 
-export default function MitraVoiceAssistant({ onNavigateTab, user }) {
-  const [selectedLang, setSelectedLang] = useState('en-IN')
+export default function MitraVoiceAssistant({ onNavigateTab, user, selectedLang: propLang, onLanguageChange }) {
+  const [internalLang, setInternalLang] = useState('en-IN')
+  const selectedLang = propLang || internalLang
+  const setSelectedLang = (val) => {
+    setInternalLang(val)
+    if (onLanguageChange) onLanguageChange(val)
+  }
   const [isListening, setIsListening] = useState(false)
   const [isSpeaking, setIsSpeaking] = useState(false)
   const [isManualRecording, setIsManualRecording] = useState(false)

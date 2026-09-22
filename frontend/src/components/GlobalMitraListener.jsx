@@ -42,8 +42,13 @@ export const RESPONSES = {
   }
 }
 
-export default function GlobalMitraListener({ onNavigateTab, user }) {
-  const [selectedLang, setSelectedLang] = useState('en-IN')
+export default function GlobalMitraListener({ onNavigateTab, user, selectedLang: propLang, onLanguageChange }) {
+  const [internalLang, setInternalLang] = useState('en-IN')
+  const selectedLang = propLang || internalLang
+  const setSelectedLang = (val) => {
+    setInternalLang(val)
+    if (onLanguageChange) onLanguageChange(val)
+  }
   const [isListening, setIsListening] = useState(true)
   const [isSpeaking, setIsSpeaking] = useState(false)
   const [isSessionActive, setIsSessionActive] = useState(false)
@@ -453,17 +458,27 @@ export default function GlobalMitraListener({ onNavigateTab, user }) {
 
   return (
     <>
-      {/* Floating Interactive Voice Assistant Bar & Status */}
+      {/* Floating Interactive Voice Assistant Bar & Status (ISSUE 8) */}
       <div style={styles.floatingWidget}>
         <div
+          role="button"
+          tabIndex={0}
+          aria-label="Open TruthLens AI voice assistant"
+          title="TruthLens AI Voice Assistant · Click to Talk"
           onClick={() => setIsExpanded(!isExpanded)}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault()
+              setIsExpanded(!isExpanded)
+            }
+          }}
           style={{
             ...styles.capsule,
-            borderColor: isSessionActive ? '#22c55e' : isSpeaking ? '#38bdf8' : 'rgba(56, 189, 248, 0.35)',
+            borderColor: isSessionActive ? 'var(--success)' : isSpeaking ? 'var(--accent)' : 'var(--border-accent)',
             boxShadow: isSessionActive
               ? '0 0 25px rgba(34, 197, 94, 0.6), 0 8px 32px rgba(0, 0, 0, 0.6)'
               : isSpeaking
-                ? '0 0 25px rgba(56, 189, 248, 0.6), 0 8px 32px rgba(0, 0, 0, 0.6)'
+                ? '0 0 25px rgba(0, 217, 255, 0.6), 0 8px 32px rgba(0, 0, 0, 0.6)'
                 : '0 8px 32px rgba(0, 0, 0, 0.4)'
           }}
         >
@@ -471,7 +486,7 @@ export default function GlobalMitraListener({ onNavigateTab, user }) {
           <div style={styles.avatarBox}>
             <div style={{
               ...styles.pulseRing,
-              backgroundColor: isSessionActive ? '#22c55e' : isSpeaking ? '#38bdf8' : '#38bdf8',
+              backgroundColor: isSessionActive ? 'var(--success)' : 'var(--accent)',
               transform: isSessionActive || isSpeaking ? 'scale(1.35)' : 'scale(1)',
               opacity: isSessionActive || isSpeaking ? 0.9 : 0.4
             }} />
@@ -480,39 +495,22 @@ export default function GlobalMitraListener({ onNavigateTab, user }) {
 
           <div style={styles.textBox}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '12px', fontWeight: 800, color: '#ffffff' }}>Mitra AI</span>
+              <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)' }}>Mitra AI</span>
               <span style={{
-                fontSize: '9.5px',
+                fontSize: '10px',
                 fontWeight: 800,
                 padding: '2px 7px',
-                borderRadius: '4px',
-                backgroundColor: isSessionActive ? 'rgba(34, 197, 94, 0.25)' : 'rgba(56, 189, 248, 0.18)',
-                color: isSessionActive ? '#4ade80' : '#38bdf8'
+                borderRadius: 'var(--radius-sm)',
+                backgroundColor: isSessionActive ? 'rgba(52, 211, 153, 0.25)' : 'rgba(0, 217, 255, 0.18)',
+                color: isSessionActive ? 'var(--success)' : 'var(--accent)'
               }}>
                 {isSessionActive ? 'CONVERSATION ACTIVE' : 'SAY "HELLO MITHRA"'}
               </span>
             </div>
-            <div style={{ fontSize: '11px', color: '#94a3b8', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '220px' }}>
-              {isSpeaking ? 'Speaking...' : isSessionActive ? 'Listening to your voice...' : 'Just speak "Hello Mithra" (No click needed)'}
+            <div style={{ fontSize: '12px', color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '220px' }}>
+              {isSpeaking ? 'Speaking...' : isSessionActive ? 'Listening to your voice...' : 'Just speak "Hello Mithra"'}
             </div>
           </div>
-
-          {/* Language Selector in Capsule */}
-          <select
-            value={selectedLang}
-            onChange={(e) => {
-              e.stopPropagation()
-              setSelectedLang(e.target.value)
-            }}
-            onClick={(e) => e.stopPropagation()}
-            style={styles.langSelect}
-          >
-            {SUPPORTED_LANGUAGES.map(lang => (
-              <option key={lang.id} value={lang.id} style={{ backgroundColor: '#0f172a', color: '#ffffff' }}>
-                {lang.native}
-              </option>
-            ))}
-          </select>
         </div>
 
         {/* Expandable Quick Command Sheet */}
