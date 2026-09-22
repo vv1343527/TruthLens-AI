@@ -297,7 +297,7 @@ export default function AudioAnalysisView({ user, creditBalance, onCheckCredits,
         </div>
       )}
 
-      {/* Section 1: Audio Upload & Player */}
+      {/* Section 1: Audio Upload & Player (ISSUE 5, 7) */}
       <div style={styles.sectionCard}>
         <div style={styles.sectionTitle}>
           1. AUDIO UPLOAD & RECORDING
@@ -306,7 +306,7 @@ export default function AudioAnalysisView({ user, creditBalance, onCheckCredits,
         {/* Live Microphone Visualizer & Controls */}
         <div style={styles.uploadDeckLayout}>
           <div style={styles.canvasContainer}>
-            <WaveformVisualizer3D isPlaying={recording || analyzing} height={110} color="#00d9ff" />
+            <WaveformVisualizer3D isPlaying={recording || analyzing} height={140} color="#00d9ff" />
             {recording && (
               <div style={styles.recordBadge}>
                 <span style={styles.recDot} /> REC {recordTime}s · LIVE 3D ACOUSTIC SPECTRUM
@@ -314,19 +314,32 @@ export default function AudioAnalysisView({ user, creditBalance, onCheckCredits,
             )}
           </div>
 
-          <div style={styles.actionButtonsCol}>
+          {/* Prominent Primary Action Group (ISSUE 5) */}
+          <div className="audio-primary-actions" style={styles.primaryActionsRow}>
             {!recording ? (
-              <button onClick={startRecording} style={styles.recordBtn}>
+              <button
+                type="button"
+                onClick={startRecording}
+                className="btn btn-primary"
+                style={styles.recordBtn}
+              >
                 🔴 Record Live Voice
               </button>
             ) : (
-              <button onClick={stopRecording} style={styles.stopRecBtn}>
+              <button
+                type="button"
+                onClick={stopRecording}
+                className="btn btn-danger"
+                style={styles.stopRecBtn}
+              >
                 ⏹️ Stop Recording ({recordTime}s)
               </button>
             )}
 
             <button
+              type="button"
               onClick={() => fileInputRef.current && fileInputRef.current.click()}
+              className="btn btn-secondary"
               style={styles.uploadBtn}
             >
               📁 Upload Audio File
@@ -712,7 +725,8 @@ const styles = {
     padding: '28px 36px 120px 36px',
     maxWidth: '1100px',
     margin: '0 auto',
-    color: '#ffffff'
+    color: '#ffffff',
+    minHeight: 'calc(100vh - 80px)'
   },
   headerRow: {
     marginBottom: '20px'
@@ -728,7 +742,7 @@ const styles = {
     backgroundColor: 'rgba(56, 189, 248, 0.1)',
     border: '1px solid rgba(56, 189, 248, 0.25)',
     padding: '4px 12px',
-    borderRadius: '16px',
+    borderRadius: 'var(--radius-pill)',
     marginBottom: '8px'
   },
   pulseDot: {
@@ -756,15 +770,15 @@ const styles = {
     border: '1px solid #ef4444',
     color: '#fca5a5',
     padding: '12px 18px',
-    borderRadius: '10px',
+    borderRadius: 'var(--radius-md)',
     marginBottom: '20px',
     fontSize: '13px'
   },
   sectionCard: {
     backgroundColor: '#0c101a',
     border: '1px solid rgba(56, 189, 248, 0.2)',
-    borderRadius: '14px',
-    padding: '20px 24px',
+    borderRadius: 'var(--radius-lg)',
+    padding: '24px 28px',
     marginBottom: '20px',
     boxShadow: '0 10px 30px rgba(0, 0, 0, 0.5)'
   },
@@ -777,16 +791,16 @@ const styles = {
   },
   uploadDeckLayout: {
     display: 'flex',
-    gap: '20px',
-    alignItems: 'center',
-    marginBottom: '16px'
+    flexDirection: 'column',
+    gap: '18px',
+    marginBottom: '20px'
   },
   canvasContainer: {
     position: 'relative',
-    flex: 1,
-    height: '100px',
+    width: '100%',
+    minHeight: '140px',
     backgroundColor: '#070a10',
-    borderRadius: '10px',
+    borderRadius: 'var(--radius-md)',
     border: '1px solid rgba(56, 189, 248, 0.2)',
     overflow: 'hidden'
   },
@@ -805,7 +819,7 @@ const styles = {
     fontSize: '11px',
     fontWeight: 800,
     padding: '3px 8px',
-    borderRadius: '6px',
+    borderRadius: 'var(--radius-sm)',
     display: 'flex',
     alignItems: 'center',
     gap: '6px'
@@ -816,43 +830,35 @@ const styles = {
     borderRadius: '50%',
     backgroundColor: '#ef4444'
   },
-  actionButtonsCol: {
+  primaryActionsRow: {
     display: 'flex',
-    flexDirection: 'column',
-    gap: '10px',
-    minWidth: '200px'
+    gap: '14px',
+    justifyContent: 'center',
+    flexWrap: 'wrap'
   },
   recordBtn: {
-    backgroundColor: 'rgba(239, 68, 68, 0.15)',
-    border: '1px solid #ef4444',
-    color: '#ef4444',
-    padding: '10px 16px',
-    borderRadius: '8px',
-    fontSize: '12px',
-    fontWeight: 800,
-    cursor: 'pointer',
-    transition: 'all 0.2s ease'
+    minHeight: '44px',
+    padding: '0 22px',
+    borderRadius: 'var(--radius-md)',
+    fontSize: '14px',
+    fontWeight: 600,
+    cursor: 'pointer'
   },
   stopRecBtn: {
-    backgroundColor: '#ef4444',
-    border: '1px solid #ef4444',
-    color: '#ffffff',
-    padding: '10px 16px',
-    borderRadius: '8px',
-    fontSize: '12px',
-    fontWeight: 800,
+    minHeight: '44px',
+    padding: '0 22px',
+    borderRadius: 'var(--radius-md)',
+    fontSize: '14px',
+    fontWeight: 600,
     cursor: 'pointer'
   },
   uploadBtn: {
-    backgroundColor: 'rgba(56, 189, 248, 0.15)',
-    border: '1px solid rgba(56, 189, 248, 0.4)',
-    color: '#38bdf8',
-    padding: '10px 16px',
-    borderRadius: '8px',
-    fontSize: '12px',
-    fontWeight: 800,
-    cursor: 'pointer',
-    transition: 'all 0.2s ease'
+    minHeight: '44px',
+    padding: '0 22px',
+    borderRadius: 'var(--radius-md)',
+    fontSize: '14px',
+    fontWeight: 600,
+    cursor: 'pointer'
   },
   metadataGrid: {
     display: 'grid',
@@ -860,7 +866,7 @@ const styles = {
     gap: '12px',
     backgroundColor: '#070a12',
     border: '1px solid rgba(255, 255, 255, 0.08)',
-    borderRadius: '10px',
+    borderRadius: 'var(--radius-md)',
     padding: '14px 18px',
     marginBottom: '16px'
   },
@@ -894,8 +900,9 @@ const styles = {
     backgroundColor: '#38bdf8',
     color: '#070a12',
     border: 'none',
-    padding: '14px 24px',
-    borderRadius: '10px',
+    minHeight: '44px',
+    padding: '12px 24px',
+    borderRadius: 'var(--radius-md)',
     fontSize: '14px',
     fontWeight: 900,
     cursor: 'pointer',
@@ -910,7 +917,7 @@ const styles = {
   },
   mainResultCard: {
     border: '2px solid',
-    borderRadius: '14px',
+    borderRadius: 'var(--radius-lg)',
     padding: '24px',
     marginBottom: '20px',
     boxShadow: '0 15px 35px rgba(0, 0, 0, 0.6)'
@@ -936,7 +943,7 @@ const styles = {
   primaryFindingBox: {
     backgroundColor: '#070a12',
     border: '1px solid rgba(255, 255, 255, 0.1)',
-    borderRadius: '10px',
+    borderRadius: 'var(--radius-md)',
     padding: '14px 18px'
   },
   signalsGrid: {
@@ -947,7 +954,7 @@ const styles = {
   signalBox: {
     backgroundColor: '#070a12',
     border: '1px solid rgba(255, 255, 255, 0.08)',
-    borderRadius: '10px',
+    borderRadius: 'var(--radius-md)',
     padding: '12px 16px'
   },
   signalHeader: {
@@ -970,12 +977,12 @@ const styles = {
   progressBarTrack: {
     height: '6px',
     backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: '3px',
+    borderRadius: 'var(--radius-sm)',
     overflow: 'hidden'
   },
   progressBarFill: {
     height: '100%',
-    borderRadius: '3px',
+    borderRadius: 'var(--radius-sm)',
     transition: 'width 0.6s ease'
   },
   findingsList: {
@@ -989,7 +996,7 @@ const styles = {
     backgroundColor: '#070a12',
     border: '1px solid rgba(255, 255, 255, 0.06)',
     padding: '10px 14px',
-    borderRadius: '8px',
+    borderRadius: 'var(--radius-sm)',
     fontWeight: 600
   },
   timelineLegend: {
@@ -1008,7 +1015,7 @@ const styles = {
     flex: 1,
     minWidth: '22px',
     height: '28px',
-    borderRadius: '4px',
+    borderRadius: 'var(--radius-sm)',
     cursor: 'pointer',
     position: 'relative',
     display: 'flex',
@@ -1032,7 +1039,7 @@ const styles = {
     alignItems: 'center',
     backgroundColor: '#070a12',
     border: '1px solid rgba(255, 255, 255, 0.08)',
-    borderRadius: '10px',
+    borderRadius: 'var(--radius-md)',
     padding: '12px 16px',
     cursor: 'pointer',
     transition: 'background-color 0.2s'
@@ -1054,7 +1061,7 @@ const styles = {
     color: '#38bdf8',
     backgroundColor: 'rgba(56, 189, 248, 0.15)',
     padding: '3px 8px',
-    borderRadius: '6px'
+    borderRadius: 'var(--radius-sm)'
   },
   expandableHeader: {
     display: 'flex',
@@ -1088,7 +1095,7 @@ const styles = {
   finalAssessmentCard: {
     backgroundColor: '#070a12',
     border: '1px solid rgba(56, 189, 248, 0.35)',
-    borderRadius: '14px',
+    borderRadius: 'var(--radius-lg)',
     padding: '20px 24px',
     marginBottom: '20px',
     boxShadow: '0 10px 30px rgba(0, 0, 0, 0.6)'

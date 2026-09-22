@@ -458,22 +458,16 @@ export default function GlobalMitraListener({ onNavigateTab, user, selectedLang:
 
   return (
     <>
-      {/* Floating Interactive Voice Assistant Bar & Status (ISSUE 8) */}
+      {/* Floating Interactive Voice Assistant Bar & Status (ISSUE 3, 4) */}
       <div style={styles.floatingWidget}>
-        <div
-          role="button"
-          tabIndex={0}
+        <button
+          type="button"
           aria-label="Open TruthLens AI voice assistant"
           title="TruthLens AI Voice Assistant · Click to Talk"
           onClick={() => setIsExpanded(!isExpanded)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-              e.preventDefault()
-              setIsExpanded(!isExpanded)
-            }
-          }}
           style={{
             ...styles.capsule,
+            border: '1px solid',
             borderColor: isSessionActive ? 'var(--success)' : isSpeaking ? 'var(--accent)' : 'var(--border-accent)',
             boxShadow: isSessionActive
               ? '0 0 25px rgba(34, 197, 94, 0.6), 0 8px 32px rgba(0, 0, 0, 0.6)'
@@ -497,21 +491,22 @@ export default function GlobalMitraListener({ onNavigateTab, user, selectedLang:
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)' }}>Mitra AI</span>
               <span style={{
-                fontSize: '10px',
-                fontWeight: 800,
+                fontSize: '12px',
+                fontWeight: 700,
                 padding: '2px 7px',
                 borderRadius: 'var(--radius-sm)',
                 backgroundColor: isSessionActive ? 'rgba(52, 211, 153, 0.25)' : 'rgba(0, 217, 255, 0.18)',
-                color: isSessionActive ? 'var(--success)' : 'var(--accent)'
+                color: isSessionActive ? 'var(--success)' : 'var(--accent)',
+                letterSpacing: '0.2px'
               }}>
-                {isSessionActive ? 'CONVERSATION ACTIVE' : 'SAY "HELLO MITHRA"'}
+                {isSessionActive ? 'Conversation active' : 'Say "Hello Mithra"'}
               </span>
             </div>
             <div style={{ fontSize: '12px', color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '220px' }}>
               {isSpeaking ? 'Speaking...' : isSessionActive ? 'Listening to your voice...' : 'Just speak "Hello Mithra"'}
             </div>
           </div>
-        </div>
+        </button>
 
         {/* Expandable Quick Command Sheet */}
         {isExpanded && (

@@ -25,47 +25,33 @@ export default function Header({ user, onLogout, onOpenMitra, onOpenCreditsModal
         <span style={styles.statusText}>Lab online · 6 engines</span>
       </div>
 
-      {/* Right: Header Utilities Group (ISSUE 6, 8, 10) */}
+      {/* Right: Header Utilities Group (ISSUE 4, 6, 8) */}
       <div className="header-utilities" style={styles.headerUtilities}>
-        {/* Primary Action: Add Credits & Compact Balance */}
-        <div className="credit-header" style={styles.creditsContainer}>
+        {/* Credits Group: Balance & Add (ISSUE 8) */}
+        <div className="credit-group" style={styles.creditGroup}>
           <button
             type="button"
-            className="credit-control"
+            className="credit-balance"
             title="View Credits & Billing"
             onClick={onOpenCreditsModal}
-            style={styles.creditPillBtn}
+            style={styles.creditBalanceBtn}
           >
             <span aria-hidden="true">💎</span>
-            <span className="credit-balance" style={styles.creditAmount}>{Number(creditBalance || 0).toLocaleString('en-IN')} Credits</span>
+            <span style={styles.creditAmount}>{Number(creditBalance || 0).toLocaleString('en-IN')} Credits</span>
           </button>
           <button
             type="button"
             onClick={onOpenCreditsModal}
-            className="btn btn-primary"
-            style={styles.getCreditsBtn}
+            className="btn btn-primary credit-add"
+            style={styles.creditAddBtn}
             title="Add forensic analysis credits"
             aria-label="Add forensic analysis credits"
           >
-            + Add credits
+            Add
           </button>
         </div>
 
-        {/* Secondary Action: Mitra Voice Assistant (ISSUE 10) */}
-        <button
-          type="button"
-          onClick={onOpenMitra}
-          style={styles.mitraHeaderBtn}
-          className="mitra-ai-control"
-          title="Open Mitra AI Voice Assistant"
-          aria-label="Open Mitra AI Voice Assistant"
-        >
-          <span style={styles.mitraPulseOrb} />
-          <span style={styles.mitraText}>Mitra AI</span>
-          <span style={styles.mitraActiveDot} />
-        </button>
-
-        {/* Settings Group: Language & Ambient Audio (ISSUE 8) */}
+        {/* Settings Group: Language & Ambient Audio (ISSUE 6) */}
         <div className="header-settings" style={styles.headerSettings}>
           <label htmlFor="language-selector" className="sr-only">
             Application language
@@ -89,7 +75,7 @@ export default function Header({ user, onLogout, onOpenMitra, onOpenCreditsModal
           <SoftAmbientPlayer defaultVolume={0.25} />
         </div>
 
-        {/* Profile Group: User Card & Sign Out (ISSUE 8, 10) */}
+        {/* Profile Group: User Card & Sign Out (ISSUE 6) */}
         <div className="header-profile" style={styles.headerProfile}>
           <div style={styles.userCard}>
             <div style={styles.userAvatar}>
@@ -207,23 +193,23 @@ const styles = {
     minHeight: '44px',
     flexWrap: 'wrap'
   },
-  creditsContainer: {
-    display: 'flex',
+  creditGroup: {
+    display: 'inline-flex',
     alignItems: 'center',
-    gap: '8px',
+    gap: '4px',
+    padding: '3px 4px 3px 10px',
     backgroundColor: 'rgba(0, 217, 255, 0.08)',
     border: '1px solid var(--border-accent)',
-    borderRadius: 'var(--radius-pill)',
-    padding: '4px 6px 4px 12px'
+    borderRadius: 'var(--radius-md)'
   },
-  creditPillBtn: {
+  creditBalanceBtn: {
     display: 'inline-flex',
     alignItems: 'center',
     gap: '6px',
     background: 'none',
     border: 'none',
     cursor: 'pointer',
-    padding: 0,
+    padding: '0 4px',
     font: 'inherit'
   },
   creditAmount: {
@@ -232,46 +218,12 @@ const styles = {
     color: 'var(--accent)',
     fontFamily: 'var(--font-mono)'
   },
-  getCreditsBtn: {
-    minHeight: '32px',
+  creditAddBtn: {
+    minHeight: '30px',
     padding: '0 12px',
     fontSize: 'var(--text-xs)',
     fontWeight: '700',
-    borderRadius: 'var(--radius-pill)'
-  },
-  mitraHeaderBtn: {
-    display: 'inline-flex',
-    alignItems: 'center',
-    gap: '8px',
-    backgroundColor: 'rgba(124, 77, 255, 0.15)',
-    border: '1px solid rgba(124, 77, 255, 0.45)',
-    borderRadius: 'var(--radius-pill)',
-    padding: '6px 14px',
-    color: '#e9d5ff',
-    cursor: 'pointer',
-    boxShadow: '0 0 16px rgba(124, 77, 255, 0.25)',
-    transition: 'all 0.2s ease',
-    minHeight: '36px'
-  },
-  mitraPulseOrb: {
-    width: '8px',
-    height: '8px',
-    borderRadius: '50%',
-    backgroundColor: '#7C4DFF',
-    boxShadow: '0 0 8px #7C4DFF'
-  },
-  mitraText: {
-    fontSize: 'var(--text-xs)',
-    fontWeight: '700',
-    letterSpacing: '0.5px',
-    color: '#d8b4fe'
-  },
-  mitraActiveDot: {
-    width: '5px',
-    height: '5px',
-    borderRadius: '50%',
-    backgroundColor: 'var(--success)',
-    boxShadow: '0 0 6px var(--success)'
+    borderRadius: 'var(--radius-sm)'
   },
   headerSettings: {
     display: 'flex',

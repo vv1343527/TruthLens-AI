@@ -1,45 +1,24 @@
 import React, { useState } from 'react'
 
-export default function BottomAssistantBar({ onActivate }) {
-  const [isHovered, setIsHovered] = useState(false)
-
-  const handleClick = () => {
-    if (onActivate) {
-      onActivate()
-    } else {
-      window.dispatchEvent(new CustomEvent('mitra-toggle-voice'))
-    }
-  }
-
+export default function BottomAssistantBar() {
   return (
     <div style={styles.dockContainer}>
       {/* Ambient Horizon Glow Line */}
       <div style={styles.horizonGlowLine} />
       <div style={styles.horizonCenterLight} />
 
-      {/* Centered Glowing AI Assistant Symbol (ISSUE 11) */}
+      {/* Centered Decorative AI Horizon Symbol (ISSUE 4) */}
       <div style={styles.symbolWrapper}>
-        <button
-          type="button"
-          onClick={handleClick}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-          style={{
-            ...styles.assistantButton,
-            transform: isHovered ? 'scale(1.05)' : 'scale(1)',
-            boxShadow: isHovered
-              ? '0 0 16px rgba(0, 217, 255, 0.4), inset 0 0 8px rgba(56, 189, 248, 0.3)'
-              : '0 0 10px rgba(56, 189, 248, 0.25)'
-          }}
-          title="TruthLens AI Voice Assistant · Click to Talk"
-          aria-label="AI Assistant"
+        <div
+          style={styles.decorativeSymbol}
+          aria-hidden="true"
         >
           <img
             src="/assets/ai_assistant_symbol.png"
-            alt="AI Assistant"
+            alt=""
             style={styles.symbolImage}
           />
-        </button>
+        </div>
       </div>
     </div>
   )
@@ -87,19 +66,19 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center'
   },
-  assistantButton: {
+  decorativeSymbol: {
     width: '56px',
     height: '56px',
     borderRadius: '50%',
     backgroundColor: '#070b14',
-    border: '2px solid #38bdf8',
+    border: '2px solid rgba(56, 189, 248, 0.4)',
+    boxShadow: '0 0 12px rgba(56, 189, 248, 0.25)',
     padding: '3px',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    cursor: 'pointer',
-    outline: 'none',
-    transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)',
+    cursor: 'default',
+    pointerEvents: 'none',
     overflow: 'hidden'
   },
   symbolImage: {
