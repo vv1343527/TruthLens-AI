@@ -17,7 +17,7 @@ export default function BottomAssistantBar({ onActivate }) {
       <div style={styles.horizonGlowLine} />
       <div style={styles.horizonCenterLight} />
 
-      {/* Centered Glowing AI Assistant Symbol */}
+      {/* Centered Glowing AI Assistant Symbol (ISSUE 11) */}
       <div style={styles.symbolWrapper}>
         <button
           type="button"
@@ -26,10 +26,10 @@ export default function BottomAssistantBar({ onActivate }) {
           onMouseLeave={() => setIsHovered(false)}
           style={{
             ...styles.assistantButton,
-            transform: isHovered ? 'scale(1.12) translateY(-2px)' : 'scale(1) translateY(0)',
+            transform: isHovered ? 'scale(1.05)' : 'scale(1)',
             boxShadow: isHovered
-              ? '0 0 35px #00e5ff, 0 0 60px rgba(56, 189, 248, 0.6), inset 0 0 15px rgba(56, 189, 248, 0.5)'
-              : '0 0 22px rgba(56, 189, 248, 0.5), 0 0 45px rgba(0, 229, 255, 0.25), inset 0 0 10px rgba(56, 189, 248, 0.3)'
+              ? '0 0 16px rgba(0, 217, 255, 0.4), inset 0 0 8px rgba(56, 189, 248, 0.3)'
+              : '0 0 10px rgba(56, 189, 248, 0.25)'
           }}
           title="TruthLens AI Voice Assistant · Click to Talk"
           aria-label="AI Assistant"

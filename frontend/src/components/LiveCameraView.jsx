@@ -520,7 +520,7 @@ export default function LiveCameraView({ user, creditBalance, onCheckCredits, on
 
   return (
     <div style={styles.container}>
-      {/* Top Header Row */}
+      {/* Top Header Row (ISSUE 3, 9) */}
       <div style={styles.headerRow}>
         <div>
           <h1 style={styles.title}>Live Camera Forensic Authenticity Feed</h1>
@@ -530,51 +530,54 @@ export default function LiveCameraView({ user, creditBalance, onCheckCredits, on
         </div>
         <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
           {!streamActive ? (
-            <button onClick={startCamera} style={styles.primaryActionBtn}>
+            <button type="button" onClick={startCamera} className="btn btn-primary" style={styles.primaryActionBtn}>
               📹 START LIVE WEBCAM
             </button>
           ) : (
             <>
               {result && (
-                <button onClick={handleNewScan} style={styles.newScanBtn}>
+                <button type="button" onClick={handleNewScan} className="btn btn-secondary" style={styles.newScanBtn}>
                   🔄 NEW SCAN
                 </button>
               )}
 
-              {/* Direct Instant Snap Button */}
+              {/* Direct Instant Snap Button (ISSUE 3, 9) */}
               <button
+                type="button"
                 onClick={() => triggerInstantCapture('📸 Manual Snapshot Captured')}
                 disabled={analyzing || countdown !== null}
+                className="btn btn-primary"
                 style={styles.snapBtn}
                 title="Capture instant frame snapshot"
+                aria-label="Capture instant frame snapshot"
               >
                 ⚡ SNAP & SCAN
               </button>
 
               {/* 3-Second Timer Snap */}
               <button
+                type="button"
                 onClick={startManualTimerSnap}
                 disabled={analyzing || countdown !== null}
+                className="btn btn-secondary"
                 style={styles.timerBtn}
                 title="Start 3-second countdown snapshot"
+                aria-label="Start 3-second countdown snapshot"
               >
                 ⏱️ 3S TIMER SNAP
               </button>
 
               {/* Continuous Scan Button */}
               <button
+                type="button"
                 onClick={toggleContinuous}
-                style={{
-                  ...styles.continuousBtn,
-                  backgroundColor: continuous ? '#ef4444' : 'rgba(16, 185, 129, 0.2)',
-                  borderColor: continuous ? '#ef4444' : '#10b981',
-                  color: continuous ? '#ffffff' : '#34d399'
-                }}
+                className={continuous ? "btn btn-danger" : "btn btn-secondary"}
+                style={styles.continuousBtn}
               >
                 {continuous ? '⏹️ STOP CONTINUOUS' : '⚡ CONTINUOUS SCAN'}
               </button>
 
-              <button onClick={stopCamera} style={styles.stopBtn}>
+              <button type="button" onClick={stopCamera} className="btn btn-ghost" style={styles.stopBtn}>
                 STOP CAMERA
               </button>
             </>
@@ -584,7 +587,7 @@ export default function LiveCameraView({ user, creditBalance, onCheckCredits, on
 
       {cameraError && <div style={styles.errorAlert}>{cameraError}</div>}
 
-      {/* 2-Step Gesture Guide Bar */}
+      {/* 2-Step Gesture Guide Bar & Voice Hint (ISSUE 6, 12) */}
       {streamActive && !result && (
         <div style={{
           ...styles.gestureGuideBar,
@@ -601,8 +604,8 @@ export default function LiveCameraView({ user, creditBalance, onCheckCredits, on
           }}>
             <span style={{ fontSize: '18px' }}>🖐️</span>
             <div>
-              <div style={{ fontSize: '11px', fontWeight: 800 }}>STEP 1: OPEN HAND</div>
-              <div style={{ fontSize: '10px', color: isReady ? '#86efac' : '#94a3b8' }}>
+              <div style={{ fontSize: 'var(--text-xs)', fontWeight: 800 }}>STEP 1: OPEN HAND</div>
+              <div style={{ fontSize: 'var(--text-xs)', color: isReady ? '#86efac' : '#94a3b8' }}>
                 {isReady ? '✓ READY & ARMED!' : 'Show open palm to get ready'}
               </div>
             </div>
@@ -619,16 +622,16 @@ export default function LiveCameraView({ user, creditBalance, onCheckCredits, on
           }}>
             <span style={{ fontSize: '18px' }}>✊</span>
             <div>
-              <div style={{ fontSize: '11px', fontWeight: 800 }}>STEP 2: CLOSE HAND / FIST</div>
-              <div style={{ fontSize: '10px', color: isReady ? '#7dd3fc' : '#64748b' }}>
+              <div style={{ fontSize: 'var(--text-xs)', fontWeight: 800 }}>STEP 2: CLOSE HAND / FIST</div>
+              <div style={{ fontSize: 'var(--text-xs)', color: isReady ? '#7dd3fc' : '#64748b' }}>
                 {isReady ? 'Close hand now to start 3s timer!' : 'Triggers 3-second capture timer'}
               </div>
             </div>
           </div>
 
-          {/* Voice Prompt Badge */}
-          <div style={{ fontSize: '11px', color: '#c084fc', display: 'flex', alignItems: 'center', gap: '4px', marginLeft: 'auto' }}>
-            <span>🎙️</span> Or say: <em>"Mitra capture photo"</em>
+          {/* Voice Prompt Badge (ISSUE 12) */}
+          <div className="voice-command-hint" style={styles.voiceCommandHint}>
+            <span aria-hidden="true">🎙️</span> Or say: <em>"Mitra capture photo"</em>
           </div>
         </div>
       )}
@@ -706,7 +709,7 @@ export default function LiveCameraView({ user, creditBalance, onCheckCredits, on
                   <span style={styles.liveDot} /> LIVE SENSOR STREAM (720P)
                 </div>
 
-                {/* Status Badge */}
+                {/* Status Badge (ISSUE 4) */}
                 {!result && (
                   <div style={{
                     ...styles.armedBadge,
@@ -716,9 +719,9 @@ export default function LiveCameraView({ user, creditBalance, onCheckCredits, on
                     boxShadow: isReady ? '0 0 16px rgba(34, 197, 94, 0.7)' : 'none'
                   }}>
                     {isReady ? (
-                      <span>🖐️ <strong>CAMERA READY!</strong> Close hand ✊ into fist to snap in 3s!</span>
+                      <span style={{ fontSize: 'var(--text-sm)' }}>🖐️ <strong>CAMERA READY!</strong> Close hand ✊ into fist to snap in 3s!</span>
                     ) : (
-                      <span>🖐️ Show Open Hand to get ready</span>
+                      <span style={{ fontSize: 'var(--text-sm)' }}>🖐️ Show Open Hand to get ready</span>
                     )}
                   </div>
                 )}
@@ -744,19 +747,19 @@ export default function LiveCameraView({ user, creditBalance, onCheckCredits, on
           )}
         </div>
 
-        {/* Right Side: Live Forensic Analysis Telemetry */}
+        {/* Right Side: Live Forensic Analysis Telemetry (ISSUE 5, 7) */}
         <div style={styles.telemetryPanel}>
           <div style={styles.telemetryHeader}>
-            <span style={{ fontSize: '13px', fontWeight: 800, color: '#38bdf8', letterSpacing: '0.8px' }}>
-              REAL-TIME FORENSIC TELEMETRY
+            <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--accent)', letterSpacing: '0.3px' }}>
+              Real-Time Forensic Telemetry
             </span>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               {result && (
-                <button onClick={handleNewScan} style={styles.miniNewScanBtn}>
+                <button type="button" onClick={handleNewScan} className="btn btn-secondary" style={styles.miniNewScanBtn}>
                   🔄 NEW SCAN
                 </button>
               )}
-              <span style={{ fontSize: '11px', color: '#64748b', fontWeight: 700 }}>
+              <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-subtle)', fontWeight: 700 }}>
                 {result ? `${result.processing_time_ms}ms • VERIFIED` : 'READY TO SCAN'}
               </span>
             </div>
@@ -778,7 +781,7 @@ export default function LiveCameraView({ user, creditBalance, onCheckCredits, on
                   color: isReal ? '#4ade80' : '#f87171',
                   backgroundColor: isReal ? 'rgba(34, 197, 94, 0.2)' : 'rgba(239, 68, 68, 0.2)',
                   padding: '3px 10px',
-                  borderRadius: '6px',
+                  borderRadius: 'var(--radius-sm)',
                   marginBottom: '6px'
                 }}>
                   {isReal ? '✓ VERIFIED REAL CAMERA FEED' : '⚠️ AI-GENERATED / DEEPFAKE FLAGGED'}
@@ -786,13 +789,13 @@ export default function LiveCameraView({ user, creditBalance, onCheckCredits, on
                 <div style={{ fontSize: '28px', fontWeight: 900, color: '#ffffff', margin: '4px 0', letterSpacing: '-0.5px' }}>
                   {result.verdict}
                 </div>
-                <div style={{ fontSize: '12.5px', color: '#cbd5e1', lineHeight: '1.4' }}>
+                <div style={{ fontSize: 'var(--text-sm)', color: '#cbd5e1', lineHeight: '1.4' }}>
                   {result.summary}
                 </div>
 
                 {/* Captured Frame Thumbnail Preview */}
                 {capturedPreview && (
-                  <div style={{ marginTop: '14px', borderRadius: '8px', overflow: 'hidden', border: '1px solid rgba(56, 189, 248, 0.3)', position: 'relative' }}>
+                  <div style={{ marginTop: '14px', borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid rgba(56, 189, 248, 0.3)', position: 'relative' }}>
                     <img
                       src={capturedPreview}
                       alt="Captured Exhibit"
@@ -803,26 +806,26 @@ export default function LiveCameraView({ user, creditBalance, onCheckCredits, on
                       bottom: '6px',
                       left: '8px',
                       fontSize: '10px',
-                      fontFamily: 'monospace',
-                      color: '#38bdf8',
+                      fontFamily: 'var(--font-mono)',
+                      color: 'var(--accent)',
                       backgroundColor: 'rgba(8, 14, 30, 0.85)',
                       padding: '2px 6px',
-                      borderRadius: '4px'
+                      borderRadius: 'var(--radius-sm)'
                     }}>
                       EXHIBIT FRAME: {result.filename || 'live_camera_capture.jpg'}
                     </div>
                   </div>
                 )}
 
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '14px', fontSize: '12.5px', fontWeight: 800 }}>
-                  <span style={{ color: '#38bdf8', backgroundColor: 'rgba(56, 189, 248, 0.15)', padding: '4px 8px', borderRadius: '6px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '14px', fontSize: 'var(--text-xs)', fontWeight: 800 }}>
+                  <span style={{ color: 'var(--accent)', backgroundColor: 'rgba(56, 189, 248, 0.15)', padding: '4px 8px', borderRadius: 'var(--radius-sm)' }}>
                     Confidence: {result.confidence}%
                   </span>
                   <span style={{
-                    color: isReal ? '#4ade80' : '#f87171',
+                    color: isReal ? 'var(--success)' : 'var(--danger)',
                     backgroundColor: isReal ? 'rgba(34, 197, 94, 0.15)' : 'rgba(239, 68, 68, 0.15)',
                     padding: '4px 8px',
-                    borderRadius: '6px'
+                    borderRadius: 'var(--radius-sm)'
                   }}>
                     {isReal ? `${result.authenticity_score}% Authenticity` : `${result.manipulation_probability}% AI Probability`}
                   </span>
@@ -832,27 +835,27 @@ export default function LiveCameraView({ user, creditBalance, onCheckCredits, on
               {/* Signals Breakdown */}
               {result.signals && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '16px' }}>
-                  <div style={{ fontSize: '11px', fontWeight: 800, color: '#94a3b8', letterSpacing: '0.5px' }}>
+                  <div style={{ fontSize: 'var(--text-xs)', fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '0.5px' }}>
                     BIOMETRIC & SENSOR SIGNALS:
                   </div>
                   {Object.entries(result.signals).map(([key, sig]) => (
                     <div key={key} style={styles.signalMiniCard}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '3px' }}>
-                        <span style={{ fontSize: '11.5px', fontWeight: 800, color: '#f8fafc' }}>
+                        <span style={{ fontSize: 'var(--text-sm)', fontWeight: 800, color: 'var(--text-primary)' }}>
                           {sig.label || key}
                         </span>
                         <span style={{
                           fontSize: '10px',
                           fontWeight: 900,
                           padding: '1px 6px',
-                          borderRadius: '4px',
+                          borderRadius: 'var(--radius-sm)',
                           backgroundColor: sig.score >= 0.70 ? 'rgba(239, 68, 68, 0.2)' : 'rgba(34, 197, 94, 0.2)',
-                          color: sig.score >= 0.70 ? '#f87171' : '#4ade80'
+                          color: sig.score >= 0.70 ? 'var(--danger)' : 'var(--success)'
                         }}>
                           {sig.score >= 0.70 ? 'FLAGGED' : 'PASSED'}
                         </span>
                       </div>
-                      <div style={{ fontSize: '11px', color: '#94a3b8', lineHeight: '1.3' }}>
+                      <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)', lineHeight: '1.3' }}>
                         {sig.detail}
                       </div>
                     </div>
@@ -861,56 +864,39 @@ export default function LiveCameraView({ user, creditBalance, onCheckCredits, on
               )}
             </div>
           ) : (
+            /* Standby Telemetry Matrix (ISSUE 7: Replaces duplicate gesture instructions) */
             <div style={styles.emptyTelemetry}>
-              <div style={{ fontSize: '38px', marginBottom: '12px' }}>📷</div>
-              <div style={{ fontSize: '15px', fontWeight: 800, color: '#ffffff', marginBottom: '6px' }}>
-                Live Camera Standby & Ready
+              <div style={{ fontSize: '36px', marginBottom: '10px' }}>📡</div>
+              <div style={{ fontSize: 'var(--text-base)', fontWeight: 800, color: 'var(--text-primary)', marginBottom: '4px' }}>
+                Forensic Sensor Matrix Online
               </div>
-              <div style={{ fontSize: '12.5px', color: '#94a3b8', maxWidth: '320px', margin: '0 auto 18px', lineHeight: 1.5 }}>
-                2-Step Hand Gesture Controls:
+              <div style={{ fontSize: 'var(--text-sm)', color: 'var(--text-muted)', maxWidth: '320px', margin: '0 auto 16px', lineHeight: 1.5 }}>
+                Ready to decompose incoming optical sensor frames across 6 forensic engines:
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '340px', margin: '0 auto', textAlign: 'left' }}>
-                <div style={{
-                  ...styles.instructionPill,
-                  borderColor: isReady ? '#22c55e' : 'rgba(255, 255, 255, 0.06)'
-                }}>
-                  <span style={{ fontSize: '22px' }}>🖐️</span>
-                  <div>
-                    <strong style={{ color: '#ffffff', display: 'block', fontSize: '12px' }}>
-                      Step 1: Show Open Hand
-                    </strong>
-                    <span style={{ fontSize: '11px', color: isReady ? '#86efac' : '#94a3b8' }}>
-                      Hold an open palm in front of the camera. The camera will chime and get <strong>READY / ARMED</strong>.
-                    </span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxWidth: '340px', margin: '0 auto', textAlign: 'left' }}>
+                <div style={styles.telemetryStatusItem}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
+                    <span style={{ fontSize: 'var(--text-sm)', fontWeight: 700, color: 'var(--text-primary)' }}>Optical Physics & Transducer</span>
+                    <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--success)', backgroundColor: 'rgba(52, 211, 153, 0.15)', padding: '2px 8px', borderRadius: 'var(--radius-pill)' }}>ARMED</span>
                   </div>
+                  <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>Calibrated sensor PRNU noise floor & Bayer grid</span>
                 </div>
 
-                <div style={{
-                  ...styles.instructionPill,
-                  borderColor: isReady ? '#38bdf8' : 'rgba(255, 255, 255, 0.06)'
-                }}>
-                  <span style={{ fontSize: '22px' }}>✊</span>
-                  <div>
-                    <strong style={{ color: '#ffffff', display: 'block', fontSize: '12px' }}>
-                      Step 2: Close Hand into Fist
-                    </strong>
-                    <span style={{ fontSize: '11px', color: isReady ? '#7dd3fc' : '#94a3b8' }}>
-                      Close your fingers into a fist to start the <strong>3-second countdown timer</strong> and snap photo!
-                    </span>
+                <div style={styles.telemetryStatusItem}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
+                    <span style={{ fontSize: 'var(--text-sm)', fontWeight: 700, color: 'var(--text-primary)' }}>Bio-Geometry & Skin Pore Mesh</span>
+                    <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--success)', backgroundColor: 'rgba(52, 211, 153, 0.15)', padding: '2px 8px', borderRadius: 'var(--radius-pill)' }}>ACTIVE</span>
                   </div>
+                  <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>Subdermal capillary pulse & micro-expression audit</span>
                 </div>
 
-                <div style={styles.instructionPill}>
-                  <span style={{ fontSize: '20px' }}>⚡</span>
-                  <div>
-                    <strong style={{ color: '#ffffff', display: 'block', fontSize: '12px' }}>
-                      Manual Click / Tap:
-                    </strong>
-                    <span style={{ fontSize: '11px', color: '#94a3b8' }}>
-                      Click <strong>"⚡ SNAP & SCAN"</strong> or tap directly on the video viewport anytime.
-                    </span>
+                <div style={styles.telemetryStatusItem}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2px' }}>
+                    <span style={{ fontSize: 'var(--text-sm)', fontWeight: 700, color: 'var(--text-primary)' }}>Hardware Acceleration</span>
+                    <span style={{ fontSize: 'var(--text-xs)', fontWeight: 700, color: 'var(--accent)', backgroundColor: 'rgba(0, 217, 255, 0.15)', padding: '2px 8px', borderRadius: 'var(--radius-pill)' }}>720P / 60FPS</span>
                   </div>
+                  <span style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)' }}>GPU WebGL/WebAudio real-time pipeline verified</span>
                 </div>
               </div>
             </div>
@@ -966,95 +952,70 @@ const styles = {
     alignItems: 'center',
     gap: '10px',
     padding: '6px 12px',
-    borderRadius: '8px',
+    borderRadius: 'var(--radius-md)',
     border: '1px solid',
     transition: 'all 0.25s ease'
   },
   primaryActionBtn: {
-    backgroundColor: '#0284c7',
-    border: 'none',
-    color: '#ffffff',
     padding: '10px 18px',
-    borderRadius: '8px',
-    fontSize: '12px',
+    borderRadius: 'var(--radius-md)',
+    fontSize: 'var(--text-xs)',
     fontWeight: '700',
     cursor: 'pointer'
   },
   newScanBtn: {
-    backgroundColor: '#3b82f6',
-    border: 'none',
-    color: '#ffffff',
     padding: '10px 16px',
-    borderRadius: '8px',
-    fontSize: '12.5px',
-    fontWeight: '800',
-    cursor: 'pointer',
-    boxShadow: '0 0 15px rgba(59, 130, 246, 0.4)',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px'
+    borderRadius: 'var(--radius-md)',
+    fontSize: 'var(--text-xs)',
+    fontWeight: '700',
+    cursor: 'pointer'
   },
   miniNewScanBtn: {
-    backgroundColor: 'rgba(56, 189, 248, 0.15)',
-    border: '1px solid #38bdf8',
-    color: '#38bdf8',
     padding: '4px 10px',
-    borderRadius: '6px',
-    fontSize: '11px',
-    fontWeight: 800,
+    borderRadius: 'var(--radius-sm)',
+    fontSize: 'var(--text-xs)',
+    fontWeight: '700',
     cursor: 'pointer'
   },
   snapBtn: {
-    backgroundColor: '#0284c7',
-    border: 'none',
-    color: '#ffffff',
     padding: '10px 18px',
-    borderRadius: '8px',
-    fontSize: '12.5px',
-    fontWeight: '800',
+    borderRadius: 'var(--radius-md)',
+    fontSize: 'var(--text-xs)',
+    fontWeight: '700',
     cursor: 'pointer',
-    boxShadow: '0 0 20px rgba(2, 132, 199, 0.5)',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px'
+    minHeight: '40px'
   },
   timerBtn: {
-    backgroundColor: 'rgba(168, 85, 247, 0.2)',
-    border: '1px solid #a855f7',
-    color: '#d8b4fe',
     padding: '10px 16px',
-    borderRadius: '8px',
-    fontSize: '12px',
-    fontWeight: '800',
+    borderRadius: 'var(--radius-md)',
+    fontSize: 'var(--text-xs)',
+    fontWeight: '700',
     cursor: 'pointer',
-    boxShadow: '0 0 12px rgba(168, 85, 247, 0.3)'
+    minHeight: '40px'
   },
   continuousBtn: {
-    border: '1px solid',
     padding: '10px 16px',
-    borderRadius: '8px',
-    fontSize: '12px',
+    borderRadius: 'var(--radius-md)',
+    fontSize: 'var(--text-xs)',
     fontWeight: '700',
     cursor: 'pointer',
-    transition: 'all 0.2s ease'
+    minHeight: '40px'
   },
   stopBtn: {
-    backgroundColor: '#1e293b',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
-    color: '#94a3b8',
     padding: '10px 14px',
-    borderRadius: '8px',
-    fontSize: '12px',
+    borderRadius: 'var(--radius-md)',
+    fontSize: 'var(--text-xs)',
     fontWeight: '700',
-    cursor: 'pointer'
+    cursor: 'pointer',
+    minHeight: '40px'
   },
   errorAlert: {
     backgroundColor: 'rgba(239, 68, 68, 0.15)',
     border: '1px solid rgba(239, 68, 68, 0.3)',
-    color: '#f87171',
+    color: 'var(--danger)',
     padding: '12px 16px',
-    borderRadius: '8px',
-    fontSize: '13px',
+    borderRadius: 'var(--radius-md)',
+    fontSize: 'var(--text-sm)',
     marginBottom: '16px'
   },
   feedLayout: {
@@ -1222,9 +1183,9 @@ const styles = {
     animation: 'scanAnimation 1.5s infinite linear'
   },
   telemetryPanel: {
-    backgroundColor: '#0e131d',
-    border: '1px solid rgba(255, 255, 255, 0.07)',
-    borderRadius: '16px',
+    backgroundColor: 'var(--surface-2)',
+    border: '1px solid var(--border)',
+    borderRadius: 'var(--radius-xl)',
     padding: '20px',
     minHeight: '480px'
   },
@@ -1233,7 +1194,7 @@ const styles = {
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingBottom: '12px',
-    borderBottom: '1px solid rgba(255, 255, 255, 0.06)'
+    borderBottom: '1px solid var(--border)'
   },
   telemetryBody: {
     marginTop: '16px'
@@ -1241,28 +1202,35 @@ const styles = {
   emptyTelemetry: {
     padding: '30px 16px',
     textAlign: 'center',
-    color: '#94a3b8',
-    fontSize: '13px'
+    color: 'var(--text-muted)',
+    fontSize: 'var(--text-sm)'
   },
-  instructionPill: {
+  telemetryStatusItem: {
     display: 'flex',
-    alignItems: 'flex-start',
-    gap: '12px',
-    backgroundColor: '#131926',
-    border: '1px solid rgba(255, 255, 255, 0.06)',
-    borderRadius: '10px',
+    flexDirection: 'column',
+    backgroundColor: 'var(--surface-3)',
+    border: '1px solid var(--border)',
+    borderRadius: 'var(--radius-md)',
     padding: '10px 14px',
     transition: 'all 0.25s ease'
   },
   verdictCard: {
     border: '1px solid',
-    borderRadius: '12px',
+    borderRadius: 'var(--radius-lg)',
     padding: '16px'
   },
   signalMiniCard: {
-    backgroundColor: '#131926',
-    border: '1px solid rgba(255, 255, 255, 0.04)',
-    borderRadius: '8px',
+    backgroundColor: 'var(--surface-3)',
+    border: '1px solid var(--border)',
+    borderRadius: 'var(--radius-sm)',
     padding: '8px 12px'
+  },
+  voiceCommandHint: {
+    fontSize: 'var(--text-sm)',
+    color: '#d8b4fe',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px',
+    marginLeft: 'auto'
   }
 }
