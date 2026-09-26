@@ -18,6 +18,13 @@ function formatTimeAgo(dateStr) {
   return date.toLocaleDateString()
 }
 
+// Helper to evaluate if a verdict is REAL / AUTHENTIC
+function isRealVerdict(verdict, authScore) {
+  if (!verdict) return (authScore || 0) >= 50
+  const v = String(verdict).trim().toUpperCase()
+  return v === 'REAL' || v === 'AUTHENTIC' || v.includes('REAL') || v.includes('AUTHENTIC') || (authScore || 0) >= 50
+}
+
 // =============================================================================
 // 1. RECENT FORENSIC ANALYSES VIEW
 // =============================================================================
@@ -76,10 +83,10 @@ export function RecentAnalysesView() {
     const matchesSearch = i.filename.toLowerCase().includes(search.toLowerCase()) ||
       (i.generator_attribution && i.generator_attribution.toLowerCase().includes(search.toLowerCase()))
     if (!matchesSearch) return false
-    if (filter === 'images') return i.media_type === 'image'
+    if (filter === 'images') return i.media_type === 'image' || i.media_type === 'live_camera'
     if (filter === 'videos') return i.media_type === 'video'
-    if (filter === 'real') return i.verdict === 'REAL'
-    if (filter === 'ai') return i.verdict === 'AI-GENERATED'
+    if (filter === 'real') return isRealVerdict(i.verdict, i.authenticity_score)
+    if (filter === 'ai') return !isRealVerdict(i.verdict, i.authenticity_score)
     return true
   })
 
@@ -144,7 +151,7 @@ export function RecentAnalysesView() {
       ) : (
         <div style={styles.scanList}>
           {filtered.map((item) => {
-            const isReal = item.verdict === 'REAL'
+            const isReal = isRealVerdict(item.verdict, item.authenticity_score)
             return (
               <div
                 key={item.id}
@@ -162,7 +169,7 @@ export function RecentAnalysesView() {
                       <span>•</span>
                       <span>{formatTimeAgo(item.created_at)}</span>
                       <span>•</span>
-                      <span style={{ color: '#38bdf8' }}>{item.generator_attribution || 'Optical Hardware'}</span>
+                      <span style={{ color: '#38bdf8' }}>{item.generator_attribution || (isReal ? 'Authentic Optical Hardware' : 'Generative AI Engine')}</span>
                     </div>
                   </div>
                 </div>
@@ -170,7 +177,7 @@ export function RecentAnalysesView() {
                 <div style={styles.cardRight}>
                   <div style={{ textAlign: 'right' }}>
                     <div style={isReal ? styles.pillReal : styles.pillAi}>
-                      {item.verdict}
+                      {isReal ? 'REAL' : item.verdict}
                     </div>
                     <div style={styles.score}>
                       {isReal ? `${item.authenticity_score}% Authenticity` : `${item.fake_probability}% AI Probability`}
@@ -196,7 +203,7 @@ export function RecentAnalysesView() {
 
 // Modal component for viewing scan details
 function ScanDetailModal({ scan, onClose }) {
-  const isReal = scan.verdict === 'REAL'
+  const isReal = isRealVerdict(scan.verdict, scan.authenticity_score)
   const details = scan.details || {}
   const signals = details.signals || {}
 
@@ -221,15 +228,15 @@ function ScanDetailModal({ scan, onClose }) {
             borderColor: isReal ? '#22c55e' : '#ef4444'
           }}>
             <div style={{ fontSize: '24px', fontWeight: 900, color: isReal ? '#4ade80' : '#f87171' }}>
-              VERDICT: {scan.verdict}
+              VERDICT: {isReal ? 'REAL' : scan.verdict}
             </div>
             <div style={{ fontSize: '13px', color: '#cbd5e1', marginTop: '6px' }}>
-              {scan.summary}
+              {scan.summary || (isReal ? 'Evidence supports authenticity. Forensic indicators are consistent with authentic camera hardware capture without significant synthetic anomalies.' : 'AI-generated synthetic media detected.')}
             </div>
             <div style={{ display: 'flex', gap: '20px', marginTop: '14px', fontSize: '12px', fontWeight: 700 }}>
               <span style={{ color: '#38bdf8' }}>Confidence: {scan.confidence}%</span>
-              <span style={{ color: '#a78bfa' }}>Attribution: {scan.generator_attribution}</span>
-              <span style={{ color: '#94a3b8' }}>Type: {scan.media_type.toUpperCase()}</span>
+              <span style={{ color: '#a78bfa' }}>Attribution: {scan.generator_attribution || (isReal ? 'Authentic Optical Hardware' : 'Generative AI Engine')}</span>
+              <span style={{ color: '#94a3b8' }}>Type: {(scan.media_type || 'image').toUpperCase()}</span>
             </div>
           </div>
 
@@ -556,7 +563,7 @@ export function ForensicReportsView({ onCheckCredits, onCreditsUpdated, user }) 
           {/* Compact Report Row List (ISSUE 3) */}
           <div style={styles.reportList}>
             {paginatedReports.map((rep) => {
-              const isReal = rep.verdict === 'REAL'
+              const isReal = isRealVerdict(rep.verdict, rep.authenticity_score)
               return (
                 <div key={rep.id} style={styles.reportCard}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -564,7 +571,7 @@ export function ForensicReportsView({ onCheckCredits, onCreditsUpdated, user }) 
                     <div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <span style={styles.dossierId}>{rep.dossier_id}</span>
-                        <span style={isReal ? styles.pillRealSmall : styles.pillAiSmall}>{rep.verdict}</span>
+                        <span style={isReal ? styles.pillRealSmall : styles.pillAiSmall}>{isReal ? 'REAL' : rep.verdict}</span>
                       </div>
                       <div style={styles.reportName}>{rep.filename}</div>
                     </div>
@@ -641,7 +648,9 @@ export function ForensicReportsView({ onCheckCredits, onCreditsUpdated, user }) 
         </>
       )}
 
-      {selectedReport && (
+      {selectedReport && (() => {
+        const isReal = isRealVerdict(selectedReport.verdict, selectedReport.authenticity_score)
+        return (
         <div style={styles.modalOverlay} onClick={() => setSelectedReport(null)}>
           <div
             id="forensic-certificate-to-print"
@@ -718,10 +727,10 @@ export function ForensicReportsView({ onCheckCredits, onCreditsUpdated, user }) 
                   {/* Top-Left Verified / AI Badge */}
                   <div style={{
                     ...styles.certImageOverlayBadge,
-                    backgroundColor: selectedReport.verdict === 'REAL' ? 'rgba(16, 185, 129, 0.9)' : 'rgba(239, 68, 68, 0.9)',
-                    boxShadow: selectedReport.verdict === 'REAL' ? '0 0 14px rgba(16, 185, 129, 0.6)' : '0 0 14px rgba(239, 68, 68, 0.6)'
+                    backgroundColor: isReal ? 'rgba(16, 185, 129, 0.9)' : 'rgba(239, 68, 68, 0.9)',
+                    boxShadow: isReal ? '0 0 14px rgba(16, 185, 129, 0.6)' : '0 0 14px rgba(239, 68, 68, 0.6)'
                   }}>
-                    <span>{selectedReport.verdict === 'REAL' ? '✓ VERIFIED MEDIA' : '⚠️ AI / SYNTHETIC DETECTED'}</span>
+                    <span>{isReal ? '✓ VERIFIED MEDIA' : '⚠️ AI / SYNTHETIC DETECTED'}</span>
                   </div>
 
                   {/* Top-Right Expand Button */}
@@ -769,9 +778,9 @@ export function ForensicReportsView({ onCheckCredits, onCreditsUpdated, user }) 
                 {/* 1. Official Forensic Verdict Card */}
                 <div style={{
                   ...styles.certVerdictCardCompact,
-                  backgroundColor: selectedReport.verdict === 'REAL' ? 'rgba(16, 185, 129, 0.08)' : 'rgba(239, 68, 68, 0.08)',
-                  borderColor: selectedReport.verdict === 'REAL' ? '#10b981' : '#ef4444',
-                  boxShadow: selectedReport.verdict === 'REAL' ? '0 0 20px rgba(16, 185, 129, 0.15)' : '0 0 20px rgba(239, 68, 68, 0.15)'
+                  backgroundColor: isReal ? 'rgba(16, 185, 129, 0.08)' : 'rgba(239, 68, 68, 0.08)',
+                  borderColor: isReal ? '#10b981' : '#ef4444',
+                  boxShadow: isReal ? '0 0 20px rgba(16, 185, 129, 0.15)' : '0 0 20px rgba(239, 68, 68, 0.15)'
                 }}>
                   <div style={{ fontSize: '9.5px', fontWeight: 800, letterSpacing: '1px', color: '#94a3b8', textTransform: 'uppercase' }}>
                     OFFICIAL FORENSIC VERDICT
@@ -781,28 +790,28 @@ export function ForensicReportsView({ onCheckCredits, onCreditsUpdated, user }) 
                       width: '32px',
                       height: '32px',
                       borderRadius: '50%',
-                      background: selectedReport.verdict === 'REAL' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
-                      border: `1.5px solid ${selectedReport.verdict === 'REAL' ? '#10b981' : '#ef4444'}`,
+                      background: isReal ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+                      border: `1.5px solid ${isReal ? '#10b981' : '#ef4444'}`,
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      color: selectedReport.verdict === 'REAL' ? '#10b981' : '#ef4444',
+                      color: isReal ? '#10b981' : '#ef4444',
                       fontSize: '16px',
                       fontWeight: 900
                     }}>
-                      {selectedReport.verdict === 'REAL' ? '✓' : '⚠️'}
+                      {isReal ? '✓' : '⚠️'}
                     </div>
                     <div style={{
                       fontSize: '28px',
                       fontWeight: 900,
-                      color: selectedReport.verdict === 'REAL' ? '#34d399' : '#f87171',
+                      color: isReal ? '#34d399' : '#f87171',
                       letterSpacing: '-0.5px'
                     }}>
-                      {selectedReport.verdict}
+                      {isReal ? 'AUTHENTIC' : (selectedReport.verdict || 'AI-GENERATED')}
                     </div>
                   </div>
                   <div style={{ fontSize: '9.5px', color: '#94a3b8', fontWeight: 700, letterSpacing: '0.5px' }}>
-                    {selectedReport.verdict === 'REAL' ? 'NO SIGNS OF MANIPULATION DETECTED' : 'SYNTHETIC GENERATION ARTIFACTS DETECTED'}
+                    {isReal ? 'NO SIGNS OF MANIPULATION DETECTED' : 'SYNTHETIC GENERATION ARTIFACTS DETECTED'}
                   </div>
                 </div>
 
@@ -812,14 +821,14 @@ export function ForensicReportsView({ onCheckCredits, onCreditsUpdated, user }) 
                   <div style={styles.certGaugeCardCompact}>
                     <div style={{ fontSize: '14px', marginBottom: '2px' }}>🧬</div>
                     <div style={{ fontSize: '8.5px', color: '#94a3b8', fontWeight: 800, letterSpacing: '0.6px' }}>AUTHENTICITY</div>
-                    <div style={{ fontSize: '17px', fontWeight: 900, color: selectedReport.verdict === 'REAL' ? '#34d399' : '#f87171', fontFamily: 'monospace', margin: '2px 0' }}>
+                    <div style={{ fontSize: '17px', fontWeight: 900, color: isReal ? '#34d399' : '#f87171', fontFamily: 'monospace', margin: '2px 0' }}>
                       {selectedReport.authenticity_score}%
                     </div>
                     <div style={styles.certMiniArcTrack}>
                       <div style={{
                         ...styles.certMiniArcFill,
                         width: `${Math.min(selectedReport.authenticity_score, 100)}%`,
-                        background: selectedReport.verdict === 'REAL' ? 'linear-gradient(90deg, #059669, #34d399)' : 'linear-gradient(90deg, #dc2626, #f87171)'
+                        background: isReal ? 'linear-gradient(90deg, #059669, #34d399)' : 'linear-gradient(90deg, #dc2626, #f87171)'
                       }}></div>
                     </div>
                   </div>
@@ -846,18 +855,18 @@ export function ForensicReportsView({ onCheckCredits, onCreditsUpdated, user }) 
                   <div style={{
                     fontSize: '10px',
                     fontWeight: 800,
-                    color: selectedReport.verdict === 'REAL' ? '#34d399' : '#f87171',
+                    color: isReal ? '#34d399' : '#f87171',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '5px',
                     marginBottom: '4px'
                   }}>
-                    <span>{selectedReport.verdict === 'REAL' ? '✓' : '⚠️'}</span>
+                    <span>{isReal ? '✓' : '⚠️'}</span>
                     <span>INTEGRITY VERIFICATION FINDINGS</span>
                   </div>
                   <div style={{ fontSize: '10.5px', color: '#cbd5e1', lineHeight: '1.4' }}>
-                    {selectedReport.summary || (selectedReport.verdict === 'REAL'
-                      ? 'Authentic camera image verified (99% confidence: real face, real camera image, real eyes, real hair, real skin, real cloth, real background, real brightness).'
+                    {selectedReport.summary || (isReal
+                      ? 'Evidence supports authenticity. Forensic indicators are consistent with authentic camera hardware capture without significant synthetic anomalies.'
                       : 'AI-generated synthetic image detected (99% confidence: generative diffusion artifacts, non-physical eye highlights, and synthetic skin pore distribution).')}
                   </div>
                 </div>
@@ -879,7 +888,7 @@ export function ForensicReportsView({ onCheckCredits, onCreditsUpdated, user }) 
                 <span style={{ fontSize: '13px' }}>👤</span>
                 <div>
                   <span style={{ color: '#64748b', fontSize: '9.5px', fontWeight: 700 }}>Attribution:</span>{' '}
-                  <strong style={{ color: '#ffffff', fontSize: '11px' }}>{selectedReport.generator_attribution || (selectedReport.verdict === 'REAL' ? 'Authentic Optical Hardware' : 'Generative AI Engine')}</strong>
+                  <strong style={{ color: '#ffffff', fontSize: '11px' }}>{selectedReport.generator_attribution || (isReal ? 'Authentic Optical Hardware' : 'Generative AI Engine')}</strong>
                 </div>
               </div>
               <div style={styles.certSpecItem}>
@@ -911,8 +920,8 @@ export function ForensicReportsView({ onCheckCredits, onCreditsUpdated, user }) 
                       <div style={styles.certTileDesc}>Authentic camera optical depth and natural skin pore distribution verified (1.0).</div>
                     </div>
                   </div>
-                  <span style={selectedReport.verdict === 'REAL' ? styles.certPassedBadge : styles.certFlaggedBadge}>
-                    {selectedReport.verdict === 'REAL' ? 'PASSED' : 'FLAGGED'}
+                  <span style={isReal ? styles.certPassedBadge : styles.certFlaggedBadge}>
+                    {isReal ? 'PASSED' : 'FLAGGED'}
                   </span>
                 </div>
 
@@ -925,8 +934,8 @@ export function ForensicReportsView({ onCheckCredits, onCreditsUpdated, user }) 
                       <div style={styles.certTileDesc}>Natural optical edge gradients across subject boundaries (20.5).</div>
                     </div>
                   </div>
-                  <span style={selectedReport.verdict === 'REAL' ? styles.certPassedBadge : styles.certFlaggedBadge}>
-                    {selectedReport.verdict === 'REAL' ? 'PASSED' : 'FLAGGED'}
+                  <span style={isReal ? styles.certPassedBadge : styles.certFlaggedBadge}>
+                    {isReal ? 'PASSED' : 'FLAGGED'}
                   </span>
                 </div>
 
@@ -939,8 +948,8 @@ export function ForensicReportsView({ onCheckCredits, onCreditsUpdated, user }) 
                       <div style={styles.certTileDesc}>Natural optical chrominance alignment (0.06) consistent with camera sensor optics.</div>
                     </div>
                   </div>
-                  <span style={selectedReport.verdict === 'REAL' ? styles.certPassedBadge : styles.certFlaggedBadge}>
-                    {selectedReport.verdict === 'REAL' ? 'PASSED' : 'FLAGGED'}
+                  <span style={isReal ? styles.certPassedBadge : styles.certFlaggedBadge}>
+                    {isReal ? 'PASSED' : 'FLAGGED'}
                   </span>
                 </div>
 
@@ -953,8 +962,8 @@ export function ForensicReportsView({ onCheckCredits, onCreditsUpdated, user }) 
                       <div style={styles.certTileDesc}>Authentic camera sensor CFA correlation (0.99) and physical sensor PRNU verified.</div>
                     </div>
                   </div>
-                  <span style={selectedReport.verdict === 'REAL' ? styles.certPassedBadge : styles.certFlaggedBadge}>
-                    {selectedReport.verdict === 'REAL' ? 'PASSED' : 'FLAGGED'}
+                  <span style={isReal ? styles.certPassedBadge : styles.certFlaggedBadge}>
+                    {isReal ? 'PASSED' : 'FLAGGED'}
                   </span>
                 </div>
 
@@ -967,8 +976,8 @@ export function ForensicReportsView({ onCheckCredits, onCreditsUpdated, user }) 
                       <div style={styles.certTileDesc}>Smooth 1/f power spectrum decay verified (0.11). No generative frequency spikes.</div>
                     </div>
                   </div>
-                  <span style={selectedReport.verdict === 'REAL' ? styles.certPassedBadge : styles.certFlaggedBadge}>
-                    {selectedReport.verdict === 'REAL' ? 'PASSED' : 'FLAGGED'}
+                  <span style={isReal ? styles.certPassedBadge : styles.certFlaggedBadge}>
+                    {isReal ? 'PASSED' : 'FLAGGED'}
                   </span>
                 </div>
 
@@ -981,8 +990,8 @@ export function ForensicReportsView({ onCheckCredits, onCreditsUpdated, user }) 
                       <div style={styles.certTileDesc}>Authentic biological skin texture & pore entropy verified (0.93).</div>
                     </div>
                   </div>
-                  <span style={selectedReport.verdict === 'REAL' ? styles.certPassedBadge : styles.certFlaggedBadge}>
-                    {selectedReport.verdict === 'REAL' ? 'PASSED' : 'FLAGGED'}
+                  <span style={isReal ? styles.certPassedBadge : styles.certFlaggedBadge}>
+                    {isReal ? 'PASSED' : 'FLAGGED'}
                   </span>
                 </div>
               </div>
@@ -1023,7 +1032,8 @@ export function ForensicReportsView({ onCheckCredits, onCreditsUpdated, user }) 
             </div>
           </div>
         </div>
-      )}
+        )
+      })()}
 
       {/* Credit Confirmation Modal for Report Print / PDF */}
       <CreditConfirmationModal

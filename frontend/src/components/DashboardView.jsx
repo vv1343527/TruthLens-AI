@@ -101,8 +101,8 @@ export default function DashboardView({ onNavigate, user, creditBalance, onOpenC
       <div style={styles.heroBanner}>
         <div style={styles.heroLeft}>
           <div style={styles.badgeRow}>
-            <span style={styles.livePill}>● ALL ENGINES OPERATIONAL</span>
-            <span style={styles.isoPill}>ISO/IEC 27037 CERTIFIED</span>
+            <span style={styles.livePill}>● All engines operational</span>
+            <span style={styles.isoPill}>ISO/IEC 27037 certified</span>
           </div>
           <h1 style={styles.heroTitle}>TruthLens AI Forensic Hub</h1>
           <p style={styles.heroDesc}>
@@ -225,7 +225,7 @@ const styles = {
   livePill: {
     fontSize: '12px',
     fontWeight: '700',
-    letterSpacing: '0.5px',
+    letterSpacing: '0.2px',
     color: 'var(--success)',
     background: 'rgba(52, 211, 153, 0.12)',
     border: '1px solid rgba(52, 211, 153, 0.3)',
@@ -235,7 +235,7 @@ const styles = {
   isoPill: {
     fontSize: '12px',
     fontWeight: '700',
-    letterSpacing: '0.5px',
+    letterSpacing: '0.2px',
     color: 'var(--accent)',
     background: 'rgba(0, 217, 255, 0.1)',
     border: '1px solid rgba(0, 217, 255, 0.3)',

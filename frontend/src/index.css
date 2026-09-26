@@ -9,6 +9,12 @@
   --text-secondary: #cbd5e1;
   --text-muted: #94a3b8;
   --text-subtle: #64748b;
+  --text-disabled: #475569;
+  --text-accent: #00d9ff;
+  --text-success: #34d399;
+  --text-warning: #fbbf24;
+  --text-danger: #f87171;
+  --text-on-accent: #041018;
 
   --accent: #00d9ff;
   --accent-hover: #22d3ee;
@@ -198,16 +204,16 @@ input:-webkit-autofill:active {
 /* 1. Primary Button */
 .btn-primary {
   background: var(--accent);
-  color: #041018;
-  border-color: var(--accent);
-  box-shadow: 0 0 12px rgba(0, 217, 255, 0.35);
+  color: var(--text-on-accent);
+  border: 1px solid var(--accent);
+  box-shadow: none;
 }
 
 .btn-primary:hover {
   background: var(--accent-hover);
   border-color: var(--accent-hover);
-  transform: translateY(-1px);
-  box-shadow: 0 0 18px rgba(0, 217, 255, 0.5);
+  filter: brightness(1.05);
+  box-shadow: 0 0 10px rgba(0, 217, 255, 0.25);
 }
 
 .btn-primary:active {
@@ -257,9 +263,21 @@ input:-webkit-autofill:active {
   height: 40px;
   padding: 0;
   border-radius: var(--radius-md);
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Logout Button Specialization (ISSUE 14) */
+.btn-icon:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-primary);
+  border-color: var(--border-accent);
+}
+
+/* Logout Button Specialization */
 .logout-button {
   color: var(--text-secondary);
   border-color: transparent;
@@ -282,12 +300,12 @@ input:-webkit-autofill:active {
   outline-offset: 2px;
 }
 
-/* Credit Control Group (ISSUE 3, 7) */
+/* Credit Control Group (ISSUE 8) */
 .credit-group {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 3px 4px 3px 8px;
+  gap: 10px;
+  padding: 3px 6px 3px 10px;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   background: rgba(255, 255, 255, 0.03);
@@ -339,6 +357,60 @@ input:-webkit-autofill:active {
 .credit-add:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+/* Sidebar Badges (ISSUE 10) */
+.nav-badge {
+  min-height: 22px;
+  padding: 2px 7px;
+  border-radius: var(--radius-pill);
+  background: rgba(148, 163, 184, 0.12);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.nav-badge.active {
+  color: var(--accent);
+  border-color: rgba(0, 217, 255, 0.4);
+  background: rgba(0, 217, 255, 0.12);
+}
+
+/* Standard Tab and Form Controls (ISSUE 9, 11) */
+[role="tab"][aria-selected="true"] {
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-weight: 700;
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+[role="tab"][aria-selected="false"] {
+  background: transparent;
+  border-color: transparent;
+  color: var(--text-secondary);
+}
+
+.form-field label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(2px);
+  z-index: 1000;
 }
 
 @media (max-width: 768px) {
@@ -581,29 +653,102 @@ input:-webkit-autofill:active {
   letter-spacing: -0.01em;
 }
 
-/* Compact Ambient Audio Header Control */
+/* Compact Ambient Audio Header Control (ISSUE 8) */
 .ambient-audio-control {
   min-height: 36px;
-  padding: 0 10px;
-  gap: 6px;
+  padding: 0 12px;
+  gap: 8px;
   font-size: 12px;
   font-weight: 600;
   color: var(--text-secondary);
   border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-md);
   background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
   transition: all 160ms ease;
+}
+
+.ambient-audio-control[aria-pressed="true"] {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: rgba(0, 217, 255, 0.08);
+}
+
+.ambient-audio-control[aria-pressed="false"] {
+  color: var(--text-secondary);
+  border-color: var(--border);
+  background: transparent;
 }
 
 .ambient-audio-control:hover {
   color: var(--accent);
-  border-color: rgba(0, 217, 255, 0.25);
-  background: rgba(0, 217, 255, 0.06);
+  border-color: var(--accent);
 }
 
 .ambient-audio-control:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+/* Mutation & Benchmark Evaluation Controls (ISSUE 7, 11, 12) */
+.mutation-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.mutation-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mutation-category {
+  margin-top: 14px;
+}
+
+.mutation-category-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.benchmark-card {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.benchmark-card.selected {
+  border: 2px solid #a855f7 !important;
+  background-color: rgba(168, 85, 247, 0.15) !important;
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.25);
+}
+
+.selection-indicator {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: #a855f7;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 /* Floating AI Assistant (ISSUE 6) */

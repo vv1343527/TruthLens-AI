@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 
 const ONE8_URL = 'https://one8.com/'
 const PUMA_URL = 'https://in.puma.com/in/en?utm_source=BING-SEA&utm_medium=BS&utm_campaign=BS_BING_SEA_IN_STAG_New_agency_1000067495857508873&msclkid=810e9312ef1a177f3e86f9b50d1590dc'
+const API_BASE = 'http://localhost:5000/api'
 
 const COMMERCIAL_SEQUENCE = [
   {
@@ -11,7 +12,7 @@ const COMMERCIAL_SEQUENCE = [
     brand: 'PUMA India',
     campaign: 'FOREVER FASTER · NITRO™ COLLECTION',
     url: PUMA_URL,
-    themeColor: '#00e5ff',
+    themeColor: '#00D9FF',
     accentColor: '#38bdf8',
     voiceoverLines: [
       'PUMA India presents the all-new Nitro Velocity running series.',
@@ -28,41 +29,41 @@ const COMMERCIAL_SEQUENCE = [
         subtitle: 'ENGINEERED FOR EXPLOSIVE ENERGY RETURN',
         imageSrc: '/assets/ads/puma_nitro.jpg',
         zoomEffect: 'scaleUp',
-        tagline: 'NITRO™ Nitrogen-Infused Foam · Ultra-Light Cushioning',
-        priceOffer: 'NEW ARRIVAL · FREE SHIPPING'
+        tagline: 'Nitrogen-infused foam with ultra-light cushioning',
+        priceOffer: 'New arrival • Free shipping across India'
       },
       {
         start: 8,
         end: 15,
         badge: '🔥 PUMA BIRTHDAY BASH',
-        title: 'EXTRA 25% OFF ON EVERYTHING',
-        subtitle: 'LIMITED TIME EVENT · 17 - 21 SEPTEMBER',
+        title: 'EXTRA 25% OFF EVERYTHING',
+        subtitle: 'LIMITED TIME FORENSIC SPONSOR EVENT',
         imageSrc: '/assets/ads/puma_bench.jpg',
         zoomEffect: 'panRight',
         tagline: 'Retro Palermo & Suede Classic Lifestyle Sneakers',
-        priceOffer: 'USE CODE: BDAY25 · READY YOUR CART'
+        priceOffer: 'Use Code: BDAY25 at checkout'
       },
       {
         start: 16,
         end: 23,
         badge: '🏁 WORLD CHAMPIONSHIP TRACTION',
         title: 'PUMAGRIP ALL-SURFACE',
-        subtitle: 'UNRIVALED ROAD & TRACK PERFORMANCE',
+        subtitle: 'MAXIMUM WET & DRY TRACTION',
         imageSrc: '/assets/ads/puma_nitro.jpg',
         zoomEffect: 'scaleDown',
-        tagline: 'Engineered for Maximum Wet & Dry Surface Grip',
-        priceOffer: 'MEN & WOMEN · SPEED EDITION'
+        tagline: 'Engineered for high-intensity training and road runs',
+        priceOffer: 'Men & Women • Speed Edition'
       },
       {
         start: 24,
         end: 30,
-        badge: '🐆 NEXT UP: ONE8 BY VIRAT KOHLI',
-        title: 'FOREVER FASTER',
+        badge: '🐆 FOREVER FASTER',
+        title: 'STEP INTO GREATNESS',
         subtitle: 'OFFICIAL PUMA INDIA FOOTWEAR STORE',
         imageSrc: '/assets/ads/puma_bench.jpg',
         zoomEffect: 'panLeft',
         tagline: 'Explore 5,000+ Performance Shoes & Athleisure',
-        priceOffer: 'VISIT IN.PUMA.COM NOW'
+        priceOffer: 'Official Store in.puma.com'
       }
     ]
   },
@@ -73,7 +74,7 @@ const COMMERCIAL_SEQUENCE = [
     brand: 'one8 by Virat Kohli',
     campaign: 'SEAM XVIII LUXURY ATHLETIC DROP',
     url: ONE8_URL,
-    themeColor: '#d97706',
+    themeColor: '#00D9FF',
     accentColor: '#fbbf24',
     voiceoverLines: [
       'Live now. Virat Kohli presents the exclusive one8 footwear collection.',
@@ -87,22 +88,22 @@ const COMMERCIAL_SEQUENCE = [
         end: 7,
         badge: '👑 VIRAT KOHLI SIGNATURE',
         title: 'LIVE NOW — SEAM XVIII',
-        subtitle: 'THE ICON IS BACK IN PURE WHITE',
+        subtitle: 'THE ICONIC PURE WHITE ATHLETIC DROP',
         imageSrc: '/assets/ads/one8_seam_xviii.jpg',
         zoomEffect: 'scaleUp',
-        tagline: 'Signature White Leather · Gold Metallic Inscriptions',
-        priceOffer: 'EXCLUSIVE ONLINE DROP'
+        tagline: 'Signature white leather with gold metallic inscriptions',
+        priceOffer: 'Exclusive online drop at one8.com'
       },
       {
         start: 8,
         end: 15,
         badge: '📦 COLLECTOR EDITION BOX',
         title: 'SIGNATURE GOLD BOX',
-        subtitle: 'LUXURY BURGUNDY UNBOXING EXPERIENCE',
+        subtitle: 'ROYAL CRIMSON UNBOXING EXPERIENCE',
         imageSrc: '/assets/ads/one8_seam_xviii.jpg',
         zoomEffect: 'panRight',
-        tagline: 'Housed in Royal Crimson Box with Golden Infinite Monogram',
-        priceOffer: 'FREE EXPRESS SHIPPING ACROSS INDIA'
+        tagline: 'Housed in custom royal box with infinite monogram',
+        priceOffer: 'Free express delivery nationwide'
       },
       {
         start: 16,
@@ -112,19 +113,19 @@ const COMMERCIAL_SEQUENCE = [
         subtitle: 'TESTED & ENDORSED BY VIRAT KOHLI',
         imageSrc: '/assets/ads/one8_seam_xviii.jpg',
         zoomEffect: 'scaleDown',
-        tagline: 'Ergonomic Heel Stabilizer · Ultra-Plush Cushion Foam',
-        priceOffer: 'PERFORMANCE APPAREL & GEAR'
+        tagline: 'Ergonomic heel stabilizer with ultra-plush cushion foam',
+        priceOffer: 'Performance apparel & footwear'
       },
       {
         start: 24,
         end: 30,
-        badge: '🎁 REWARD UNLOCKED · CLAIM CREDITS',
+        badge: '🎁 REWARD UNLOCKED',
         title: 'STEP INTO GREATNESS',
         subtitle: 'OFFICIAL ONE8.COM ONLINE STORE',
         imageSrc: '/assets/ads/one8_seam_xviii.jpg',
         zoomEffect: 'panLeft',
         tagline: 'Official Footwear, Apparel & Accessories',
-        priceOffer: 'SHOP ONE8.COM TODAY'
+        priceOffer: 'Claim your 2 Free Forensic Credits'
       }
     ]
   }
@@ -146,8 +147,8 @@ export default function WatchAdModal({ isOpen, onClose, user, onRewardClaimed })
   const lastSpokenSceneRef = useRef(-1)
 
   const elapsed = 30 - countdown
-  const canSkip = elapsed >= 20
-  const skipCountdown = Math.max(0, 20 - elapsed)
+  const canSkip = elapsed >= 10
+  const skipCountdown = Math.max(0, 10 - elapsed)
 
   const currentSceneIndex = activeAd.scenes.findIndex(s => elapsed >= s.start && elapsed <= s.end)
   const currentScene = activeAd.scenes[currentSceneIndex >= 0 ? currentSceneIndex : activeAd.scenes.length - 1]
@@ -267,7 +268,7 @@ export default function WatchAdModal({ isOpen, onClose, user, onRewardClaimed })
         }
       }
     } catch (e) {
-      console.log('Commercial audio initialized:', e)
+      console.log('Commercial audio initialization notice:', e)
     }
   }, [isOpen, isMuted, isPlaying, adStage, currentAdIndex])
 
@@ -293,10 +294,8 @@ export default function WatchAdModal({ isOpen, onClose, user, onRewardClaimed })
   // 30-Second Countdown timer for current ad
   useEffect(() => {
     let timer = null
-    if (isOpen && isPlaying) {
-      setAdStage('playing')
+    if (isOpen && isPlaying && adStage === 'playing') {
       setErrorMessage('')
-
       timer = setInterval(() => {
         setCountdown((prev) => {
           if (prev <= 1) {
@@ -311,7 +310,7 @@ export default function WatchAdModal({ isOpen, onClose, user, onRewardClaimed })
     return () => {
       if (timer) clearInterval(timer)
     }
-  }, [isOpen, isPlaying, currentAdIndex])
+  }, [isOpen, isPlaying, currentAdIndex, adStage])
 
   // Reset when opening modal or changing ad
   useEffect(() => {
@@ -321,6 +320,18 @@ export default function WatchAdModal({ isOpen, onClose, user, onRewardClaimed })
       lastSpokenSceneRef.current = -1
     }
   }, [isOpen, currentAdIndex])
+
+  // Handle Escape key to close when allowed
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!isOpen) return
+      if (e.key === 'Escape' && adStage !== 'playing') {
+        onClose()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen, adStage, onClose])
 
   // Handle completion or skip of current ad
   const handleCurrentAdComplete = () => {
@@ -347,7 +358,7 @@ export default function WatchAdModal({ isOpen, onClose, user, onRewardClaimed })
     if (window.speechSynthesis) window.speechSynthesis.cancel()
     try {
       const email = user?.email || 'admin@truthlens.com'
-      const res = await fetch('http://localhost:5000/api/ads/claim', {
+      const res = await fetch(`${API_BASE}/ads/claim`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
@@ -360,11 +371,11 @@ export default function WatchAdModal({ isOpen, onClose, user, onRewardClaimed })
           onRewardClaimed(data.new_balance)
         }
       } else {
-        setErrorMessage(data.error || 'Ad reward already claimed. Available again in 5 hours.')
+        setErrorMessage(data.error || 'Daily ad reward already claimed. Available again in 5 hours.')
         setAdStage('error')
       }
     } catch (e) {
-      setErrorMessage('Network error connecting to reward server.')
+      setErrorMessage('Network error connecting to reward server. Please try again.')
       setAdStage('error')
     } finally {
       setClaiming(false)
@@ -385,331 +396,392 @@ export default function WatchAdModal({ isOpen, onClose, user, onRewardClaimed })
   }
 
   return (
-    <div style={styles.overlay} onClick={adStage !== 'playing' ? onClose : undefined}>
+    <div
+      style={styles.overlay}
+      onClick={adStage !== 'playing' ? onClose : undefined}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="rewarded-ad-modal-title"
+    >
       <div style={styles.adCard} onClick={(e) => e.stopPropagation()}>
-        {/* Top Video Header */}
-        <div style={styles.topHeader}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={styles.liveRecordingDot} />
-            <span style={styles.sponsoredBadge}>
-              AD {activeAd.adNumber} OF {activeAd.totalAds} · {activeAd.brand.toUpperCase()} (30s)
-            </span>
-            <span style={styles.hdBadge}>1080p HD</span>
+        
+        {/* ========================================================================= */}
+        {/* 1. CLEAN MODERN HEADER */}
+        {/* ========================================================================= */}
+        <div style={styles.modalHeader}>
+          <div style={styles.headerLeft}>
+            <div style={styles.headerTitleRow}>
+              <span style={styles.sparkleIcon} aria-hidden="true">🎬</span>
+              <h2 id="rewarded-ad-modal-title" style={styles.headerTitle}>
+                Watch Ads & Earn Credits
+              </h2>
+            </div>
+            <p style={styles.headerSubtitle}>
+              Complete both sponsor commercials to unlock your reward
+            </p>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <button
-              onClick={() => handleOpenStore()}
-              style={styles.openRealStoreTopBtn}
-              title="Open real brand website in new tab"
-            >
-              🌐 Open Store ↗
-            </button>
+          <div style={styles.headerRight}>
+            {/* Persistent Floating Reward Badge */}
+            <div style={styles.persistentRewardBadge}>
+              <span aria-hidden="true">💎</span>
+              <span style={styles.persistentRewardText}>+2 Credits</span>
+            </div>
 
-            {adStage === 'playing' ? (
-              <div style={styles.timerBadge}>
-                ⏳ {countdown}s left
-              </div>
-            ) : (
-              <button onClick={onClose} style={styles.closeHeaderBtn}>
+            {adStage !== 'playing' ? (
+              <button
+                type="button"
+                onClick={onClose}
+                aria-label="Close rewarded ads dialog"
+                style={styles.closeBtn}
+                title="Close"
+              >
                 ✕
               </button>
+            ) : (
+              <div style={styles.adIndexBadge} aria-label={`Ad ${activeAd.adNumber} of ${activeAd.totalAds}`}>
+                Ad {activeAd.adNumber}/{activeAd.totalAds}
+              </div>
             )}
           </div>
         </div>
 
-        {/* 2-Ad Progress Indicator Tabs */}
-        <div style={styles.sequenceProgressRow}>
-          <div
-            style={{
-              ...styles.sequenceStep,
-              borderBottom: currentAdIndex === 0 ? `3px solid #00e5ff` : '3px solid transparent',
-              color: currentAdIndex === 0 ? '#00e5ff' : '#94a3b8',
-              backgroundColor: currentAdIndex === 0 ? 'rgba(0, 229, 255, 0.08)' : 'transparent'
-            }}
-          >
-            <span>▶ AD 1 (30s): PUMA INDIA</span>
-            {currentAdIndex > 0 && <span style={styles.checkDoneBadge}>✓ COMPLETED</span>}
+        {/* ========================================================================= */}
+        {/* 2. HORIZONTAL PROGRESS STEPPER */}
+        {/* ========================================================================= */}
+        <div style={styles.stepperContainer}>
+          {/* Step 1: Puma India */}
+          <div style={styles.stepItem}>
+            <div style={{
+              ...styles.stepIndicator,
+              backgroundColor: currentAdIndex > 0 || adStage === 'rewarded'
+                ? '#22C55E'
+                : currentAdIndex === 0 && adStage === 'playing'
+                  ? 'rgba(0, 217, 255, 0.15)'
+                  : '#131D31',
+              borderColor: currentAdIndex > 0 || adStage === 'rewarded'
+                ? '#22C55E'
+                : currentAdIndex === 0 && adStage === 'playing'
+                  ? '#00D9FF'
+                  : 'rgba(148, 163, 184, 0.25)',
+              color: currentAdIndex > 0 || adStage === 'rewarded'
+                ? '#041018'
+                : currentAdIndex === 0 && adStage === 'playing'
+                  ? '#00D9FF'
+                  : '#64748B',
+              boxShadow: currentAdIndex === 0 && adStage === 'playing'
+                ? '0 0 12px rgba(0, 217, 255, 0.35)'
+                : 'none'
+            }}>
+              {currentAdIndex > 0 || adStage === 'rewarded' ? '✓' : '1'}
+            </div>
+            <div style={styles.stepLabelCol}>
+              <span style={{
+                ...styles.stepTitle,
+                color: currentAdIndex === 0 && adStage === 'playing'
+                  ? '#F8FAFC'
+                  : currentAdIndex > 0 || adStage === 'rewarded'
+                    ? '#22C55E'
+                    : '#64748B'
+              }}>
+                Puma India
+              </span>
+              <span style={styles.stepStatus}>
+                {currentAdIndex > 0 || adStage === 'rewarded' ? 'Completed' : currentAdIndex === 0 && adStage === 'playing' ? 'Playing' : 'Up Next'}
+              </span>
+            </div>
           </div>
 
-          <div
-            style={{
-              ...styles.sequenceStep,
-              borderBottom: currentAdIndex === 1 ? `3px solid #fbbf24` : '3px solid transparent',
-              color: currentAdIndex === 1 ? '#fbbf24' : '#94a3b8',
-              backgroundColor: currentAdIndex === 1 ? 'rgba(251, 191, 36, 0.08)' : 'transparent'
-            }}
-          >
-            <span>▶ AD 2 (30s): ONE8 VIRAT KOHLI</span>
-            {adStage === 'rewarded' && <span style={styles.checkDoneBadge}>✓ COMPLETED</span>}
+          {/* Stepper Connecting Divider */}
+          <div style={{
+            ...styles.stepperDivider,
+            backgroundColor: currentAdIndex > 0 || adStage === 'rewarded' ? '#22C55E' : 'rgba(148, 163, 184, 0.2)'
+          }} />
+
+          {/* Step 2: One8 by Virat Kohli */}
+          <div style={styles.stepItem}>
+            <div style={{
+              ...styles.stepIndicator,
+              backgroundColor: adStage === 'rewarded'
+                ? '#22C55E'
+                : currentAdIndex === 1 && adStage === 'playing'
+                  ? 'rgba(0, 217, 255, 0.15)'
+                  : '#131D31',
+              borderColor: adStage === 'rewarded'
+                ? '#22C55E'
+                : currentAdIndex === 1 && adStage === 'playing'
+                  ? '#00D9FF'
+                  : 'rgba(148, 163, 184, 0.25)',
+              color: adStage === 'rewarded'
+                ? '#041018'
+                : currentAdIndex === 1 && adStage === 'playing'
+                  ? '#00D9FF'
+                  : '#64748B',
+              boxShadow: currentAdIndex === 1 && adStage === 'playing'
+                ? '0 0 12px rgba(0, 217, 255, 0.35)'
+                : 'none'
+            }}>
+              {adStage === 'rewarded' ? '✓' : '2'}
+            </div>
+            <div style={styles.stepLabelCol}>
+              <span style={{
+                ...styles.stepTitle,
+                color: currentAdIndex === 1 && adStage === 'playing'
+                  ? '#F8FAFC'
+                  : adStage === 'rewarded'
+                    ? '#22C55E'
+                    : '#64748B'
+              }}>
+                One8 by Virat Kohli
+              </span>
+              <span style={styles.stepStatus}>
+                {adStage === 'rewarded' ? 'Completed' : currentAdIndex === 1 && adStage === 'playing' ? 'Playing' : 'Final Step'}
+              </span>
+            </div>
           </div>
         </div>
 
-        {/* 30-Second Commercial Video Player Frame */}
+        {/* ========================================================================= */}
+        {/* 3. ACTIVE AD PLAYER VIEW */}
+        {/* ========================================================================= */}
         {adStage === 'playing' && (
-          <div style={styles.videoPlayerContainer}>
-            {/* Main Cinematic Video Display */}
-            <div
-              style={{
-                ...styles.videoScreen,
-                borderColor: activeAd.themeColor
-              }}
-              onClick={() => handleOpenStore()}
-              title="Click to visit official product store"
-            >
-              {/* Dynamic Camera Motion Video Asset */}
-              <div style={styles.videoMotionWrapper}>
+          <div style={styles.playerWrapper}>
+            {/* Cinematic Ad Creative Container */}
+            <div style={styles.creativeScreen}>
+              <div style={styles.motionImageWrapper}>
                 <img
                   src={currentScene.imageSrc}
                   alt={currentScene.title}
                   style={{
-                    ...styles.videoFrameImage,
+                    ...styles.adImage,
                     animation: `${currentScene.zoomEffect || 'scaleUp'} 8s ease-in-out infinite alternate`
                   }}
                 />
 
-                {/* Video Cinematic Vignette & Lighting Sweeps */}
+                {/* Dark Vignette Overlay for Crisp Readability */}
                 <div style={styles.cinematicVignette} />
-                <div style={{
-                  ...styles.lightSweepGlow,
-                  background: `radial-gradient(circle at 50% 40%, ${activeAd.themeColor}33 0%, rgba(0,0,0,0) 70%)`
-                }} />
 
-                {/* Top Video Header Bar (YouTube/TV style) */}
-                <div style={styles.videoTopOverlay}>
-                  <div style={styles.videoChannelPill}>
-                    <span style={styles.videoChannelDot} />
-                    <span>{activeAd.brand}</span>
-                    <span style={styles.adSequenceIndicator}>
-                      (Ad {activeAd.adNumber}/2)
-                    </span>
+                {/* Top Video Overlay: Sponsor Tag & Skip Button */}
+                <div style={styles.screenTopBar}>
+                  <div style={styles.brandTag}>
+                    <span style={styles.livePulseDot} aria-hidden="true" />
+                    <span style={styles.brandTagText}>{activeAd.brand}</span>
+                    <span style={styles.hdPill}>1080p HD</span>
                   </div>
 
-                  {/* 20-Second Skip Button (YouTube Style) */}
-                  <div style={styles.skipButtonArea}>
+                  {/* Skip Action Button */}
+                  <div>
                     {canSkip ? (
                       <button
+                        type="button"
                         onClick={handleSkipClicked}
-                        style={{
-                          ...styles.skipAdActiveBtn,
-                          backgroundColor: activeAd.themeColor,
-                          color: activeAd.id === 'one8' ? '#000000' : '#ffffff'
-                        }}
+                        style={styles.skipBtnActive}
+                        aria-label={currentAdIndex === 0 ? "Skip to Next Ad" : "Skip Ad and Claim Reward"}
                       >
-                        {currentAdIndex === 0 ? 'Skip to one8 Ad ⏭️' : 'Skip Ad & Claim Reward ⏭️'}
+                        <span>Skip Ad ⏭</span>
                       </button>
                     ) : (
-                      <div style={styles.skipCountdownPill}>
-                        ⏳ Skip ad in <strong>{skipCountdown}s</strong>
+                      <div style={styles.skipBtnDisabled} aria-live="polite">
+                        <span>⏳ Skip in {skipCountdown}s</span>
                       </div>
                     )}
                   </div>
                 </div>
 
-                {/* Dynamic Commercial Badge */}
-                <div style={{
-                  ...styles.floatingBadge,
-                  backgroundColor: `${activeAd.themeColor}ee`,
-                  color: activeAd.id === 'one8' ? '#000000' : '#ffffff'
-                }}>
-                  {currentScene.badge}
-                </div>
-
-                {/* Lower-Thirds Commercial Motion Graphics Banner */}
-                <div style={styles.lowerThirdsBanner}>
-                  <div style={styles.lowerThirdsLeft}>
-                    <h1 style={{
-                      ...styles.lowerThirdTitle,
-                      color: activeAd.id === 'one8' ? '#fbbf24' : '#ffffff'
-                    }}>
-                      {currentScene.title}
-                    </h1>
-                    <h2 style={styles.lowerThirdSubtitle}>
-                      {currentScene.subtitle}
-                    </h2>
-                    <div style={styles.lowerThirdTagline}>
-                      ✓ {currentScene.tagline}
-                    </div>
+                {/* Lower Thirds: Scene Information & Tagline */}
+                <div style={styles.lowerThirdCard}>
+                  <div style={styles.sceneBadge}>
+                    {currentScene.badge}
                   </div>
-
-                  <div style={styles.lowerThirdRight}>
-                    <div style={styles.pricePill}>
-                      {currentScene.priceOffer}
-                    </div>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleOpenStore()
-                      }}
-                      style={{
-                        ...styles.shopVideoBtn,
-                        backgroundColor: activeAd.themeColor,
-                        color: activeAd.id === 'one8' ? '#000000' : '#ffffff'
-                      }}
-                    >
-                      SHOP NOW ➔
-                    </button>
+                  <h3 style={styles.sceneTitle}>
+                    {currentScene.title}
+                  </h3>
+                  <p style={styles.sceneSubtitle}>
+                    {currentScene.subtitle}
+                  </p>
+                  <div style={styles.sceneTagline}>
+                    ✓ {currentScene.tagline}
                   </div>
                 </div>
               </div>
 
-              {/* Bottom Video Controls Player Bar */}
-              <div style={styles.videoControlBar} onClick={(e) => e.stopPropagation()}>
-                <div style={styles.videoControlLeft}>
-                  {/* Play / Pause */}
+              {/* Seamless Scrubber Progress Bar */}
+              <div style={styles.scrubberTrack}>
+                <div
+                  style={{
+                    ...styles.scrubberFill,
+                    width: `${(elapsed / 30) * 100}%`
+                  }}
+                />
+              </div>
+
+              {/* Video Player Control Bar */}
+              <div style={styles.playerControlBar}>
+                <div style={styles.playerControlsLeft}>
+                  {/* Play / Pause Toggle */}
                   <button
+                    type="button"
                     onClick={() => setIsPlaying(!isPlaying)}
                     style={styles.controlIconBtn}
-                    title={isPlaying ? 'Pause Ad' : 'Resume Ad'}
+                    title={isPlaying ? 'Pause ad' : 'Play ad'}
+                    aria-label={isPlaying ? 'Pause ad' : 'Play ad'}
                   >
                     {isPlaying ? '⏸' : '▶'}
                   </button>
 
-                  {/* Audio Mute / Unmute */}
+                  {/* Mute / Unmute Toggle */}
                   <button
+                    type="button"
                     onClick={() => setIsMuted(!isMuted)}
                     style={styles.controlIconBtn}
-                    title={isMuted ? 'Unmute Sound' : 'Mute Sound'}
+                    title={isMuted ? 'Unmute sound' : 'Mute sound'}
+                    aria-label={isMuted ? 'Unmute sound' : 'Mute sound'}
                   >
                     {isMuted ? '🔇' : '🔊'}
                   </button>
 
-                  {/* Audio Equalizer Bars Animation */}
+                  {/* Animated Equalizer Waveform */}
                   {!isMuted && isPlaying && (
-                    <div style={styles.eqVisualizer}>
+                    <div style={styles.eqVisualizer} aria-hidden="true">
                       {eqLevels.map((lvl, i) => (
                         <span
                           key={i}
                           style={{
                             ...styles.eqBar,
-                            height: `${lvl * 0.16}px`,
-                            backgroundColor: activeAd.themeColor
+                            height: `${lvl * 0.15}px`
                           }}
                         />
                       ))}
                     </div>
                   )}
 
-                  {/* Timecode */}
+                  {/* Single Clean Timecode */}
                   <span style={styles.timecodeText}>
                     {formatTime(elapsed)} / 0:30
                   </span>
                 </div>
 
-                <div style={styles.videoControlRight}>
-                  <span style={styles.rewardIndicator}>
-                    {currentAdIndex === 0 ? 'NEXT: ONE8 SHOES' : '💎 +2 CREDITS ON COMPLETION'}
+                <div style={styles.playerControlsRight}>
+                  <span style={styles.rewardRequirementNote}>
+                    {currentAdIndex === 0 ? 'Next: One8 by Virat Kohli' : 'Final Step: Claim +2 Credits'}
                   </span>
                 </div>
               </div>
-
-              {/* Seamless Video Timeline Scrubber */}
-              <div style={styles.scrubberTrack}>
-                <div
-                  style={{
-                    ...styles.scrubberFill,
-                    backgroundColor: activeAd.themeColor,
-                    width: `${(elapsed / 30) * 100}%`
-                  }}
-                />
-              </div>
             </div>
 
-            {/* Bottom Visit Store Button */}
-            <div style={styles.ctaFooter}>
+            {/* ========================================================================= */}
+            {/* 4. CONVERSION-OPTIMIZED PRIMARY CTA */}
+            {/* ========================================================================= */}
+            <div style={styles.ctaContainer}>
               <button
+                type="button"
                 onClick={() => handleOpenStore()}
-                style={{
-                  ...styles.fullStoreCtaBtn,
-                  backgroundColor: activeAd.themeColor,
-                  color: activeAd.id === 'one8' ? '#000000' : '#ffffff',
-                  boxShadow: `0 0 25px ${activeAd.themeColor}88`
-                }}
+                style={styles.primaryStoreBtn}
+                aria-label={`Visit ${activeAd.brand} Official Store`}
               >
-                <span>Visit {activeAd.brand} Official Store ({activeAd.url.replace('https://', '').split('/')[0]}) ➔</span>
+                <span>Visit Official Store ↗</span>
               </button>
-              <div style={styles.adFooterHint}>
-                Ad {activeAd.adNumber}/2 ({elapsed}s / 30s) · Skip available after 20s · <strong>+2 Free Credits</strong> claim after 2nd ad.
+
+              <div style={styles.ctaHelperText}>
+                Official Sponsor • {activeAd.brand} • Tap to view exclusive offers
               </div>
             </div>
           </div>
         )}
 
-        {/* Reward Success State */}
+        {/* ========================================================================= */}
+        {/* 5. SUCCESS COMPLETION SCREEN */}
+        {/* ========================================================================= */}
         {adStage === 'rewarded' && (
-          <div style={styles.rewardSuccessBody}>
-            <div style={styles.celebrationIcon}>🎉</div>
-            <h3 style={styles.rewardTitle}>+2 Free Credits Claimed!</h3>
-            <p style={styles.rewardDesc}>
-              Thank you for watching the <strong>PUMA India</strong> & <strong>one8 by Virat Kohli</strong> video commercials.
-              <br />
-              Your account balance has been topped up with <strong>2 forensic credits</strong>.
+          <div style={styles.completionContainer}>
+            <div style={styles.successIconBubble} aria-hidden="true">
+              🎉
+            </div>
+
+            <h3 style={styles.successTitle}>
+              2 Credits Added Successfully
+            </h3>
+
+            <p style={styles.successSubtitle}>
+              Thank you for watching the sponsor commercials for <strong>Puma India</strong> & <strong>One8 by Virat Kohli</strong>. Your forensic credit balance has been topped up.
             </p>
 
-            <div style={styles.newBalancePill}>
-              💎 New Balance: <strong>{rewardData?.new_balance} Credits</strong>
+            {/* Account Balance Pill */}
+            <div style={styles.rewardBalanceBox}>
+              <span style={{ fontSize: '18px' }} aria-hidden="true">💎</span>
+              <span>Updated Balance: <strong>{rewardData?.new_balance ?? ((user?.credit_balance || 10) + 2)} Credits</strong></span>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '18px' }}>
+            {/* Sponsor Visit Discovery Cards */}
+            <div style={styles.sponsorButtonsRow}>
               <button
-                onClick={() => handleOpenStore(ONE8_URL)}
-                style={{
-                  ...styles.fullStoreCtaBtn,
-                  backgroundColor: '#d97706',
-                  color: '#ffffff'
-                }}
-              >
-                <span>Visit one8 by Virat Kohli Official Store ➔</span>
-              </button>
-
-              <button
+                type="button"
                 onClick={() => handleOpenStore(PUMA_URL)}
-                style={{
-                  ...styles.fullStoreCtaBtn,
-                  backgroundColor: '#0284c7',
-                  color: '#ffffff'
-                }}
+                style={styles.secondaryStoreBtn}
               >
-                <span>Visit PUMA India Official Store ➔</span>
+                <span>Visit PUMA India ↗</span>
               </button>
-
-              <button onClick={onClose} style={styles.claimSuccessBtn}>
-                CONTINUE FORENSIC ANALYSIS
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* Error State */}
-        {adStage === 'error' && (
-          <div style={styles.errorBody}>
-            <div style={{ fontSize: '36px', marginBottom: '8px' }}>⚠️</div>
-            <h3 style={styles.errorTitle}>Daily Ad Limit Reached</h3>
-            <p style={styles.errorDesc}>{errorMessage}</p>
-
-            <div style={{ display: 'flex', gap: '10px', marginTop: '16px', justifyContent: 'center' }}>
               <button
+                type="button"
                 onClick={() => handleOpenStore(ONE8_URL)}
-                style={styles.miniStoreLink}
+                style={styles.secondaryStoreBtn}
               >
-                Visit one8.com ↗
-              </button>
-              <button
-                onClick={() => handleOpenStore(PUMA_URL)}
-                style={styles.miniStoreLink}
-              >
-                Visit PUMA India ↗
+                <span>Visit One8 Store ↗</span>
               </button>
             </div>
 
-            <button onClick={onClose} style={styles.errorCloseBtn}>
-              CLOSE
+            {/* Primary Return Button */}
+            <button
+              type="button"
+              onClick={onClose}
+              style={styles.returnDashboardBtn}
+            >
+              Return to Dashboard
             </button>
           </div>
         )}
+
+        {/* ========================================================================= */}
+        {/* 6. ERROR / DAILY LIMIT STATE */}
+        {/* ========================================================================= */}
+        {adStage === 'error' && (
+          <div style={styles.errorContainer}>
+            <div style={{ fontSize: '38px', marginBottom: '8px' }} aria-hidden="true">⚠️</div>
+            <h3 style={styles.errorTitle}>Daily Ad Limit Reached</h3>
+            <p style={styles.errorSubtitle}>
+              {errorMessage || 'You have already claimed your rewarded credits for this cycle. Please check back later.'}
+            </p>
+
+            <div style={styles.sponsorButtonsRow}>
+              <button
+                type="button"
+                onClick={() => handleOpenStore(PUMA_URL)}
+                style={styles.secondaryStoreBtn}
+              >
+                Visit PUMA India ↗
+              </button>
+              <button
+                type="button"
+                onClick={() => handleOpenStore(ONE8_URL)}
+                style={styles.secondaryStoreBtn}
+              >
+                Visit One8 Store ↗
+              </button>
+            </div>
+
+            <button
+              type="button"
+              onClick={onClose}
+              style={styles.returnDashboardBtn}
+            >
+              Return to Dashboard
+            </button>
+          </div>
+        )}
+
       </div>
 
-      {/* Global Embedded Animations */}
+      {/* Embedded Camera Pan/Zoom Animations */}
       <style>{`
         @keyframes scaleUp {
           0% { transform: scale(1.0); }
@@ -720,12 +792,16 @@ export default function WatchAdModal({ isOpen, onClose, user, onRewardClaimed })
           100% { transform: scale(1.08) translateX(15px); }
         }
         @keyframes scaleDown {
-          0% { transform: scale(1.15); }
+          0% { transform: scale(1.14); }
           100% { transform: scale(1.02); }
         }
         @keyframes panLeft {
           0% { transform: scale(1.08) translateX(15px); }
           100% { transform: scale(1.08) translateX(-15px); }
+        }
+        @keyframes liveDotPulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.4; transform: scale(0.85); }
         }
       `}</style>
     </div>
@@ -739,8 +815,8 @@ const styles = {
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(5, 8, 15, 0.95)',
-    backdropFilter: 'blur(14px)',
+    backgroundColor: 'rgba(4, 7, 15, 0.92)',
+    backdropFilter: 'blur(12px)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -749,120 +825,163 @@ const styles = {
     boxSizing: 'border-box'
   },
   adCard: {
-    backgroundColor: '#0a0e17',
-    color: '#ffffff',
-    borderRadius: '20px',
+    backgroundColor: '#070B14',
+    color: '#F8FAFC',
+    borderRadius: '16px',
     width: '100%',
     maxWidth: '620px',
-    border: '1px solid rgba(56, 189, 248, 0.4)',
-    boxShadow: '0 30px 70px -12px rgba(0, 0, 0, 0.95), 0 0 45px rgba(56, 189, 248, 0.3)',
+    border: '1px solid rgba(0, 217, 255, 0.25)',
+    boxShadow: '0 25px 60px -12px rgba(0, 0, 0, 0.95), 0 0 35px rgba(0, 217, 255, 0.15)',
     overflow: 'hidden',
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-  },
-  topHeader: {
     display: 'flex',
-    justifyContent: 'space-between',
+    flexDirection: 'column'
+  },
+  modalHeader: {
+    display: 'flex',
     alignItems: 'center',
-    padding: '12px 18px',
-    backgroundColor: '#060911',
-    borderBottom: '1px solid rgba(255, 255, 255, 0.08)'
+    justifyContent: 'space-between',
+    padding: '16px 20px',
+    backgroundColor: '#0B1120',
+    borderBottom: '1px solid rgba(148, 163, 184, 0.12)',
+    gap: '12px'
   },
-  liveRecordingDot: {
-    width: '8px',
-    height: '8px',
-    borderRadius: '50%',
-    backgroundColor: '#ef4444',
-    boxShadow: '0 0 10px #ef4444'
+  headerLeft: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '2px'
   },
-  sponsoredBadge: {
-    fontSize: '11px',
-    fontWeight: '800',
-    color: '#cbd5e1',
-    letterSpacing: '0.8px'
+  headerTitleRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px'
   },
-  hdBadge: {
-    fontSize: '9px',
-    fontWeight: '900',
-    color: '#38bdf8',
-    backgroundColor: 'rgba(56, 189, 248, 0.15)',
-    border: '1px solid rgba(56, 189, 248, 0.3)',
-    padding: '1px 5px',
-    borderRadius: '4px'
+  sparkleIcon: {
+    fontSize: '18px'
   },
-  openRealStoreTopBtn: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    border: '1px solid rgba(255, 255, 255, 0.2)',
-    color: '#ffffff',
-    fontSize: '11px',
-    fontWeight: '700',
-    padding: '4px 10px',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    transition: 'all 0.2s ease'
-  },
-  timerBadge: {
-    backgroundColor: 'rgba(2, 132, 199, 0.25)',
-    border: '1px solid rgba(56, 189, 248, 0.5)',
-    color: '#38bdf8',
-    fontSize: '12px',
-    fontWeight: '700',
-    padding: '4px 12px',
-    borderRadius: '12px'
-  },
-  closeHeaderBtn: {
-    background: 'none',
-    border: 'none',
-    color: '#94a3b8',
+  headerTitle: {
     fontSize: '16px',
     fontWeight: '800',
-    cursor: 'pointer'
+    color: '#F8FAFC',
+    margin: 0,
+    letterSpacing: '-0.01em'
   },
-  sequenceProgressRow: {
+  headerSubtitle: {
+    fontSize: '12px',
+    color: '#94A3B8',
+    margin: 0
+  },
+  headerRight: {
     display: 'flex',
-    backgroundColor: '#080c14',
-    borderBottom: '1px solid rgba(255, 255, 255, 0.06)'
+    alignItems: 'center',
+    gap: '10px',
+    flexShrink: 0
   },
-  sequenceStep: {
-    flex: 1,
-    padding: '11px 12px',
-    fontSize: '11px',
+  persistentRewardBadge: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px',
+    padding: '5px 12px',
+    backgroundColor: 'rgba(0, 217, 255, 0.12)',
+    border: '1px solid rgba(0, 217, 255, 0.4)',
+    borderRadius: '8px',
+    boxShadow: '0 0 12px rgba(0, 217, 255, 0.2)'
+  },
+  persistentRewardText: {
+    fontSize: '13px',
     fontWeight: '800',
+    color: '#00D9FF'
+  },
+  adIndexBadge: {
+    fontSize: '12px',
+    fontWeight: '700',
+    color: '#94A3B8',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    padding: '5px 10px',
+    borderRadius: '8px'
+  },
+  closeBtn: {
+    background: 'none',
+    border: 'none',
+    color: '#94A3B8',
+    fontSize: '16px',
+    fontWeight: '800',
+    cursor: 'pointer',
+    padding: '4px 8px',
+    borderRadius: '6px',
+    transition: 'color 0.15s ease'
+  },
+  stepperContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '12px 20px',
+    backgroundColor: '#090E1B',
+    borderBottom: '1px solid rgba(148, 163, 184, 0.1)',
+    gap: '12px'
+  },
+  stepItem: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '10px',
+    flex: 1
+  },
+  stepIndicator: {
+    width: '28px',
+    height: '28px',
+    borderRadius: '50%',
+    border: '1.5px solid',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: '8px',
+    fontSize: '12px',
+    fontWeight: '800',
+    flexShrink: 0,
     transition: 'all 0.2s ease'
   },
-  checkDoneBadge: {
-    fontSize: '9px',
-    fontWeight: '900',
-    color: '#22c55e',
-    backgroundColor: 'rgba(34, 197, 94, 0.15)',
-    border: '1px solid rgba(34, 197, 94, 0.3)',
-    padding: '1px 5px',
-    borderRadius: '4px'
+  stepLabelCol: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1px'
   },
-  videoPlayerContainer: {
-    padding: '14px 16px 18px',
-    textAlign: 'center'
+  stepTitle: {
+    fontSize: '12.5px',
+    fontWeight: '700',
+    transition: 'color 0.2s ease'
   },
-  videoScreen: {
+  stepStatus: {
+    fontSize: '11px',
+    color: '#64748B'
+  },
+  stepperDivider: {
+    height: '2px',
+    width: '36px',
+    borderRadius: '1px',
+    transition: 'background-color 0.2s ease',
+    flexShrink: 0
+  },
+  playerWrapper: {
+    padding: '16px 20px 20px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '14px'
+  },
+  creativeScreen: {
     position: 'relative',
-    backgroundColor: '#000000',
-    borderRadius: '16px',
-    border: '1.5px solid',
+    borderRadius: '12px',
     overflow: 'hidden',
-    cursor: 'pointer',
-    boxShadow: '0 15px 35px rgba(0, 0, 0, 0.8)'
+    backgroundColor: '#000000',
+    border: '1px solid rgba(0, 217, 255, 0.25)',
+    boxShadow: '0 12px 30px rgba(0, 0, 0, 0.7)'
   },
-  videoMotionWrapper: {
+  motionImageWrapper: {
     position: 'relative',
     width: '100%',
-    height: '280px',
+    height: '260px',
     overflow: 'hidden',
     backgroundColor: '#000000'
   },
-  videoFrameImage: {
+  adImage: {
     width: '100%',
     height: '100%',
     objectFit: 'cover',
@@ -870,164 +989,134 @@ const styles = {
   },
   cinematicVignette: {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    background: 'linear-gradient(180deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.1) 40%, rgba(0,0,0,0.85) 100%)',
+    inset: 0,
+    background: 'linear-gradient(180deg, rgba(7, 11, 20, 0.65) 0%, rgba(7, 11, 20, 0.1) 45%, rgba(7, 11, 20, 0.85) 100%)',
     pointerEvents: 'none'
   },
-  lightSweepGlow: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    pointerEvents: 'none'
-  },
-  videoTopOverlay: {
+  screenTopBar: {
     position: 'absolute',
     top: '12px',
     left: '12px',
     right: '12px',
     display: 'flex',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
     zIndex: 4
   },
-  videoChannelPill: {
+  brandTag: {
     display: 'flex',
     alignItems: 'center',
     gap: '6px',
-    backgroundColor: 'rgba(0, 0, 0, 0.75)',
+    backgroundColor: 'rgba(7, 11, 20, 0.85)',
+    border: '1px solid rgba(255, 255, 255, 0.15)',
+    borderRadius: '8px',
     padding: '4px 10px',
-    borderRadius: '20px',
-    fontSize: '11px',
-    fontWeight: '800',
-    color: '#ffffff',
-    backdropFilter: 'blur(6px)',
-    border: '1px solid rgba(255, 255, 255, 0.15)'
+    backdropFilter: 'blur(8px)'
   },
-  videoChannelDot: {
+  livePulseDot: {
     width: '6px',
     height: '6px',
     borderRadius: '50%',
-    backgroundColor: '#22c55e'
+    backgroundColor: '#22C55E',
+    animation: 'liveDotPulse 1.8s infinite'
   },
-  adSequenceIndicator: {
-    color: '#38bdf8',
+  brandTagText: {
+    fontSize: '12px',
+    fontWeight: '800',
+    color: '#F8FAFC'
+  },
+  hdPill: {
+    fontSize: '9.5px',
+    fontWeight: '800',
+    color: '#00D9FF',
+    backgroundColor: 'rgba(0, 217, 255, 0.15)',
+    padding: '1px 5px',
+    borderRadius: '4px'
+  },
+  skipBtnDisabled: {
+    backgroundColor: 'rgba(7, 11, 20, 0.85)',
+    border: '1px solid rgba(255, 255, 255, 0.15)',
+    color: '#94A3B8',
+    fontSize: '12px',
     fontWeight: '700',
-    fontSize: '10px'
+    padding: '6px 12px',
+    borderRadius: '8px',
+    backdropFilter: 'blur(8px)'
   },
-  skipButtonArea: {
-    display: 'flex',
-    alignItems: 'center'
-  },
-  skipCountdownPill: {
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
-    padding: '5px 12px',
-    borderRadius: '20px',
-    fontSize: '11px',
-    fontWeight: '700',
-    color: '#cbd5e1',
-    backdropFilter: 'blur(6px)',
-    border: '1px solid rgba(255, 255, 255, 0.2)'
-  },
-  skipAdActiveBtn: {
+  skipBtnActive: {
+    backgroundColor: '#00D9FF',
+    color: '#041018',
+    border: '1px solid #00D9FF',
+    fontSize: '12px',
+    fontWeight: '800',
     padding: '6px 14px',
-    borderRadius: '20px',
-    border: 'none',
-    fontSize: '11.5px',
-    fontWeight: '900',
+    borderRadius: '8px',
     cursor: 'pointer',
-    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.6)',
-    letterSpacing: '0.4px',
-    transition: 'all 0.2s ease'
+    boxShadow: '0 0 14px rgba(0, 217, 255, 0.4)',
+    transition: 'all 0.15s ease'
   },
-  floatingBadge: {
-    position: 'absolute',
-    top: '46px',
-    left: '12px',
-    zIndex: 4,
-    fontSize: '10px',
-    fontWeight: '900',
-    padding: '4px 10px',
-    borderRadius: '6px',
-    letterSpacing: '0.6px',
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.6)'
-  },
-  lowerThirdsBanner: {
+  lowerThirdCard: {
     position: 'absolute',
     bottom: '10px',
     left: '12px',
     right: '12px',
     zIndex: 4,
     display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-    backgroundColor: 'rgba(5, 8, 15, 0.85)',
-    padding: '10px 14px',
-    borderRadius: '12px',
-    backdropFilter: 'blur(10px)',
-    border: '1px solid rgba(255, 255, 255, 0.12)'
+    flexDirection: 'column',
+    gap: '3px',
+    textAlign: 'left'
   },
-  lowerThirdsLeft: {
-    textAlign: 'left',
-    maxWidth: '65%'
+  sceneBadge: {
+    fontSize: '10px',
+    fontWeight: '800',
+    color: '#00D9FF',
+    backgroundColor: 'rgba(0, 217, 255, 0.15)',
+    border: '1px solid rgba(0, 217, 255, 0.3)',
+    borderRadius: '4px',
+    padding: '2px 7px',
+    alignSelf: 'flex-start',
+    letterSpacing: '0.4px'
   },
-  lowerThirdTitle: {
+  sceneTitle: {
     fontSize: '17px',
     fontWeight: '900',
-    margin: '0 0 2px 0',
-    letterSpacing: '0.6px'
-  },
-  lowerThirdSubtitle: {
-    fontSize: '10.5px',
-    fontWeight: '800',
-    color: '#cbd5e1',
-    margin: '0 0 3px 0',
-    letterSpacing: '0.5px',
-    textTransform: 'uppercase'
-  },
-  lowerThirdTagline: {
-    fontSize: '10px',
-    fontWeight: '600',
-    color: '#94a3b8'
-  },
-  lowerThirdRight: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'flex-end',
-    gap: '6px'
-  },
-  pricePill: {
-    fontSize: '9.5px',
-    fontWeight: '900',
-    color: '#22c55e',
-    backgroundColor: 'rgba(34, 197, 94, 0.15)',
-    border: '1px solid rgba(34, 197, 94, 0.3)',
-    padding: '2px 8px',
-    borderRadius: '4px',
+    color: '#F8FAFC',
+    margin: 0,
     letterSpacing: '0.5px'
   },
-  shopVideoBtn: {
-    padding: '6px 12px',
-    borderRadius: '6px',
-    border: 'none',
-    fontSize: '10.5px',
-    fontWeight: '900',
-    letterSpacing: '0.5px',
-    cursor: 'pointer'
+  sceneSubtitle: {
+    fontSize: '11px',
+    fontWeight: '700',
+    color: '#CBD5E1',
+    margin: 0,
+    letterSpacing: '0.3px',
+    textTransform: 'uppercase'
   },
-  videoControlBar: {
+  sceneTagline: {
+    fontSize: '11px',
+    color: '#94A3B8',
+    marginTop: '2px'
+  },
+  scrubberTrack: {
+    height: '4px',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    width: '100%',
+    position: 'relative'
+  },
+  scrubberFill: {
+    height: '100%',
+    backgroundColor: '#00D9FF',
+    boxShadow: '0 0 8px #00D9FF',
+    transition: 'width 1s linear'
+  },
+  playerControlBar: {
     display: 'flex',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
     padding: '8px 14px',
-    backgroundColor: '#070a10',
-    borderTop: '1px solid rgba(255, 255, 255, 0.08)'
+    backgroundColor: '#070B14'
   },
-  videoControlLeft: {
+  playerControlsLeft: {
     display: 'flex',
     alignItems: 'center',
     gap: '10px'
@@ -1035,148 +1124,172 @@ const styles = {
   controlIconBtn: {
     background: 'none',
     border: 'none',
-    color: '#ffffff',
-    fontSize: '14px',
+    color: '#CBD5E1',
+    fontSize: '13px',
     cursor: 'pointer',
-    padding: 0
+    padding: '4px 6px',
+    borderRadius: '4px',
+    transition: 'color 0.15s ease'
   },
   eqVisualizer: {
     display: 'flex',
     alignItems: 'flex-end',
     gap: '2px',
-    height: '16px'
+    height: '14px'
   },
   eqBar: {
-    width: '3px',
+    width: '2.5px',
     borderRadius: '1px',
+    backgroundColor: '#00D9FF',
     transition: 'height 0.1s ease'
   },
   timecodeText: {
     fontSize: '11px',
-    fontWeight: '800',
-    color: '#94a3b8',
+    fontWeight: '700',
+    color: '#94A3B8',
     fontFamily: 'monospace'
   },
-  videoControlRight: {
+  playerControlsRight: {
     display: 'flex',
     alignItems: 'center'
   },
-  rewardIndicator: {
-    fontSize: '10.5px',
-    fontWeight: '900',
-    color: '#38bdf8',
-    letterSpacing: '0.5px'
+  rewardRequirementNote: {
+    fontSize: '11px',
+    fontWeight: '700',
+    color: '#00D9FF'
   },
-  scrubberTrack: {
-    height: '4px',
-    backgroundColor: 'rgba(255, 255, 255, 0.15)'
-  },
-  scrubberFill: {
-    height: '100%',
-    transition: 'width 1s linear'
-  },
-  ctaFooter: {
-    marginTop: '14px',
+  ctaContainer: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '8px',
-    alignItems: 'center'
+    alignItems: 'center',
+    gap: '6px'
   },
-  fullStoreCtaBtn: {
+  primaryStoreBtn: {
     width: '100%',
-    padding: '12px 18px',
-    borderRadius: '10px',
-    border: 'none',
-    fontSize: '13px',
+    minHeight: '44px',
+    padding: '0 20px',
+    backgroundColor: '#00D9FF',
+    color: '#041018',
+    border: '1px solid #00D9FF',
+    borderRadius: '8px',
+    fontSize: '14px',
     fontWeight: '800',
-    letterSpacing: '0.5px',
-    display: 'flex',
+    display: 'inline-flex',
     alignItems: 'center',
     justifyContent: 'center',
     gap: '8px',
     cursor: 'pointer',
-    transition: 'all 0.2s ease',
-    boxSizing: 'border-box'
+    boxShadow: '0 0 16px rgba(0, 217, 255, 0.25)',
+    transition: 'all 0.15s ease'
   },
-  adFooterHint: {
+  ctaHelperText: {
     fontSize: '11.5px',
-    color: '#94a3b8'
+    color: '#64748B'
   },
-  rewardSuccessBody: {
-    padding: '32px 20px',
-    textAlign: 'center'
+  completionContainer: {
+    padding: '32px 24px',
+    textAlign: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
   },
-  celebrationIcon: {
+  successIconBubble: {
     fontSize: '44px',
-    marginBottom: '8px'
+    width: '72px',
+    height: '72px',
+    borderRadius: '50%',
+    backgroundColor: 'rgba(34, 197, 94, 0.15)',
+    border: '2px solid #22C55E',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: '16px',
+    boxShadow: '0 0 24px rgba(34, 197, 94, 0.3)'
   },
-  rewardTitle: {
+  successTitle: {
     fontSize: '20px',
     fontWeight: '900',
-    color: '#ffffff',
-    margin: '0 0 8px 0'
+    color: '#22C55E',
+    margin: '0 0 8px 0',
+    letterSpacing: '-0.01em'
   },
-  rewardDesc: {
-    fontSize: '12.5px',
-    color: '#94a3b8',
-    lineHeight: '1.5',
-    margin: '0 0 14px 0'
+  successSubtitle: {
+    fontSize: '13px',
+    color: '#94A3B8',
+    lineHeight: 1.5,
+    margin: '0 0 16px 0',
+    maxWidth: '480px'
   },
-  newBalancePill: {
-    display: 'inline-block',
-    backgroundColor: 'rgba(2, 132, 199, 0.15)',
-    border: '1px solid rgba(56, 189, 248, 0.3)',
-    color: '#38bdf8',
-    padding: '8px 16px',
-    borderRadius: '20px',
-    fontSize: '13.5px',
-    fontWeight: '700'
+  rewardBalanceBox: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '8px',
+    padding: '8px 18px',
+    borderRadius: '8px',
+    backgroundColor: 'rgba(0, 217, 255, 0.1)',
+    border: '1px solid rgba(0, 217, 255, 0.3)',
+    color: '#00D9FF',
+    fontSize: '14px',
+    fontWeight: '700',
+    marginBottom: '20px'
   },
-  claimSuccessBtn: {
+  sponsorButtonsRow: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '10px',
     width: '100%',
-    padding: '12px',
-    borderRadius: '10px',
-    backgroundColor: '#0284c7',
-    border: 'none',
-    color: '#ffffff',
-    fontSize: '12.5px',
-    fontWeight: '800',
-    cursor: 'pointer'
+    marginBottom: '12px'
   },
-  errorBody: {
-    padding: '30px 20px',
-    textAlign: 'center'
+  secondaryStoreBtn: {
+    minHeight: '40px',
+    padding: '0 14px',
+    backgroundColor: '#0E1526',
+    border: '1px solid rgba(148, 163, 184, 0.2)',
+    borderRadius: '8px',
+    color: '#F8FAFC',
+    fontSize: '12.5px',
+    fontWeight: '700',
+    cursor: 'pointer',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'all 0.15s ease'
+  },
+  returnDashboardBtn: {
+    width: '100%',
+    minHeight: '44px',
+    padding: '0 20px',
+    backgroundColor: '#00D9FF',
+    color: '#041018',
+    border: '1px solid #00D9FF',
+    borderRadius: '8px',
+    fontSize: '14px',
+    fontWeight: '800',
+    cursor: 'pointer',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 0 16px rgba(0, 217, 255, 0.25)',
+    transition: 'all 0.15s ease'
+  },
+  errorContainer: {
+    padding: '30px 24px',
+    textAlign: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
   },
   errorTitle: {
-    fontSize: '17px',
+    fontSize: '18px',
     fontWeight: '800',
-    color: '#ffffff',
+    color: '#FBBF24',
     margin: '0 0 8px 0'
   },
-  errorDesc: {
-    fontSize: '12px',
-    color: '#94a3b8',
-    lineHeight: '1.4'
-  },
-  miniStoreLink: {
-    fontSize: '11px',
-    fontWeight: '700',
-    color: '#38bdf8',
-    backgroundColor: 'rgba(56, 189, 248, 0.1)',
-    border: '1px solid rgba(56, 189, 248, 0.3)',
-    padding: '6px 12px',
-    borderRadius: '6px',
-    cursor: 'pointer'
-  },
-  errorCloseBtn: {
-    marginTop: '16px',
-    backgroundColor: '#1e293b',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
-    color: '#94a3b8',
-    padding: '8px 20px',
-    borderRadius: '8px',
-    fontSize: '12px',
-    fontWeight: '700',
-    cursor: 'pointer'
+  errorSubtitle: {
+    fontSize: '13px',
+    color: '#94A3B8',
+    lineHeight: 1.5,
+    margin: '0 0 20px 0',
+    maxWidth: '460px'
   }
 }

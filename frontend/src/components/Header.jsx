@@ -25,9 +25,9 @@ export default function Header({ user, onLogout, onOpenMitra, onOpenCreditsModal
         <span style={styles.statusText}>Lab online · 6 engines</span>
       </div>
 
-      {/* Right: Header Utilities Group (ISSUE 4, 6, 8) */}
+      {/* Right: Header Utilities Group (ISSUE 9) */}
       <div className="header-utilities" style={styles.headerUtilities}>
-        {/* Credits Group: Balance & Add (ISSUE 3, 7) */}
+        {/* Credits Group: Balance & Add */}
         <div className="credit-group" style={styles.creditGroup}>
           <button
             type="button"
@@ -51,8 +51,8 @@ export default function Header({ user, onLogout, onOpenMitra, onOpenCreditsModal
           </button>
         </div>
 
-        {/* Settings Group: Language & Ambient Audio (ISSUE 6) */}
-        <div className="header-settings" style={styles.headerSettings}>
+        {/* Language Group */}
+        <div className="header-group header-language-group" style={styles.headerSettings}>
           <label htmlFor="language-selector" className="sr-only">
             Application language
           </label>
@@ -71,12 +71,15 @@ export default function Header({ user, onLogout, onOpenMitra, onOpenCreditsModal
             <option value="ta-IN">தமிழ் (Tamil)</option>
             <option value="te-IN">తెలుగు (Telugu)</option>
           </select>
+        </div>
 
+        {/* Audio Group */}
+        <div className="header-group header-audio-group" style={styles.headerAudioGroup}>
           <SoftAmbientPlayer defaultVolume={0.25} />
         </div>
 
-        {/* Profile Group: User Card & Sign Out (ISSUE 6) */}
-        <div className="header-profile" style={styles.headerProfile}>
+        {/* Profile Group: User Card & Sign Out */}
+        <div className="header-group header-profile" style={styles.headerProfile}>
           <div style={styles.userCard}>
             <div style={styles.userAvatar}>
               {(user?.name || user?.email || 'V')[0].toUpperCase()}
@@ -189,7 +192,7 @@ const styles = {
   headerUtilities: {
     display: 'flex',
     alignItems: 'center',
-    gap: '10px',
+    gap: '12px',
     marginLeft: 'auto',
     minHeight: '44px',
     flexWrap: 'wrap'
@@ -197,8 +200,8 @@ const styles = {
   creditGroup: {
     display: 'inline-flex',
     alignItems: 'center',
-    gap: '4px',
-    padding: '3px 4px 3px 8px',
+    gap: '10px',
+    padding: '3px 6px 3px 10px',
     backgroundColor: 'rgba(255, 255, 255, 0.03)',
     border: '1px solid var(--border)',
     borderRadius: 'var(--radius-md)'
@@ -235,6 +238,14 @@ const styles = {
     justifyContent: 'center'
   },
   headerSettings: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    paddingLeft: '10px',
+    borderLeft: '1px solid var(--border)',
+    minHeight: '36px'
+  },
+  headerAudioGroup: {
     display: 'flex',
     alignItems: 'center',
     gap: '8px',

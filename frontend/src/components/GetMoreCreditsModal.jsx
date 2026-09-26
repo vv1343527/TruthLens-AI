@@ -1087,9 +1087,9 @@ export default function GetMoreCreditsModal({ isOpen, onClose, user, onCreditsUp
                 </div>
 
                 {/* Full Width UTR Field */}
-                <div style={styles.fullWidthUtrSection}>
+                <div className="form-field" style={styles.fullWidthUtrSection}>
                   <label htmlFor="utr-input" style={styles.inputFieldLabel}>
-                    Enter 12-Digit UPI Transaction UTR / Ref No. <span style={{ color: '#ef4444' }}>*</span>
+                    Enter Transaction ID
                   </label>
                   <input
                     id="utr-input"
@@ -1430,12 +1430,12 @@ const styles = {
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(3, 7, 18, 0.85)',
-    backdropFilter: 'blur(14px)',
+    backgroundColor: 'rgba(0, 0, 0, 0.65)',
+    backdropFilter: 'blur(2px)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 10000,
+    zIndex: 1000,
     padding: '16px',
     boxSizing: 'border-box'
   },
@@ -1814,8 +1814,8 @@ const styles = {
   securityUxBoxCompact: {
     marginTop: '12px',
     textAlign: 'center',
-    fontSize: '11px',
-    color: '#64748b',
+    fontSize: '13px',
+    color: 'var(--text-secondary)',
     lineHeight: 1.4
   },
   stepContainer: {
@@ -1935,22 +1935,23 @@ const styles = {
   },
   methodTabBtn: {
     padding: '8px',
-    border: '1.5px solid rgba(255, 255, 255, 0.08)',
+    border: '1px solid transparent',
     borderRadius: '8px',
-    backgroundColor: 'rgba(30, 41, 59, 0.5)',
-    fontSize: '11.5px',
-    fontWeight: '700',
-    color: '#94a3b8',
+    backgroundColor: 'transparent',
+    fontSize: '12px',
+    fontWeight: '600',
+    color: 'var(--text-secondary)',
     textAlign: 'center',
     cursor: 'pointer',
     transition: 'all 0.2s ease',
     outline: 'none'
   },
   methodTabBtnActive: {
-    borderColor: '#38bdf8',
-    backgroundColor: 'rgba(56, 189, 248, 0.15)',
-    color: '#38bdf8',
-    boxShadow: '0 0 10px rgba(56, 189, 248, 0.2)'
+    backgroundColor: 'rgba(56, 189, 248, 0.12)',
+    border: '1px solid var(--accent)',
+    color: 'var(--accent)',
+    fontWeight: '700',
+    boxShadow: 'inset 0 -2px 0 var(--accent)'
   },
   checkoutPanel: {
     backgroundColor: 'rgba(30, 41, 59, 0.5)',
@@ -2044,10 +2045,10 @@ const styles = {
   },
   inputFieldLabel: {
     display: 'block',
-    fontSize: '11.5px',
-    fontWeight: '700',
-    color: '#cbd5e1',
-    marginBottom: '5px'
+    fontSize: '13px',
+    fontWeight: '600',
+    color: 'var(--text-secondary)',
+    marginBottom: '6px'
   },
   fullWidthInput: {
     width: '100%',

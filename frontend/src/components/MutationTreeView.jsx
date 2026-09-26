@@ -1,6 +1,51 @@
 import React, { useState, useEffect, useRef } from 'react'
 import MutationTree3D from './3d/MutationTree3D.jsx'
 
+const MUTATION_CATEGORIES = [
+  {
+    category: 'Compression',
+    icon: '🗜️',
+    items: [
+      { id: 'JPEG_COMPRESSION', label: 'JPEG Compression (90 / 60 / 30 / 10 Q)' },
+      { id: 'REENCODING', label: 'Re-encoding (WebP / PNG Container)' }
+    ]
+  },
+  {
+    category: 'Geometric',
+    icon: '📐',
+    items: [
+      { id: 'IMAGE_RESIZE', label: 'Image Resize (90% / 70% / 50% / 25%)' },
+      { id: 'CROP', label: 'Crop & Scale (95% / 85% / 70% / 50%)' }
+    ]
+  },
+  {
+    category: 'Quality & Noise',
+    icon: '✨',
+    items: [
+      { id: 'GAUSSIAN_BLUR', label: 'Gaussian Blur (1px / 3px / 5px / 9px)' },
+      { id: 'NOISE_INJECTION', label: 'Noise Injection (σ=5 / 15 / 30 / 60)' },
+      { id: 'SHARPENING', label: 'Sharpening (0.5x / 1.0x / 2.0x / 3.5x)' }
+    ]
+  },
+  {
+    category: 'Color & Exposure',
+    icon: '🎨',
+    items: [
+      { id: 'BRIGHTNESS_CHANGE', label: 'Brightness (+15% / +35% / -30% / +60%)' },
+      { id: 'CONTRAST_CHANGE', label: 'Contrast (1.2x / 1.5x / 0.6x / 2.0x)' }
+    ]
+  },
+  {
+    category: 'Simulation',
+    icon: '🖥️',
+    items: [
+      { id: 'SCREENSHOT_SIMULATION', label: 'Screenshot Simulation (Display Grab)' }
+    ]
+  }
+]
+
+const ALL_MUTATION_KEYS = MUTATION_CATEGORIES.flatMap(cat => cat.items.map(i => i.id))
+
 export default function MutationTreeView({
   user,
   creditBalance,
@@ -18,18 +63,7 @@ export default function MutationTreeView({
   const [isDragOver, setIsDragOver] = useState(false)
 
   // Mutation selections
-  const [selectedMutations, setSelectedMutations] = useState([
-    'JPEG_COMPRESSION',
-    'IMAGE_RESIZE',
-    'GAUSSIAN_BLUR',
-    'NOISE_INJECTION',
-    'BRIGHTNESS_CHANGE',
-    'CONTRAST_CHANGE',
-    'SHARPENING',
-    'CROP',
-    'SCREENSHOT_SIMULATION',
-    'REENCODING'
-  ])
+  const [selectedMutations, setSelectedMutations] = useState(ALL_MUTATION_KEYS)
 
   // Processing state
   const [stage, setStage] = useState('idle') // 'idle' | 'analyzing' | 'done' | 'error'
@@ -122,18 +156,7 @@ export default function MutationTreeView({
   }
 
   const selectAllMutations = () => {
-    setSelectedMutations([
-      'JPEG_COMPRESSION',
-      'IMAGE_RESIZE',
-      'GAUSSIAN_BLUR',
-      'NOISE_INJECTION',
-      'BRIGHTNESS_CHANGE',
-      'CONTRAST_CHANGE',
-      'SHARPENING',
-      'CROP',
-      'SCREENSHOT_SIMULATION',
-      'REENCODING'
-    ])
+    setSelectedMutations(ALL_MUTATION_KEYS)
   }
 
   const clearAllMutations = () => {
@@ -350,7 +373,7 @@ export default function MutationTreeView({
             {mode === 'demo' ? (
               <div>
                 <div style={styles.sectionHeaderRow}>
-                  <span className="mono-label" style={styles.sectionLabel}>SELECT VALIDATED BENCHMARK SAMPLE</span>
+                  <span className="mono-label" style={styles.sectionLabel}>Select validated benchmark sample</span>
                   <span style={styles.demoPill}>Ground Truth Calibrated</span>
                 </div>
                 <div style={styles.sampleGrid}>
@@ -359,13 +382,33 @@ export default function MutationTreeView({
                     return (
                       <div
                         key={sample.id}
+                        role="button"
+                        tabIndex={0}
+                        aria-pressed={isSelected}
                         onClick={() => handleSelectDemo(sample)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault()
+                            handleSelectDemo(sample)
+                          }
+                        }}
+                        className={`benchmark-card ${isSelected ? 'selected' : ''}`}
                         style={{
                           ...styles.sampleCard,
                           ...(isSelected ? styles.sampleCardSelected : {})
                         }}
                       >
-                        <img src={sample.thumbnail} alt={sample.name} style={styles.sampleThumb} />
+                        <div style={{ position: 'relative', flexShrink: 0 }}>
+                          <img src={sample.thumbnail} alt={sample.name} style={styles.sampleThumb} />
+                          {isSelected && (
+                            <span
+                              className="selection-indicator"
+                              aria-hidden="true"
+                            >
+                              ✓
+                            </span>
+                          )}
+                        </div>
                         <div style={styles.sampleInfo}>
                           <div style={styles.sampleName}>{sample.name}</div>
                           <div style={styles.sampleMeta}>
@@ -376,7 +419,7 @@ export default function MutationTreeView({
                             }}>
                               GT: {sample.ground_truth}
                             </span>
-                            <span style={{ fontSize: '11px', color: '#64748b' }}>{sample.file_size}</span>
+                            <span style={{ fontSize: '12px', color: 'var(--text-subtle)' }}>{sample.file_size}</span>
                           </div>
                         </div>
                       </div>
@@ -387,8 +430,8 @@ export default function MutationTreeView({
             ) : (
               <div>
                 <div style={styles.sectionHeaderRow}>
-                  <span className="mono-label" style={styles.sectionLabel}>MEDIA SOURCE INGESTION</span>
-                  <span style={{ fontSize: '11px', color: '#94a3b8' }}>JPG • PNG • WEBP • MP4 • MOV</span>
+                  <span className="mono-label" style={styles.sectionLabel}>Media source ingestion</span>
+                  <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>JPG • PNG • WEBP • MP4 • MOV</span>
                 </div>
                 <div
                   onDragOver={handleDragOver}
@@ -418,8 +461,8 @@ export default function MutationTreeView({
           {/* Right: Media Preview & File Information */}
           <div>
             <div style={styles.sectionHeaderRow}>
-              <span className="mono-label" style={styles.sectionLabel}>TARGET PREVIEW & METADATA</span>
-              <span style={{ fontSize: '11px', color: '#38bdf8' }}>
+              <span className="mono-label" style={styles.sectionLabel}>Target preview & metadata</span>
+              <span style={{ fontSize: '12px', color: 'var(--accent)' }}>
                 {file ? file.name : (activeDemo ? activeDemo.filename : 'No media loaded')}
               </span>
             </div>
@@ -445,14 +488,14 @@ export default function MutationTreeView({
                     </div>
                     <div style={styles.metaRow}>
                       <span style={styles.metaKey}>Digital Integrity</span>
-                      <span style={{ ...styles.metaVal, color: '#4ade80' }}>SHA-256 Verifiable</span>
+                      <span style={{ ...styles.metaVal, color: 'var(--success)' }}>SHA-256 Verifiable</span>
                     </div>
                   </div>
                 </div>
               ) : (
                 <div style={styles.previewPlaceholder}>
                   <span style={{ fontSize: '32px', marginBottom: '8px' }}>🖼️</span>
-                  <span style={{ color: '#64748b', fontSize: '13px' }}>Select a benchmark sample or upload a media file</span>
+                  <span style={{ color: 'var(--text-subtle)', fontSize: '13px' }}>Select a benchmark sample or upload a media file</span>
                 </div>
               )}
             </div>
@@ -461,56 +504,75 @@ export default function MutationTreeView({
 
         {/* 3. Mutation Selection Controls */}
         <div style={styles.mutationControlsSection}>
-          <div style={styles.controlsHeader}>
+          <div className="mutation-header" style={styles.controlsHeader}>
             <div>
-              <div style={styles.controlsTitle}>SELECT MUTATIONS TO EVALUATE</div>
+              <h2 style={styles.controlsTitle}>Select Mutations to Evaluate</h2>
               <div style={styles.controlsSubtitle}>Every checked transformation will be generated across 4 progressive intensity levels (Low, Medium, High, Extreme).</div>
             </div>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <button onClick={selectAllMutations} style={styles.smallBtn}>Select All</button>
-              <button onClick={clearAllMutations} style={styles.smallBtn}>Clear All</button>
+            <div className="mutation-actions">
+              <button
+                type="button"
+                onClick={clearAllMutations}
+                className="btn btn-secondary"
+                style={styles.smallBtn}
+              >
+                Clear All
+              </button>
+              <button
+                type="button"
+                onClick={selectAllMutations}
+                className="btn btn-secondary"
+                style={styles.smallBtn}
+              >
+                Select All
+              </button>
             </div>
           </div>
 
-          <div style={styles.mutationGrid}>
-            {[
-              { id: 'JPEG_COMPRESSION', label: 'JPEG Compression (90 / 60 / 30 / 10 Q)' },
-              { id: 'IMAGE_RESIZE', label: 'Image Resize (90% / 70% / 50% / 25%)' },
-              { id: 'GAUSSIAN_BLUR', label: 'Gaussian Blur (1px / 3px / 5px / 9px)' },
-              { id: 'NOISE_INJECTION', label: 'Noise Injection (σ=5 / 15 / 30 / 60)' },
-              { id: 'BRIGHTNESS_CHANGE', label: 'Brightness (+15% / +35% / -30% / +60%)' },
-              { id: 'CONTRAST_CHANGE', label: 'Contrast (1.2x / 1.5x / 0.6x / 2.0x)' },
-              { id: 'SHARPENING', label: 'Sharpening (0.5x / 1.0x / 2.0x / 3.5x)' },
-              { id: 'CROP', label: 'Crop & Scale (95% / 85% / 70% / 50%)' },
-              { id: 'SCREENSHOT_SIMULATION', label: 'Screenshot Simulation (Display Grab)' },
-              { id: 'REENCODING', label: 'Re-encoding (WebP / PNG Container)' }
-            ].map(mut => {
-              const isChecked = selectedMutations.includes(mut.id)
-              return (
-                <label key={mut.id} style={{
-                  ...styles.mutCheckboxLabel,
-                  backgroundColor: isChecked ? 'rgba(168, 85, 247, 0.12)' : 'rgba(255, 255, 255, 0.02)',
-                  borderColor: isChecked ? 'rgba(168, 85, 247, 0.4)' : 'rgba(255, 255, 255, 0.06)'
-                }}>
-                  <input
-                    type="checkbox"
-                    checked={isChecked}
-                    onChange={() => toggleMutation(mut.id)}
-                    style={{ accentColor: '#a855f7', width: '16px', height: '16px' }}
-                  />
-                  <span style={{ fontSize: '12px', fontWeight: 600, color: isChecked ? '#f1f5f9' : '#94a3b8' }}>
-                    {mut.label}
-                  </span>
-                </label>
-              )
-            })}
+          <div style={styles.categoriesContainer}>
+            {MUTATION_CATEGORIES.map((cat) => (
+              <div key={cat.category} className="mutation-category" style={styles.mutationCategory}>
+                <div className="mutation-category-title" style={styles.categoryTitle}>
+                  <span>{cat.icon}</span>
+                  <span>{cat.category}</span>
+                </div>
+                <div className="mutation-grid" style={styles.mutationGrid}>
+                  {cat.items.map((mut) => {
+                    const isChecked = selectedMutations.includes(mut.id)
+                    return (
+                      <label
+                        key={mut.id}
+                        style={{
+                          ...styles.mutCheckboxLabel,
+                          backgroundColor: isChecked ? 'rgba(168, 85, 247, 0.12)' : 'rgba(255, 255, 255, 0.02)',
+                          borderColor: isChecked ? 'rgba(168, 85, 247, 0.4)' : 'rgba(255, 255, 255, 0.06)'
+                        }}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={() => toggleMutation(mut.id)}
+                          style={{ accentColor: '#a855f7', width: '16px', height: '16px', cursor: 'pointer' }}
+                        />
+                        <span style={{ fontSize: '13px', lineHeight: 1.4, fontWeight: 600, color: isChecked ? '#f1f5f9' : 'var(--text-secondary)' }}>
+                          {mut.label}
+                        </span>
+                      </label>
+                    )
+                  })}
+                </div>
+              </div>
+            ))}
           </div>
 
           {/* Action Trigger Button */}
           <div style={styles.actionRow}>
             <button
+              type="button"
               onClick={handleStartAnalysis}
               disabled={stage === 'analyzing' || (!file && !selectedDemoId) || selectedMutations.length === 0}
+              className="btn btn-primary"
+              aria-label="Start Mutation Tree Analysis"
               style={{
                 ...styles.startBtn,
                 opacity: (stage === 'analyzing' || (!file && !selectedDemoId) || selectedMutations.length === 0) ? 0.5 : 1
@@ -1164,29 +1226,29 @@ const styles = {
     marginBottom: '10px'
   },
   dnaBadge: {
-    fontSize: '11px',
-    fontWeight: 800,
+    fontSize: '12px',
+    fontWeight: 700,
     backgroundColor: 'rgba(168, 85, 247, 0.2)',
     color: '#c084fc',
     padding: '4px 10px',
-    borderRadius: '6px',
+    borderRadius: 'var(--radius-sm)',
     border: '1px solid rgba(168, 85, 247, 0.4)'
   },
   versionBadge: {
-    fontSize: '10px',
+    fontSize: '12px',
     fontWeight: 700,
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    color: '#94a3b8',
+    color: 'var(--text-secondary)',
     padding: '4px 8px',
-    borderRadius: '6px'
+    borderRadius: 'var(--radius-sm)'
   },
   costBadge: {
-    fontSize: '10px',
+    fontSize: '12px',
     fontWeight: 800,
     backgroundColor: 'rgba(251, 191, 36, 0.15)',
     color: '#fbbf24',
     padding: '4px 8px',
-    borderRadius: '6px'
+    borderRadius: 'var(--radius-sm)'
   },
   title: {
     fontSize: '26px',
@@ -1248,10 +1310,10 @@ const styles = {
     marginBottom: '12px'
   },
   sectionLabel: {
-    fontSize: '11px',
-    fontWeight: 800,
-    color: '#64748b',
-    letterSpacing: '0.8px'
+    fontSize: '12px',
+    fontWeight: 700,
+    color: 'var(--text-secondary)',
+    letterSpacing: '0.2px'
   },
   demoPill: {
     fontSize: '10px',
@@ -1278,9 +1340,9 @@ const styles = {
     transition: 'all 0.2s'
   },
   sampleCardSelected: {
-    borderColor: '#c084fc',
-    backgroundColor: 'rgba(168, 85, 247, 0.1)',
-    boxShadow: '0 0 12px rgba(168, 85, 247, 0.2)'
+    borderColor: '#a855f7',
+    backgroundColor: 'rgba(168, 85, 247, 0.15)',
+    boxShadow: '0 0 14px rgba(168, 85, 247, 0.25)'
   },
   sampleThumb: {
     width: '46px',
@@ -1409,34 +1471,60 @@ const styles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: '14px'
+    marginBottom: '14px',
+    flexWrap: 'wrap',
+    gap: '12px'
   },
   controlsTitle: {
-    fontSize: '11px',
-    fontWeight: 800,
-    color: '#64748b',
-    letterSpacing: '0.8px'
+    fontSize: '15px',
+    fontWeight: 700,
+    color: 'var(--text-primary)',
+    margin: 0
   },
   controlsSubtitle: {
-    fontSize: '12px',
-    color: '#94a3b8',
-    marginTop: '2px'
+    fontSize: '13px',
+    color: 'var(--text-muted)',
+    marginTop: '4px'
   },
   smallBtn: {
-    padding: '4px 10px',
-    fontSize: '11px',
-    fontWeight: 700,
+    minHeight: '36px',
+    padding: '0 14px',
+    fontSize: '13px',
+    fontWeight: 600,
+    borderRadius: 'var(--radius-md)',
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    color: '#94a3b8',
-    border: '1px solid rgba(255, 255, 255, 0.1)',
-    borderRadius: '6px',
-    cursor: 'pointer'
+    color: 'var(--text-primary)',
+    border: '1px solid var(--border)',
+    cursor: 'pointer',
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  categoriesContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '14px',
+    marginBottom: '20px'
+  },
+  mutationCategory: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  categoryTitle: {
+    fontSize: '13px',
+    fontWeight: 700,
+    color: 'var(--text-secondary)',
+    letterSpacing: '0.5px',
+    textTransform: 'uppercase',
+    marginBottom: '8px',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px'
   },
   mutationGrid: {
     display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
-    gap: '10px',
-    marginBottom: '20px'
+    gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+    gap: '10px'
   },
   mutCheckboxLabel: {
     display: 'flex',
@@ -1451,20 +1539,23 @@ const styles = {
   actionRow: {
     display: 'flex',
     justifyContent: 'center',
-    marginTop: '10px'
+    marginTop: '16px'
   },
   startBtn: {
-    padding: '14px 32px',
+    minHeight: '44px',
+    padding: '0 24px',
     fontSize: '14px',
-    fontWeight: 800,
+    fontWeight: 700,
     color: '#ffffff',
     backgroundColor: '#a855f7',
-    border: 'none',
-    borderRadius: '10px',
+    border: '1px solid #a855f7',
+    borderRadius: 'var(--radius-md)',
     cursor: 'pointer',
-    display: 'flex',
+    display: 'inline-flex',
     alignItems: 'center',
-    boxShadow: '0 4px 20px rgba(168, 85, 247, 0.4)',
+    justifyContent: 'center',
+    gap: '8px',
+    boxShadow: '0 4px 14px rgba(168, 85, 247, 0.35)',
     transition: 'all 0.2s'
   },
   progressContainer: {

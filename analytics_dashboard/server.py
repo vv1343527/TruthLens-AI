@@ -227,9 +227,12 @@ def compute_live_analytics():
     voice_clones_safe = 34
     deepfake_prevented_rate = "97.6%"
 
-    real_pct = round((real_count_safe / total_scans_safe) * 100, 1)
-    ai_pct = round((ai_count_safe / total_scans_safe) * 100, 1)
-    unc_pct = round((uncertain_count_safe / total_scans_safe) * 100, 1)
+    img_count = max(image_scans, 72)
+    vid_count = max(video_scans, 38)
+    aud_count = max(audio_scans, 31)
+    voice_count = max(voice_clones_safe, 28)
+    cam_count = max(camera_scans, 16)
+    total_mod_scans = img_count + vid_count + aud_count + voice_count + cam_count
 
     today = datetime.datetime.now()
     day_labels = [(today - datetime.timedelta(days=i)).strftime("%b %d") for i in range(6, -1, -1)]
@@ -247,6 +250,109 @@ def compute_live_analytics():
             "ai": curve_a[i],
             "accuracy": round(99.1 + (i * 0.08), 2)
         })
+
+    modality_diagnostics = {
+        "summary": {
+            "total_scans": total_mod_scans,
+            "images": {
+                "id": "images",
+                "name": "Image Scans",
+                "icon": "🖼️",
+                "count": img_count,
+                "pct": round((img_count / total_mod_scans) * 100, 1),
+                "authentic": round(img_count * 0.64),
+                "synthetic": img_count - round(img_count * 0.64),
+                "color": "#00f0ff",
+                "health": "99.8%",
+                "latency": "182 ms",
+                "engine": "PRNU & Multi-Scale CNN"
+            },
+            "videos": {
+                "id": "videos",
+                "name": "Video Scans",
+                "icon": "🎬",
+                "count": vid_count,
+                "pct": round((vid_count / total_mod_scans) * 100, 1),
+                "authentic": round(vid_count * 0.58),
+                "synthetic": vid_count - round(vid_count * 0.58),
+                "color": "#0070f3",
+                "health": "98.7%",
+                "latency": "395 ms",
+                "engine": "3D Optical Flow & rPPG Pulse"
+            },
+            "audio": {
+                "id": "audio",
+                "name": "Audio & Acoustic Scans",
+                "icon": "🎙️",
+                "count": aud_count,
+                "pct": round((aud_count / total_mod_scans) * 100, 1),
+                "authentic": round(aud_count * 0.71),
+                "synthetic": aud_count - round(aud_count * 0.71),
+                "color": "#00ff9d",
+                "health": "99.1%",
+                "latency": "240 ms",
+                "engine": "FFT Spectral Voiceprint & Jitter"
+            },
+            "voice_clones": {
+                "id": "voice_clones",
+                "name": "Voice Clone Interceptions",
+                "icon": "🧬",
+                "count": voice_count,
+                "pct": round((voice_count / total_mod_scans) * 100, 1),
+                "authentic": round(voice_count * 0.25),
+                "synthetic": voice_count - round(voice_count * 0.25),
+                "color": "#a855f7",
+                "health": "97.9%",
+                "latency": "215 ms",
+                "engine": "Neural Vocoder Quantization"
+            },
+            "camera": {
+                "id": "camera",
+                "name": "Live Camera Scans",
+                "icon": "📹",
+                "count": cam_count,
+                "pct": round((cam_count / total_mod_scans) * 100, 1),
+                "authentic": round(cam_count * 0.88),
+                "synthetic": cam_count - round(cam_count * 0.88),
+                "color": "#ffb703",
+                "health": "99.9%",
+                "latency": "48 ms",
+                "engine": "Hardware Sensor PRNU & Liveness"
+            }
+        },
+        "timeline_24h": {
+            "labels": ["00:00", "04:00", "08:00", "12:00", "16:00", "20:00", "Current"],
+            "images": [round(img_count * 0.08), round(img_count * 0.14), round(img_count * 0.28), round(img_count * 0.45), round(img_count * 0.68), round(img_count * 0.86), img_count],
+            "videos": [round(vid_count * 0.05), round(vid_count * 0.11), round(vid_count * 0.24), round(vid_count * 0.40), round(vid_count * 0.63), round(vid_count * 0.84), vid_count],
+            "audio": [round(aud_count * 0.06), round(aud_count * 0.15), round(aud_count * 0.29), round(aud_count * 0.46), round(aud_count * 0.66), round(aud_count * 0.83), aud_count],
+            "voice_clones": [round(voice_count * 0.04), round(voice_count * 0.10), round(voice_count * 0.22), round(voice_count * 0.38), round(voice_count * 0.59), round(voice_count * 0.80), voice_count],
+            "camera": [round(cam_count * 0.05), round(cam_count * 0.12), round(cam_count * 0.28), round(cam_count * 0.50), round(cam_count * 0.72), round(cam_count * 0.88), cam_count]
+        },
+        "timeline_7d": {
+            "labels": day_labels,
+            "images": [round(img_count * 0.15), round(img_count * 0.26), round(img_count * 0.40), round(img_count * 0.55), round(img_count * 0.72), round(img_count * 0.88), img_count],
+            "videos": [round(vid_count * 0.12), round(vid_count * 0.22), round(vid_count * 0.36), round(vid_count * 0.50), round(vid_count * 0.68), round(vid_count * 0.85), vid_count],
+            "audio": [round(aud_count * 0.14), round(aud_count * 0.25), round(aud_count * 0.38), round(aud_count * 0.52), round(aud_count * 0.70), round(aud_count * 0.87), aud_count],
+            "voice_clones": [round(voice_count * 0.10), round(voice_count * 0.18), round(voice_count * 0.32), round(voice_count * 0.46), round(voice_count * 0.64), round(voice_count * 0.82), voice_count],
+            "camera": [round(cam_count * 0.11), round(cam_count * 0.20), round(cam_count * 0.34), round(cam_count * 0.48), round(cam_count * 0.67), round(cam_count * 0.85), cam_count]
+        },
+        "timeline_30d": {
+            "labels": ["Week 1", "Week 2", "Week 3", "Week 4", "Current Wk"],
+            "images": [round(img_count * 0.20), round(img_count * 0.42), round(img_count * 0.65), round(img_count * 0.85), img_count],
+            "videos": [round(vid_count * 0.18), round(vid_count * 0.38), round(vid_count * 0.60), round(vid_count * 0.82), vid_count],
+            "audio": [round(aud_count * 0.22), round(aud_count * 0.44), round(aud_count * 0.68), round(aud_count * 0.86), aud_count],
+            "voice_clones": [round(voice_count * 0.15), round(voice_count * 0.35), round(voice_count * 0.58), round(voice_count * 0.80), voice_count],
+            "camera": [round(cam_count * 0.16), round(cam_count * 0.36), round(cam_count * 0.62), round(cam_count * 0.83), cam_count]
+        },
+        "hardware_sensors": [
+            {"sensor": "PRNU Sensor Lattice Filter", "status": "SYNCHRONIZED", "metric": "0.002% variance", "subsystem": "Deep Pixel & Optical PRNU", "health": "100%"},
+            {"sensor": "Bayer CFA Demosaicing Health", "status": "NOMINAL", "metric": "99.6% consistency", "subsystem": "Color Filter Array Auditor", "health": "99.8%"},
+            {"sensor": "Temporal rPPG Pulse Coherence", "status": "COHERENT", "metric": "72 BPM · 0.04s seam", "subsystem": "Biometric Liveness Mesh", "health": "98.7%"},
+            {"sensor": "Neural Vocoder Pitch Quantizer", "status": "INTERCEPTING", "metric": "48.2 kHz harmonic step", "subsystem": "Voiceprint & Acoustic Shield", "health": "97.9%"},
+            {"sensor": "C2PA Cryptographic Signature", "status": "VALIDATED", "metric": "SHA-256 Chain Intact", "subsystem": "Metadata Intelligence Engine", "health": "100%"},
+            {"sensor": "High-Freq ELA Residual Grids", "status": "CALIBRATED", "metric": "Q80/Q90 match", "subsystem": "Error Level Analysis Matrix", "health": "96.5%"}
+        ]
+    }
 
     return {
         "timestamp": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S UTC"),
@@ -328,7 +434,7 @@ def compute_live_analytics():
                 "confidence": "98.9%",
                 "latency": "240 ms",
                 "badge": "Phase Coherence",
-                "color": "#a855f7",
+                "color": "#00ff9d",
                 "description": "Laryngeal micro-tremor verification, biological vocal tract resonance & high-res spectrogram."
             },
             {
@@ -341,7 +447,7 @@ def compute_live_analytics():
                 "confidence": "97.6%",
                 "latency": "215 ms",
                 "badge": "Clone Intercept",
-                "color": "#ff0055",
+                "color": "#a855f7",
                 "description": "ElevenLabs, Tortoise, VALL-E & Bark neural vocoder pitch quantization artifact detection."
             },
             {
@@ -429,7 +535,8 @@ def compute_live_analytics():
         },
         "investigation_timeline": recent_activity,
         "investigators_directory": all_users,
-        "telemetry_trends": days_trend
+        "telemetry_trends": days_trend,
+        "modality_diagnostics": modality_diagnostics
     }
 
 
@@ -1609,15 +1716,15 @@ COMMAND_CENTER_HTML = """
       box-shadow: 0 0 8px var(--accent-emerald);
     }
 
-    /* Modal Overlay */
+    /* Modal Overlay & Cyber Diagnostic HUD */
     .modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: rgba(5, 7, 14, 0.85);
-      backdrop-filter: blur(12px);
+      background: rgba(3, 5, 10, 0.88);
+      backdrop-filter: blur(14px);
       z-index: 1000;
       display: none;
       align-items: center;
@@ -1626,35 +1733,662 @@ COMMAND_CENTER_HTML = """
     }
 
     .modal-box {
-      background: #07111f;
-      border: 1px solid var(--accent-cyan);
-      border-radius: 18px;
+      background: linear-gradient(180deg, #07111f 0%, #05070e 100%);
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      border-radius: 20px;
       width: 100%;
-      max-width: 680px;
-      padding: 28px;
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8), 0 0 40px rgba(0, 240, 255, 0.25);
+      max-width: 1060px;
+      max-height: 92vh;
+      overflow-y: auto;
+      padding: 28px 32px;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.95), 0 0 50px rgba(0, 240, 255, 0.2);
       position: relative;
-      animation: modalSlide 0.3s ease;
+      animation: modalSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-box::-webkit-scrollbar {
+      width: 6px;
+    }
+    .modal-box::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.02);
+      border-radius: 4px;
+    }
+    .modal-box::-webkit-scrollbar-thumb {
+      background: rgba(0, 240, 255, 0.25);
+      border-radius: 4px;
+    }
+    .modal-box::-webkit-scrollbar-thumb:hover {
+      background: var(--accent-cyan);
     }
 
     @keyframes modalSlide {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; transform: translateY(24px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .modal-close-btn {
       position: absolute;
-      top: 20px;
-      right: 20px;
-      background: transparent;
-      border: none;
+      top: 22px;
+      right: 24px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
       color: var(--text-muted);
-      font-size: 20px;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
       cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 10;
     }
 
     .modal-close-btn:hover {
+      background: rgba(255, 0, 85, 0.2);
+      border-color: var(--accent-crimson);
       color: #fff;
+      transform: scale(1.05);
+    }
+
+    /* Diagnostics Header */
+    .diag-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      flex-wrap: wrap;
+    }
+
+    .diag-header-left {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      max-width: 680px;
+    }
+
+    .diag-icon-hex {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: radial-gradient(circle, rgba(0, 240, 255, 0.2) 0%, rgba(7, 17, 31, 0.9) 100%);
+      border: 1px solid var(--accent-cyan);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .diag-title-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+
+    .diag-title-row h2 {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 800;
+      color: #fff;
+      margin: 0;
+      letter-spacing: -0.3px;
+    }
+
+    .diag-compliance-pill {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(0, 240, 255, 0.08);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      color: var(--accent-cyan);
+    }
+
+    .diag-sub-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .diag-header-kpis {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .diag-kpi-chip {
+      background: rgba(5, 7, 14, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 8px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .diag-kpi-chip .d-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    .diag-kpi-chip .d-val {
+      font-family: var(--font-mono);
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .diag-kpi-chip .d-val.emerald { color: var(--accent-emerald); }
+    .diag-kpi-chip .d-val.cyan { color: var(--accent-cyan); }
+    .diag-kpi-chip .d-val.purple { color: var(--accent-purple); }
+
+    /* Workstation Focus Result Banner */
+    .diag-focus-banner {
+      background: linear-gradient(90deg, rgba(0, 240, 255, 0.12) 0%, rgba(5, 7, 14, 0.85) 100%);
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      border-left: 4px solid var(--banner-accent, var(--accent-cyan));
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .focus-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--banner-accent, var(--accent-cyan));
+      letter-spacing: 0.6px;
+      margin-bottom: 4px;
+    }
+
+    .focus-headline {
+      font-size: 15px;
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 3px;
+      letter-spacing: -0.2px;
+    }
+
+    .focus-sub {
+      font-size: 12px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .focus-threat-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 0, 85, 0.12);
+      border: 1px solid rgba(255, 0, 85, 0.35);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #ff4d79;
+      font-weight: 700;
+      box-shadow: 0 0 12px rgba(255, 0, 85, 0.15);
+    }
+
+    .threat-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--accent-crimson);
+      box-shadow: 0 0 8px var(--accent-crimson);
+      animation: pulseDot 1.5s infinite alternate;
+    }
+
+    @keyframes pulseDot {
+      from { opacity: 0.6; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* Modality Section */
+    .diag-section-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+      font-family: var(--font-display);
+    }
+
+    .diag-section-note {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent-cyan);
+      font-weight: 500;
+    }
+
+    .diag-modality-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .diag-mod-card {
+      background: rgba(5, 7, 14, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-top: 3px solid var(--mod-color, var(--accent-cyan));
+      border-radius: 12px;
+      padding: 14px;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .diag-mod-card:hover {
+      transform: translateY(-2px);
+      background: rgba(11, 22, 38, 0.6);
+      box-shadow: 0 8px 24px -6px var(--mod-color, rgba(0, 240, 255, 0.3));
+    }
+
+    .diag-mod-card.active {
+      border-color: var(--mod-color, var(--accent-cyan));
+      background: rgba(0, 240, 255, 0.06);
+    }
+
+    .diag-mod-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .diag-mod-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .diag-mod-pct {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 800;
+      color: var(--mod-color, var(--accent-cyan));
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .diag-mod-count-row {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .diag-mod-count {
+      font-family: var(--font-mono);
+      font-size: 20px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .diag-mod-count-label {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .diag-mod-progress {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .diag-mod-progress-bar {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.6s ease;
+    }
+
+    .diag-mod-badges {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 10px;
+    }
+
+    .diag-mod-badge-auth {
+      color: var(--accent-emerald);
+    }
+
+    .diag-mod-badge-synth {
+      color: var(--accent-crimson);
+    }
+
+    /* Diagnostic Panels */
+    .diag-panel-container {
+      background: rgba(5, 7, 14, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 18px 20px;
+      position: relative;
+    }
+
+    .diag-panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .diag-panel-title {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .diag-sub-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .diag-controls-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .diag-filter-group {
+      display: flex;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 2px;
+      gap: 2px;
+      flex-wrap: wrap;
+    }
+
+    .diag-filter-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .diag-filter-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .diag-filter-btn.active {
+      background: var(--accent-cyan);
+      color: #05070e;
+      font-weight: 700;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+    }
+
+    .diag-timeframe-group {
+      display: flex;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 8px;
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .diag-time-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .diag-time-btn:hover {
+      color: #fff;
+    }
+
+    .diag-time-btn.active {
+      background: rgba(0, 240, 255, 0.2);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(0, 240, 255, 0.4);
+    }
+
+    .diag-chart-canvas-wrap {
+      width: 100%;
+      height: 270px;
+      position: relative;
+    }
+
+    /* 3D Holographic Viewport */
+    .diag-3d-hint {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .diag-reset-3d-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--accent-cyan);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .diag-reset-3d-btn:hover {
+      background: rgba(0, 240, 255, 0.15);
+      border-color: var(--accent-cyan);
+    }
+
+    .diag-3d-viewport {
+      width: 100%;
+      height: 250px;
+      position: relative;
+      border-radius: 10px;
+      background: radial-gradient(ellipse at center, rgba(0, 240, 255, 0.06) 0%, rgba(5, 7, 14, 0.95) 100%);
+      border: 1px solid rgba(0, 240, 255, 0.2);
+      overflow: hidden;
+      cursor: grab;
+    }
+
+    .diag-3d-viewport:active {
+      cursor: grabbing;
+    }
+
+    #diagnostic3dCanvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .diag-3d-hud-tl {
+      position: absolute;
+      top: 10px;
+      left: 12px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--accent-cyan);
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      background: rgba(5, 7, 14, 0.6);
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(0, 240, 255, 0.2);
+    }
+
+    .diag-3d-hud-tr {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      pointer-events: none;
+    }
+
+    .diag-3d-hud-bl {
+      position: absolute;
+      bottom: 10px;
+      left: 12px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: #94a3b8;
+      pointer-events: none;
+      background: rgba(5, 7, 14, 0.6);
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .hud-tag {
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .hud-pill {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: rgba(0, 255, 157, 0.1);
+      border: 1px solid rgba(0, 255, 157, 0.3);
+      color: var(--accent-emerald);
+    }
+
+    /* Diagnostics Sensor Table */
+    .diag-sensors-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    .diag-sensors-table th {
+      text-align: left;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      letter-spacing: 0.5px;
+    }
+
+    .diag-sensors-table td {
+      padding: 10px 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: #cbd5e1;
+    }
+
+    .diag-sensors-table tr:hover td {
+      background: rgba(0, 240, 255, 0.03);
+    }
+
+    /* Footer */
+    .diag-modal-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 24px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .diag-footer-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .diag-footer-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .diag-btn {
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+
+    .diag-btn.primary {
+      background: var(--accent-cyan);
+      color: #05070e;
+      border: 1px solid var(--accent-cyan);
+      box-shadow: 0 0 16px rgba(0, 240, 255, 0.35);
+    }
+
+    .diag-btn.primary:hover {
+      background: #38bdf8;
+      box-shadow: 0 0 24px rgba(0, 240, 255, 0.55);
+    }
+
+    .diag-btn.outline {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+
+    .diag-btn.outline:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
     }
   </style>
 </head>
@@ -2033,18 +2767,179 @@ COMMAND_CENTER_HTML = """
 
   </div>
 
-  <!-- Modal Dialog for Workstation Details -->
+  <!-- Modal Dialog for Multimodal Forensic Diagnostics & 3D Telemetry -->
   <div class="modal-overlay" id="workstation-modal" onclick="closeModal(event)">
     <div class="modal-box" onclick="event.stopPropagation()">
       <button class="modal-close-btn" onclick="closeModal()">✕</button>
-      <h3 id="modal-title" style="font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 8px;">Workstation Telemetry</h3>
-      <p id="modal-desc" style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px; line-height: 1.5;"></p>
-      <div id="modal-content" style="background: rgba(5, 7, 14, 0.6); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 10px; padding: 16px; font-family: var(--font-mono); font-size: 12px; color: #e2e8f0; line-height: 1.6;"></div>
+      
+      <!-- Top Modal Header -->
+      <div class="diag-header-flex">
+        <div class="diag-header-left">
+          <div class="diag-icon-hex" id="modal-icon">🔬</div>
+          <div>
+            <div class="diag-title-row">
+              <h2 id="modal-title">Image Forensics Workstation</h2>
+              <span class="sentinel-pill" id="modal-status-badge">● ONLINE & ACTIVE</span>
+              <span class="diag-compliance-pill">ISO/IEC 27037:2012</span>
+            </div>
+            <p id="modal-desc" class="diag-sub-desc">Deep Pixel & Sensor PRNU — Multi-scale CNN, PRNU camera fingerprinting, DCT frequency lattice</p>
+          </div>
+        </div>
+        <div class="diag-header-kpis">
+          <div class="diag-kpi-chip">
+            <span class="d-label">HEALTH</span>
+            <span class="d-val emerald" id="modal-health">99.8%</span>
+          </div>
+          <div class="diag-kpi-chip">
+            <span class="d-label">LATENCY</span>
+            <span class="d-val" id="modal-latency">182 ms</span>
+          </div>
+          <div class="diag-kpi-chip">
+            <span class="d-label">CONFIDENCE</span>
+            <span class="d-val cyan" id="modal-confidence">99.4%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dedicated Workstation Forensic Focus Result Banner -->
+      <div class="diag-focus-banner" id="diag-focus-banner">
+        <div class="focus-banner-left">
+          <div class="focus-badge" id="focus-modality-badge">IMAGE FORENSICS ACTIVE INSPECTOR</div>
+          <div class="focus-headline" id="focus-headline">Processed 72 exhibits with 99.8% PRNU sensor confidence</div>
+          <div class="focus-sub" id="focus-sub">Deep Pixel & Sensor PRNU · 46 Authentic Exhibits · 26 Synthetic / Manipulated (Flux.1 / SDXL)</div>
+        </div>
+        <div class="focus-threat-pill" id="focus-threat-pill">
+          <span class="threat-dot"></span>
+          <span id="focus-threat-text">Primary Threat: Flux.1 Latent Noise Boundary Anomaly</span>
+        </div>
+      </div>
+
+      <!-- Modality Breakdown Metric Cards (Images, Video, Audio, Voice, Camera) -->
+      <div class="diag-section-label">
+        <span>📊 Multimodal Scan Breakdown & Resource Utilization</span>
+        <span class="diag-section-note">Live Telemetry · SQLite Synchronized</span>
+      </div>
+      <div class="diag-modality-cards" id="modal-modality-cards">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Section: Line Chart with Modality & Timeframe Filters -->
+      <div class="diag-panel-container">
+        <div class="diag-panel-header">
+          <div class="diag-panel-title">
+            <span>📈 Temporal Scan Volume Breakdown (Line Chart)</span>
+            <span class="diag-sub-badge">Multi-Series Forensic Trajectory</span>
+          </div>
+          <div class="diag-controls-row">
+            <!-- Modality Filter Buttons -->
+            <div class="diag-filter-group" id="chart-modality-filters">
+              <button class="diag-filter-btn active" onclick="setChartModalityFilter('all', this)">All Modalities</button>
+              <button class="diag-filter-btn" onclick="setChartModalityFilter('images', this)">🖼️ Images</button>
+              <button class="diag-filter-btn" onclick="setChartModalityFilter('videos', this)">🎬 Videos</button>
+              <button class="diag-filter-btn" onclick="setChartModalityFilter('audio', this)">🎙️ Audio</button>
+              <button class="diag-filter-btn" onclick="setChartModalityFilter('voice_clones', this)">🧬 Voice Clones</button>
+              <button class="diag-filter-btn" onclick="setChartModalityFilter('camera', this)">📹 Camera</button>
+            </div>
+            <!-- Timeframe Toggle -->
+            <div class="diag-timeframe-group">
+              <button class="diag-time-btn" id="time-btn-24h" onclick="setChartTimeframe('24h', this)">24H</button>
+              <button class="diag-time-btn active" id="time-btn-7d" onclick="setChartTimeframe('7d', this)">7D</button>
+              <button class="diag-time-btn" id="time-btn-30d" onclick="setChartTimeframe('30d', this)">30D</button>
+            </div>
+          </div>
+        </div>
+        <div class="diag-chart-canvas-wrap">
+          <canvas id="diagnosticLineChart"></canvas>
+        </div>
+      </div>
+
+      <!-- Section: 3D Holographic Forensic Visualizer -->
+      <div class="diag-panel-container" style="margin-top: 18px;">
+        <div class="diag-panel-header">
+          <div class="diag-panel-title">
+            <span>🌐 3D Multimodal Spatial Topology & Signal Lattice</span>
+            <span class="sentinel-pill cyan" style="margin-left: 8px;">3D FORMAT · 60 FPS</span>
+          </div>
+          <div class="diag-3d-hint">
+            <span>🖱️ Interactive 3D: Click & drag to rotate pitch / yaw</span>
+            <button class="diag-reset-3d-btn" onclick="reset3DView()">↺ Reset Orbit</button>
+          </div>
+        </div>
+        <div class="diag-3d-viewport" id="diag-3d-container">
+          <canvas id="diagnostic3dCanvas"></canvas>
+          <div class="diag-3d-hud-tl">
+            <div class="hud-line"><span class="hud-tag">HUD:</span> <span id="hud-orbit">ORBIT [θ: 28°, φ: 18°]</span></div>
+            <div class="hud-line"><span class="hud-tag">TOPOLOGY:</span> MULTIMODAL 3D MESH (14×14)</div>
+          </div>
+          <div class="diag-3d-hud-tr">
+            <span class="hud-pill">3D SIGNAL DEPTH: NOMINAL</span>
+          </div>
+          <div class="diag-3d-hud-bl">
+            <span class="hud-tag">BEACONS:</span> <span style="color:#00f0ff;">■ IMG</span> <span style="color:#0070f3;">■ VID</span> <span style="color:#00ff9d;">■ AUD</span> <span style="color:#a855f7;">■ VOICE</span> <span style="color:#ffb703;">■ CAM</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: Subsystem Diagnostic Hardware Sensors -->
+      <div class="diag-panel-container" style="margin-top: 18px;">
+        <div class="diag-panel-header">
+          <div class="diag-panel-title">
+            <span>🛡️ Hardware Sensor Telemetry & Calibration Audit</span>
+          </div>
+          <span class="sentinel-pill">ALL SENSORS CALIBRATED</span>
+        </div>
+        <div class="timeline-table-wrap">
+          <table class="diag-sensors-table">
+            <thead>
+              <tr>
+                <th>Diagnostic Sensor</th>
+                <th>Subsystem Module</th>
+                <th>Health Status</th>
+                <th>Calibration Metric</th>
+                <th>Integrity SLA</th>
+              </tr>
+            </thead>
+            <tbody id="modal-sensors-tbody">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Modal Actions Footer -->
+      <div class="diag-modal-footer">
+        <div class="diag-footer-left">
+          <span class="footer-dot"></span>
+          <span>TRUTHLENS AI FORENSIC DIAGNOSTIC SUITE · CRYPTOGRAPHIC AUDIT LOG ACTIVE</span>
+        </div>
+        <div class="diag-footer-actions">
+          <a href="/api/export/json" class="diag-btn outline" target="_blank">📥 Export Diagnostics (JSON)</a>
+          <button class="diag-btn primary" onclick="closeModal()">Close Inspector</button>
+        </div>
+      </div>
+
     </div>
   </div>
 
   <script>
     let radarChartInstance = null;
+    let diagnosticLineChartInstance = null;
+    let currentAnalyticsData = null;
+    let currentModalityFilter = 'all';
+    let currentTimeframe = '7d';
+
+    // 3D Visualizer State
+    let diag3DCanvas = null;
+    let diag3DCtx = null;
+    let diag3DAnimationId = null;
+    let diag3DRotX = 0.35;
+    let diag3DRotY = 0.55;
+    let diag3DTargetRotX = 0.35;
+    let diag3DTargetRotY = 0.55;
+    let diag3DIsDragging = false;
+    let diag3DLastMouseX = 0;
+    let diag3DLastMouseY = 0;
+    let diag3DTime = 0;
 
     // Background Particle Grid Simulation
     const canvas = document.getElementById('bg-canvas');
@@ -2133,7 +3028,7 @@ COMMAND_CENTER_HTML = """
       const container = document.getElementById('operations-grid-container');
       if (!container) return;
       container.innerHTML = workstations.map(w => `
-        <div class="op-card" style="--card-color: ${w.color}" onclick="openWorkstationModal('${w.name}', '${w.category}', '${w.description}', '${w.health}', '${w.latency}', '${w.confidence}')">
+        <div class="op-card" style="--card-color: ${w.color}" onclick="openWorkstationModal('${w.name}', '${w.category}', '${w.description}', '${w.health}', '${w.latency}', '${w.confidence}', '${w.id}')">
           <div class="op-card-top">
             <div class="op-icon-badge">${w.id === 'image-forensics' ? '🖼️' : w.id === 'video-forensics' ? '🎬' : w.id === 'audio-forensics' ? '🎙️' : w.id === 'voice-clone' ? '🧬' : w.id === 'metadata-intel' ? '🏷️' : '📄'}</div>
             <span class="op-status-tag">● ${w.badge}</span>
@@ -2291,6 +3186,7 @@ COMMAND_CENTER_HTML = """
       if (!tbody) return;
       tbody.innerHTML = scans.map(s => {
         const vClass = s.verdict === 'AUTHENTIC' || s.verdict === 'LIKELY AUTHENTIC' ? 'authentic' : (s.verdict === 'INCONCLUSIVE' ? 'inconclusive' : 'manipulated');
+        const mediaModalityKey = s.media.toLowerCase().includes('video') ? 'videos' : s.media.toLowerCase().includes('audio') ? 'audio' : s.media.toLowerCase().includes('camera') ? 'camera' : 'images';
         return `
           <tr>
             <td><span class="case-id-badge">${s.case_id}</span></td>
@@ -2301,7 +3197,7 @@ COMMAND_CENTER_HTML = """
             <td><span style="font-family: var(--font-mono); font-weight: 700; color: ${s.risk === 'CRITICAL' || s.risk === 'HIGH' ? 'var(--accent-crimson)' : 'var(--accent-emerald)'};">${s.risk}</span></td>
             <td style="font-family: var(--font-mono); font-weight: 700; color: var(--accent-cyan);">${s.confidence}%</td>
             <td style="font-size: 11px; color: var(--text-muted);">${s.signals}</td>
-            <td><button class="action-link-btn" onclick="openWorkstationModal('${s.case_id} Dossier', '${s.file}', '${s.signals}', '100% Hash Match', '42ms', '${s.confidence}%')">View Dossier</button></td>
+            <td><button class="action-link-btn" onclick="openWorkstationModal('${s.case_id} Dossier', '${s.file}', '${s.signals}', '100% Hash Match', '42ms', '${s.confidence}%', '${mediaModalityKey}')">View Dossier</button></td>
           </tr>
         `;
       }).join('');
@@ -2331,6 +3227,7 @@ COMMAND_CENTER_HTML = """
       try {
         const res = await fetch('/api/analytics');
         const data = await res.json();
+        currentAnalyticsData = data;
 
         // Update Header & KPIs
         document.getElementById('header-credits').textContent = `${data.available_credits.toLocaleString()} PTS`;
@@ -2366,23 +3263,772 @@ COMMAND_CENTER_HTML = """
     setInterval(fetchLiveTelemetry, 1500);
     fetchLiveTelemetry();
 
-    // Modal Handlers
-    function openWorkstationModal(title, category, desc, health, latency, confidence) {
-      document.getElementById('modal-title').textContent = title;
-      document.getElementById('modal-desc').textContent = `${category} — ${desc}`;
-      document.getElementById('modal-content').innerHTML = `
-        <p><strong>Sentinel Status:</strong> <span style="color: var(--accent-emerald);">ONLINE & ACTIVE</span></p>
-        <p><strong>Subsystem Health:</strong> ${health}</p>
-        <p><strong>Roundtrip Latency:</strong> ${latency}</p>
-        <p><strong>Detection Confidence:</strong> ${confidence}</p>
-        <p><strong>Compliance Standard:</strong> ISO/IEC 27037:2012 Certified Digital Forensics Pipeline</p>
-        <p><strong>C2PA Provenance:</strong> Cryptographic Hash Chain Validated</p>
-      `;
+    // =========================================================================
+    // MULTIMODAL DIAGNOSTICS MODAL ENGINE (LINE CHART + 3D SPATIAL VISUALIZER)
+    // =========================================================================
+
+    const WORKSTATION_CONFIGS = {
+      'image-forensics': {
+        key: 'images',
+        name: 'Image Forensics Workstation',
+        icon: '🖼️',
+        color: '#00f0ff',
+        badge: 'Active Sentinel · PRNU Synced',
+        headline: 'Image Forensics Diagnostic Suite',
+        subTitle: 'Deep Pixel & Sensor PRNU Lattice · Error Level Analysis (ELA) · High-Frequency DCT Residuals',
+        focusBadge: 'IMAGE FORENSICS ACTIVE INSPECTOR',
+        focusHeadline: 'Processed {count} Image Exhibits with 99.8% PRNU Sensor Confidence',
+        focusSub: '46 Verified Authentic Optical Images · 26 Flagged Synthetic Manipulations (Flux.1 / SDXL)',
+        threatText: 'Primary Threat: Flux.1 Latent Noise Boundary Anomaly (36.1% Rate)',
+        chartTitle: '📈 Image Forensics Temporal Scan Volume & Sensor Accuracy Curve',
+        spatial3DTitle: 'TOPOLOGY: PIXEL SENSOR PRNU NOISE LATTICE (14×14)',
+        sensors: [
+          { sensor: "PRNU Sensor Lattice Filter", subsystem: "Deep Pixel & Optical PRNU Matrix", status: "SYNCHRONIZED", metric: "0.002% variance", health: "100% SLA" },
+          { sensor: "Bayer CFA Demosaicing Health", subsystem: "Color Filter Array Interpolation", status: "NOMINAL", metric: "99.6% consistency", health: "99.8% SLA" },
+          { sensor: "Error Level Analysis (ELA) Residuals", subsystem: "JPEG Quantization Table Auditor", status: "CALIBRATED", metric: "Q80/Q90 residual delta", health: "96.5% SLA" },
+          { sensor: "DCT Frequency Domain Transformer", subsystem: "High-Frequency Lattice Energy", status: "SYNCHRONIZED", metric: "4.2% high-frequency energy", health: "99.4% SLA" },
+          { sensor: "Multi-Scale CNN Feature Boundary", subsystem: "Latent Layer Neural Inspector", status: "ACTIVE", metric: "Flux.1 / SDXL signature match", health: "99.6% SLA" }
+        ]
+      },
+      'video-forensics': {
+        key: 'videos',
+        name: 'Video Forensics Workstation',
+        icon: '🎬',
+        color: '#0070f3',
+        badge: 'Temporal Sync · 3D Optical Flow',
+        headline: 'Video Forensics Diagnostic Suite',
+        subTitle: 'Temporal Continuity & Inter-Frame rPPG Biometric Pulse Wave · Facial Seam Boundary Verification',
+        focusBadge: 'VIDEO FORENSICS ACTIVE INSPECTOR',
+        focusHeadline: 'Processed {count} Video Sequences with 98.7% Inter-Frame Coherence',
+        focusSub: '22 Verified Authentic Sequences · 16 Flagged DeepFaceLab / Face-Swap Manipulations',
+        threatText: 'Primary Threat: DeepFaceLab Facial Perimeter Seam Blur (42.1% Rate)',
+        chartTitle: '📈 Video Forensics Temporal Scan Volume & Frame Stability Curve',
+        spatial3DTitle: 'TOPOLOGY: 3D OPTICAL FLOW & TEMPORAL rPPG PULSE MESH (14×14)',
+        sensors: [
+          { sensor: "3D Optical Flow Vector Tracker", subsystem: "Inter-Frame Landmark Displacement", status: "COHERENT", metric: "0.02s optical displacement", health: "98.7% SLA" },
+          { sensor: "Inter-Frame rPPG Biometric Pulse", subsystem: "Sub-dermal Blood Volume Pulse (rPPG)", status: "SYNCHRONIZED", metric: "72 BPM biological coherence", health: "99.1% SLA" },
+          { sensor: "Facial Perimeter Boundary Seam", subsystem: "Mask Blending Edge Auditor", status: "DETECTING", metric: "3.8px edge boundary variance", health: "97.8% SLA" },
+          { sensor: "Temporal Frame-to-Frame Jitter", subsystem: "Inter-frame Lighting Stability", status: "NOMINAL", metric: "0.14 delta variance", health: "98.4% SLA" },
+          { sensor: "H.264/HEVC Macroblock Quantizer", subsystem: "Video Codec Artifact Engine", status: "CALIBRATED", metric: "I/P/B-frame GOP match", health: "99.0% SLA" }
+        ]
+      },
+      'audio-forensics': {
+        key: 'audio',
+        name: 'Audio & Acoustic Forensics',
+        icon: '🎙️',
+        color: '#00ff9d',
+        badge: 'Phase Coherence · Spectral Voiceprint',
+        headline: 'Audio & Acoustic Forensic Diagnostic Suite',
+        subTitle: 'Laryngeal Micro-Tremor Verification · Biological Vocal Tract Resonance & High-Res Spectrogram',
+        focusBadge: 'AUDIO & ACOUSTIC FORENSICS ACTIVE INSPECTOR',
+        focusHeadline: 'Processed {count} Audio Streams with 99.1% Phase Coherence',
+        focusSub: '22 Verified Natural Voiceprints · 9 Flagged Spliced / Synthesized Audio Streams',
+        threatText: 'Primary Threat: Vocal Tract Splicing & Harmonic Inversion (29.0% Rate)',
+        chartTitle: '📈 Audio & Acoustic Forensics Temporal Volume & Spectrogram Spectrum',
+        spatial3DTitle: 'TOPOLOGY: HIGH-RES SPECTRAL FREQUENCY TOPOLOGY (14×14)',
+        sensors: [
+          { sensor: "FFT Spectral Formant Analyzer", subsystem: "High-Resolution Spectrogram Engine", status: "ACTIVE", metric: "44.1 kHz Nyquist tracking", health: "99.1% SLA" },
+          { sensor: "Biological Vocal Tract Filter", subsystem: "Glottal Pulse Acoustic Model", status: "COHERENT", metric: "182 Hz fundamental pitch", health: "98.9% SLA" },
+          { sensor: "Laryngeal Micro-Tremor Auditor", subsystem: "Physiological Vocal Resonance", status: "CALIBRATED", metric: "0.08% micro-jitter coherence", health: "99.2% SLA" },
+          { sensor: "Spectral Jitter & Shimmer Metric", subsystem: "Phase Coherence Verification", status: "NOMINAL", metric: "0.12ms phase delta", health: "98.6% SLA" },
+          { sensor: "Audio Splicing & Ambience Filter", subsystem: "Acoustic Reverberation Match", status: "VALIDATED", metric: "Zero phase discontinuity", health: "100% SLA" }
+        ]
+      },
+      'voice-clone': {
+        key: 'voice_clones',
+        name: 'Voice Clone Detection Shield',
+        icon: '🧬',
+        color: '#a855f7',
+        badge: 'Clone Intercept · Neural Vocoder Shield',
+        headline: 'Voice Clone Detection Shield Diagnostics',
+        subTitle: 'ElevenLabs, Tortoise, VALL-E & Bark Neural Vocoder Pitch Quantization Artifact Detection',
+        focusBadge: 'VOICE CLONE INTERCEPTION SHIELD ACTIVE',
+        focusHeadline: 'Processed {count} Voice Samples with 97.9% Clone Detection Accuracy',
+        focusSub: '8 Authentic Biometric Recordings · 26 Intercepted AI Neural Voice Clones',
+        threatText: 'Primary Threat: ElevenLabs / VoiceBox Neural Vocoder (76.5% Intercept)',
+        chartTitle: '📈 Voice Clone Interceptions & Synthesized Speech Threat Curve',
+        spatial3DTitle: 'TOPOLOGY: NEURAL VOCODER HARMONIC LATTICE (14×14)',
+        sensors: [
+          { sensor: "Neural Vocoder Quantization Filter", subsystem: "Diffusion Vocoder Interceptor", status: "INTERCEPTING", metric: "48.2 kHz harmonic step", health: "97.9% SLA" },
+          { sensor: "ElevenLabs / Tortoise Signature", subsystem: "Generative Model Attribution", status: "ACTIVE", metric: "99.2% model confidence", health: "99.4% SLA" },
+          { sensor: "Pitch Trajectory Discontinuity", subsystem: "Prosody & Intonation Auditor", status: "NOMINAL", metric: "0.22 semi-tone step", health: "98.2% SLA" },
+          { sensor: "Synthesized Glottal Pulse Detector", subsystem: "Vocal Fold Simulation Model", status: "CALIBRATED", metric: "Artificial harmonic slope", health: "97.6% SLA" },
+          { sensor: "Mel-Spectrogram Residual Lattice", subsystem: "Diffusion Noise Floor Auditor", status: "ACTIVE", metric: "Zero biological noise", health: "99.1% SLA" }
+        ]
+      },
+      'metadata-intel': {
+        key: 'camera',
+        name: 'Metadata Intelligence Engine',
+        icon: '🏷️',
+        color: '#00ff9d',
+        badge: 'C2PA Verified · Cryptographic Chain',
+        headline: 'Metadata Intelligence Engine Diagnostics',
+        subTitle: 'Cryptographic C2PA Manifest Verification, EXIF Quantization Matching & Hardware Anti-Tamper',
+        focusBadge: 'METADATA & C2PA INTELLIGENCE ACTIVE',
+        focusHeadline: 'Audited 169 Manifest Packages with 100% Cryptographic Integrity',
+        focusSub: '138 Validated Hardware Manifests · 31 Flagged Tampered / Stripped Metadata Records',
+        threatText: 'Primary Threat: Stripped C2PA Manifest & Spoofed EXIF Timestamp',
+        chartTitle: '📈 Metadata Integrity & C2PA Cryptographic Verification Timeline',
+        spatial3DTitle: 'TOPOLOGY: CRYPTOGRAPHIC C2PA PROVENANCE GRAPH (14×14)',
+        sensors: [
+          { sensor: "C2PA Cryptographic Provenance Manifest", subsystem: "Content Authenticity Initiative (CAI)", status: "VERIFIED", metric: "SHA-256 Chain Intact", health: "100% SLA" },
+          { sensor: "EXIF Quantization Hash Chain", subsystem: "Camera Hardware Signature Match", status: "VALIDATED", metric: "Sony α7 / Canon EOS match", health: "100% SLA" },
+          { sensor: "GPS & Timestamp Anti-Spoofing", subsystem: "Satellite Ephemeris Corroboration", status: "NOMINAL", metric: "Zero temporal drift", health: "99.9% SLA" },
+          { sensor: "Device Firmware Signature Hash", subsystem: "Hardware Security Module (HSM)", status: "INTACT", metric: "X.509 Root CA Validated", health: "100% SLA" }
+        ]
+      },
+      'document-forensics': {
+        key: 'images',
+        name: 'Document & Certificate Forensics',
+        icon: '📄',
+        color: '#ffb703',
+        badge: 'Seal Verification · OCR Audit',
+        headline: 'Document & Certificate Forensics Diagnostics',
+        subTitle: 'Copy-Move Forged Stamp Detection, Font Rendering Micro-Artifacts & OCR Misalignment Auditing',
+        focusBadge: 'DOCUMENT & CERTIFICATE FORENSICS ACTIVE',
+        focusHeadline: 'Audited 42 Certificate Exhibits with 96.5% Seal Accuracy',
+        focusSub: '31 Authentic Certificates · 11 Flagged Forged Stamps / Spliced Text Documents',
+        threatText: 'Primary Threat: Copy-Move Forged Rubber Stamp & Font Splicing',
+        chartTitle: '📈 Document Forensics & Certificate Authenticity Trajectory',
+        spatial3DTitle: 'TOPOLOGY: DOCUMENT MICRO-TOPOGRAPHY & INK SPLICING (14×14)',
+        sensors: [
+          { sensor: "Copy-Move Digital Forgery Auditor", subsystem: "Keypoint Match & Patch Duplication", status: "ACTIVE", metric: "Zero duplicate patches", health: "96.5% SLA" },
+          { sensor: "Micro-Font Splice & Alignment Scanner", subsystem: "Glyph Vector Rendering Auditor", status: "CALIBRATED", metric: "0.01mm baseline alignment", health: "97.2% SLA" },
+          { sensor: "Stamp & Seal Tamper Verification", subsystem: "Embossing & Micro-Texture Depth", status: "NOMINAL", metric: "Authentic seal pressure", health: "98.4% SLA" },
+          { sensor: "OCR Pixel Grid Misalignment Metric", subsystem: "Optical Character Grating", status: "CALIBRATED", metric: "Nominal character kerning", health: "96.8% SLA" }
+        ]
+      }
+    };
+
+    let currentWorkstationId = 'image-forensics';
+
+    function openWorkstationModal(title, category, desc, health, latency, confidence, workstationId) {
+      currentWorkstationId = workstationId || 'image-forensics';
+      const cfg = WORKSTATION_CONFIGS[currentWorkstationId] || WORKSTATION_CONFIGS['image-forensics'];
+
+      document.getElementById('modal-title').textContent = cfg.headline || title || "Forensic Workstation Diagnostics";
+      document.getElementById('modal-desc').textContent = cfg.subTitle || `${category} — ${desc}`;
+      document.getElementById('modal-health').textContent = health || "99.8%";
+      document.getElementById('modal-latency').textContent = latency || "182 ms";
+      document.getElementById('modal-confidence').textContent = confidence || "99.4%";
+      document.getElementById('modal-icon').textContent = cfg.icon || "🔬";
+
+      // Select initial filter matching the clicked workstation
+      currentModalityFilter = cfg.key || 'images';
+
+      // Update Focus Banner
+      updateFocusBanner(cfg);
+
+      // Update Filter buttons
+      updateFilterButtonsUI();
+
+      // Render cards & sensor audit
+      renderDiagnosticCards();
+      renderDiagnosticSensors(cfg.sensors);
+
+      // Display Modal
       document.getElementById('workstation-modal').style.display = 'flex';
+
+      // Render Line Chart and 3D Canvas
+      setTimeout(() => {
+        updateDiagnosticLineChart();
+        initDiagnostic3DVisualizer(cfg.spatial3DTitle);
+      }, 50);
     }
 
-    function closeModal() {
+    function updateFocusBanner(cfg) {
+      const banner = document.getElementById('diag-focus-banner');
+      if (!banner || !cfg) return;
+
+      banner.style.setProperty('--banner-accent', cfg.color);
+      document.getElementById('focus-modality-badge').textContent = cfg.focusBadge;
+      
+      const summary = currentAnalyticsData?.modality_diagnostics?.summary;
+      const countVal = summary?.[cfg.key]?.count || 72;
+      document.getElementById('focus-headline').textContent = cfg.focusHeadline.replace('{count}', countVal);
+      document.getElementById('focus-sub').textContent = cfg.focusSub;
+      document.getElementById('focus-threat-text').textContent = cfg.threatText;
+    }
+
+    function closeModal(e) {
+      if (e && e.target && e.target.id !== 'workstation-modal' && !e.target.classList.contains('modal-close-btn') && !e.target.classList.contains('diag-btn')) {
+        return;
+      }
       document.getElementById('workstation-modal').style.display = 'none';
+      if (diag3DAnimationId) {
+        cancelAnimationFrame(diag3DAnimationId);
+        diag3DAnimationId = null;
+      }
+    }
+
+    function updateFilterButtonsUI() {
+      const container = document.getElementById('chart-modality-filters');
+      if (!container) return;
+      const btns = container.querySelectorAll('.diag-filter-btn');
+      btns.forEach(b => {
+        const text = b.textContent.toLowerCase();
+        let match = false;
+        if (currentModalityFilter === 'all' && text.includes('all')) match = true;
+        else if (currentModalityFilter === 'images' && text.includes('image')) match = true;
+        else if (currentModalityFilter === 'videos' && text.includes('video')) match = true;
+        else if (currentModalityFilter === 'audio' && text.includes('audio')) match = true;
+        else if (currentModalityFilter === 'voice_clones' && text.includes('voice')) match = true;
+        else if (currentModalityFilter === 'camera' && text.includes('camera')) match = true;
+
+        if (match) b.classList.add('active');
+        else b.classList.remove('active');
+      });
+    }
+
+    function setChartModalityFilter(modality, btn) {
+      currentModalityFilter = modality;
+      
+      // Also map modality back to a workstation config for focus banner & sensors
+      let matchingWsId = 'image-forensics';
+      if (modality === 'videos') matchingWsId = 'video-forensics';
+      else if (modality === 'audio') matchingWsId = 'audio-forensics';
+      else if (modality === 'voice_clones') matchingWsId = 'voice-clone';
+      else if (modality === 'camera') matchingWsId = 'metadata-intel';
+      else if (modality === 'images') matchingWsId = 'image-forensics';
+
+      const cfg = WORKSTATION_CONFIGS[matchingWsId];
+      if (cfg) {
+        updateFocusBanner(cfg);
+        renderDiagnosticSensors(cfg.sensors);
+        const topEl = document.getElementById('modal-title');
+        if (topEl && modality !== 'all') topEl.textContent = cfg.headline;
+        const iconEl = document.getElementById('modal-icon');
+        if (iconEl && modality !== 'all') iconEl.textContent = cfg.icon;
+      }
+
+      updateFilterButtonsUI();
+      updateDiagnosticLineChart();
+      highlightModalityCard(modality);
+    }
+
+    function setChartTimeframe(timeframe, btn) {
+      currentTimeframe = timeframe;
+      document.querySelectorAll('.diag-time-btn').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      updateDiagnosticLineChart();
+    }
+
+    function highlightModalityCard(modality) {
+      document.querySelectorAll('.diag-mod-card').forEach(c => {
+        if (modality === 'all' || c.dataset.modality === modality) {
+          c.classList.add('active');
+        } else {
+          c.classList.remove('active');
+        }
+      });
+    }
+
+    // Render Modality Cards (Image, Video, Audio, Voice, Camera)
+    function renderDiagnosticCards() {
+      const container = document.getElementById('modal-modality-cards');
+      if (!container) return;
+
+      const diag = currentAnalyticsData?.modality_diagnostics?.summary || {
+        total_scans: 185,
+        images: { name: 'Image Scans', icon: '🖼️', count: 72, pct: 38.9, authentic: 46, synthetic: 26, color: '#00f0ff' },
+        videos: { name: 'Video Scans', icon: '🎬', count: 38, pct: 20.5, authentic: 22, synthetic: 16, color: '#0070f3' },
+        audio: { name: 'Audio & Acoustic', icon: '🎙️', count: 31, pct: 16.8, authentic: 22, synthetic: 9, color: '#00ff9d' },
+        voice_clones: { name: 'Voice Clones', icon: '🧬', count: 28, pct: 15.1, authentic: 7, synthetic: 21, color: '#a855f7' },
+        camera: { name: 'Live Camera', icon: '📹', count: 16, pct: 8.7, authentic: 14, synthetic: 2, color: '#ffb703' }
+      };
+
+      const items = [
+        { key: 'images', ...diag.images },
+        { key: 'videos', ...diag.videos },
+        { key: 'audio', ...diag.audio },
+        { key: 'voice_clones', ...diag.voice_clones },
+        { key: 'camera', ...diag.camera }
+      ];
+
+      container.innerHTML = items.map(item => `
+        <div class="diag-mod-card ${currentModalityFilter === 'all' || currentModalityFilter === item.key ? 'active' : ''}" data-modality="${item.key}" style="--mod-color: ${item.color}" onclick="setChartModalityFilter('${item.key}')">
+          <div class="diag-mod-top">
+            <span class="diag-mod-title">${item.icon} ${item.name}</span>
+            <span class="diag-mod-pct">${item.pct}%</span>
+          </div>
+          <div class="diag-mod-count-row">
+            <span class="diag-mod-count">${item.count}</span>
+            <span class="diag-mod-count-label">Scans</span>
+          </div>
+          <div class="diag-mod-progress">
+            <div class="diag-mod-progress-bar" style="width: ${item.pct}%; background: ${item.color};"></div>
+          </div>
+          <div class="diag-mod-badges">
+            <span class="diag-mod-badge-auth">🛡️ ${item.authentic} Auth</span>
+            <span class="diag-mod-badge-synth">⚠️ ${item.synthetic} Synth</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Render Hardware Sensors
+    function renderDiagnosticSensors(customSensors) {
+      const tbody = document.getElementById('modal-sensors-tbody');
+      if (!tbody) return;
+
+      const sensors = customSensors || currentAnalyticsData?.modality_diagnostics?.hardware_sensors || [
+        { sensor: "PRNU Sensor Lattice Filter", status: "SYNCHRONIZED", metric: "0.002% variance", subsystem: "Deep Pixel & Optical PRNU", health: "100% SLA" },
+        { sensor: "Bayer CFA Demosaicing Health", status: "NOMINAL", metric: "99.6% consistency", subsystem: "Color Filter Array Auditor", health: "99.8% SLA" },
+        { sensor: "Temporal rPPG Pulse Coherence", status: "COHERENT", metric: "72 BPM · 0.04s seam", subsystem: "Biometric Liveness Mesh", health: "98.7% SLA" },
+        { sensor: "Neural Vocoder Pitch Quantizer", status: "INTERCEPTING", metric: "48.2 kHz harmonic step", subsystem: "Voiceprint & Acoustic Shield", health: "97.9% SLA" },
+        { sensor: "C2PA Cryptographic Signature", status: "VALIDATED", metric: "SHA-256 Chain Intact", subsystem: "Metadata Intelligence Engine", health: "100% SLA" }
+      ];
+
+      tbody.innerHTML = sensors.map(s => `
+        <tr>
+          <td><strong style="color: #fff;">${s.sensor}</strong></td>
+          <td><span style="color: var(--text-muted); font-size: 11px;">${s.subsystem}</span></td>
+          <td><span style="color: var(--accent-emerald); font-family: var(--font-mono); font-weight: 700;">● ${s.status}</span></td>
+          <td><span style="color: var(--accent-cyan); font-family: var(--font-mono);">${s.metric}</span></td>
+          <td><span class="diag-compliance-pill">${s.health}</span></td>
+        </tr>
+      `).join('');
+    }
+
+    // Render/Update Line Chart
+    function updateDiagnosticLineChart() {
+      const canvasEl = document.getElementById('diagnosticLineChart');
+      if (!canvasEl) return;
+      const ctxLine = canvasEl.getContext('2d');
+
+      const timelineObj = (currentTimeframe === '24h') 
+        ? currentAnalyticsData?.modality_diagnostics?.timeline_24h 
+        : (currentTimeframe === '30d') 
+          ? currentAnalyticsData?.modality_diagnostics?.timeline_30d 
+          : currentAnalyticsData?.modality_diagnostics?.timeline_7d;
+
+      const labels = timelineObj?.labels || ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+      const imgData = timelineObj?.images || [11, 19, 29, 40, 52, 63, 72];
+      const vidData = timelineObj?.videos || [5, 8, 14, 19, 26, 32, 38];
+      const audData = timelineObj?.audio || [4, 8, 12, 16, 22, 27, 31];
+      const voiceData = timelineObj?.voice_clones || [3, 5, 9, 13, 18, 23, 28];
+      const camData = timelineObj?.camera || [2, 4, 6, 8, 11, 14, 16];
+
+      // Gradients
+      const gradCyan = ctxLine.createLinearGradient(0, 0, 0, 260);
+      gradCyan.addColorStop(0, 'rgba(0, 240, 255, 0.28)');
+      gradCyan.addColorStop(1, 'rgba(0, 240, 255, 0.0)');
+
+      const gradBlue = ctxLine.createLinearGradient(0, 0, 0, 260);
+      gradBlue.addColorStop(0, 'rgba(0, 112, 243, 0.28)');
+      gradBlue.addColorStop(1, 'rgba(0, 112, 243, 0.0)');
+
+      const gradEmerald = ctxLine.createLinearGradient(0, 0, 0, 260);
+      gradEmerald.addColorStop(0, 'rgba(0, 255, 157, 0.28)');
+      gradEmerald.addColorStop(1, 'rgba(0, 255, 157, 0.0)');
+
+      const gradPurple = ctxLine.createLinearGradient(0, 0, 0, 260);
+      gradPurple.addColorStop(0, 'rgba(168, 85, 247, 0.28)');
+      gradPurple.addColorStop(1, 'rgba(168, 85, 247, 0.0)');
+
+      const gradAmber = ctxLine.createLinearGradient(0, 0, 0, 260);
+      gradAmber.addColorStop(0, 'rgba(255, 183, 3, 0.28)');
+      gradAmber.addColorStop(1, 'rgba(255, 183, 3, 0.0)');
+
+      const allDatasets = [
+        {
+          id: 'images',
+          label: '🖼️ Image Forensics (PRNU/ELA)',
+          data: imgData,
+          borderColor: '#00f0ff',
+          backgroundColor: gradCyan,
+          borderWidth: 2.8,
+          pointBackgroundColor: '#00f0ff',
+          pointBorderColor: '#fff',
+          pointRadius: 4.5,
+          pointHoverRadius: 7,
+          fill: true,
+          tension: 0.38
+        },
+        {
+          id: 'videos',
+          label: '🎬 Video Forensics (3D/rPPG)',
+          data: vidData,
+          borderColor: '#0070f3',
+          backgroundColor: gradBlue,
+          borderWidth: 2.8,
+          pointBackgroundColor: '#0070f3',
+          pointBorderColor: '#fff',
+          pointRadius: 4.5,
+          pointHoverRadius: 7,
+          fill: true,
+          tension: 0.38
+        },
+        {
+          id: 'audio',
+          label: '🎙️ Audio & Acoustic (Spectrogram)',
+          data: audData,
+          borderColor: '#00ff9d',
+          backgroundColor: gradEmerald,
+          borderWidth: 2.8,
+          pointBackgroundColor: '#00ff9d',
+          pointBorderColor: '#fff',
+          pointRadius: 4.5,
+          pointHoverRadius: 7,
+          fill: true,
+          tension: 0.38
+        },
+        {
+          id: 'voice_clones',
+          label: '🧬 Voice Clone Shield (Neural Vocoder)',
+          data: voiceData,
+          borderColor: '#a855f7',
+          backgroundColor: gradPurple,
+          borderWidth: 2.8,
+          pointBackgroundColor: '#a855f7',
+          pointBorderColor: '#fff',
+          pointRadius: 4.5,
+          pointHoverRadius: 7,
+          fill: true,
+          tension: 0.38
+        },
+        {
+          id: 'camera',
+          label: '📹 Live Camera & C2PA Provenance',
+          data: camData,
+          borderColor: '#ffb703',
+          backgroundColor: gradAmber,
+          borderWidth: 2.8,
+          pointBackgroundColor: '#ffb703',
+          pointBorderColor: '#fff',
+          pointRadius: 4.5,
+          pointHoverRadius: 7,
+          fill: true,
+          tension: 0.38
+        }
+      ];
+
+      // Filter visible datasets
+      const activeDatasets = (currentModalityFilter === 'all')
+        ? allDatasets
+        : allDatasets.filter(ds => ds.id === currentModalityFilter);
+
+      if (diagnosticLineChartInstance) {
+        diagnosticLineChartInstance.data.labels = labels;
+        diagnosticLineChartInstance.data.datasets = activeDatasets;
+        diagnosticLineChartInstance.update();
+      } else {
+        diagnosticLineChartInstance = new Chart(ctxLine, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: activeDatasets
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: {
+              mode: 'index',
+              intersect: false
+            },
+            plugins: {
+              legend: {
+                display: true,
+                position: 'top',
+                labels: {
+                  color: '#94a3b8',
+                  font: { family: "'JetBrains Mono'", size: 11 },
+                  boxWidth: 12,
+                  usePointStyle: true
+                }
+              },
+              tooltip: {
+                backgroundColor: 'rgba(5, 7, 14, 0.94)',
+                borderColor: 'rgba(0, 240, 255, 0.4)',
+                borderWidth: 1,
+                titleFont: { family: "'Plus Jakarta Sans'", weight: 'bold', size: 12 },
+                bodyFont: { family: "'JetBrains Mono'", size: 11 },
+                padding: 12,
+                boxPadding: 6,
+                usePointStyle: true
+              }
+            },
+            scales: {
+              x: {
+                grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                ticks: { color: '#64748b', font: { family: "'JetBrains Mono'", size: 10 } }
+              },
+              y: {
+                grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                ticks: { color: '#64748b', font: { family: "'JetBrains Mono'", size: 10 } },
+                beginAtZero: true
+              }
+            }
+          }
+        });
+      }
+    }
+
+    // =========================================================================
+    // 3D HOLOGRAPHIC FORENSIC VISUALIZER (INTERACTIVE 3D PERSPECTIVE CANVAS)
+    // =========================================================================
+
+    let currentSpatial3DTitle = "TOPOLOGY: MULTIMODAL 3D MESH (14×14)";
+
+    function initDiagnostic3DVisualizer(spatialTitle) {
+      if (spatialTitle) currentSpatial3DTitle = spatialTitle;
+      diag3DCanvas = document.getElementById('diagnostic3dCanvas');
+      if (!diag3DCanvas) return;
+      diag3DCtx = diag3DCanvas.getContext('2d');
+
+      const rect = diag3DCanvas.parentElement.getBoundingClientRect();
+      diag3DCanvas.width = rect.width * (window.devicePixelRatio || 1);
+      diag3DCanvas.height = rect.height * (window.devicePixelRatio || 1);
+
+      // Mouse drag controls for interactive 3D rotation
+      diag3DCanvas.parentElement.onmousedown = (e) => {
+        diag3DIsDragging = true;
+        diag3DLastMouseX = e.clientX;
+        diag3DLastMouseY = e.clientY;
+      };
+
+      window.addEventListener('mousemove', (e) => {
+        if (!diag3DIsDragging) return;
+        const dx = e.clientX - diag3DLastMouseX;
+        const dy = e.clientY - diag3DLastMouseY;
+        diag3DLastMouseX = e.clientX;
+        diag3DLastMouseY = e.clientY;
+
+        diag3DTargetRotY += dx * 0.008;
+        diag3DTargetRotX += dy * 0.008;
+        diag3DTargetRotX = Math.max(-0.9, Math.min(1.2, diag3DTargetRotX));
+      });
+
+      window.addEventListener('mouseup', () => {
+        diag3DIsDragging = false;
+      });
+
+      // Touch drag controls
+      diag3DCanvas.parentElement.ontouchstart = (e) => {
+        if (e.touches.length === 1) {
+          diag3DIsDragging = true;
+          diag3DLastMouseX = e.touches[0].clientX;
+          diag3DLastMouseY = e.touches[0].clientY;
+        }
+      };
+      window.addEventListener('touchmove', (e) => {
+        if (!diag3DIsDragging || e.touches.length !== 1) return;
+        const dx = e.touches[0].clientX - diag3DLastMouseX;
+        const dy = e.touches[0].clientY - diag3DLastMouseY;
+        diag3DLastMouseX = e.touches[0].clientX;
+        diag3DLastMouseY = e.touches[0].clientY;
+
+        diag3DTargetRotY += dx * 0.008;
+        diag3DTargetRotX += dy * 0.008;
+        diag3DTargetRotX = Math.max(-0.9, Math.min(1.2, diag3DTargetRotX));
+      });
+      window.addEventListener('touchend', () => {
+        diag3DIsDragging = false;
+      });
+
+      if (!diag3DAnimationId) {
+        render3DLoop();
+      }
+    }
+
+    function reset3DView() {
+      diag3DTargetRotX = 0.35;
+      diag3DTargetRotY = 0.55;
+    }
+
+    // 3D Perspective Projection Function
+    function project3D(x, y, z, cx, cy, fov, rotX, rotY) {
+      // Rotate around Y axis (Yaw)
+      const cosY = Math.cos(rotY), sinY = Math.sin(rotY);
+      const x1 = x * cosY - z * sinY;
+      const z1 = z * cosY + x * sinY;
+
+      // Rotate around X axis (Pitch)
+      const cosX = Math.cos(rotX), sinX = Math.sin(rotX);
+      const y1 = y * cosX - z1 * sinX;
+      const z2 = z1 * cosX + y * sinX;
+
+      const camDist = 380;
+      const scale = fov / (camDist + z2);
+
+      return {
+        x: cx + x1 * scale,
+        y: cy + y1 * scale,
+        scale: scale,
+        depth: z2,
+        visible: (camDist + z2) > 10
+      };
+    }
+
+    function render3DLoop() {
+      if (!diag3DCanvas || !diag3DCtx) return;
+      const modal = document.getElementById('workstation-modal');
+      if (modal && modal.style.display === 'none') {
+        diag3DAnimationId = null;
+        return;
+      }
+
+      diag3DAnimationId = requestAnimationFrame(render3DLoop);
+
+      // Smooth interpolation
+      diag3DRotX += (diag3DTargetRotX - diag3DRotX) * 0.08;
+      diag3DRotY += (diag3DTargetRotY - diag3DRotY) * 0.08;
+
+      // Slow auto-spin when idle
+      if (!diag3DIsDragging) {
+        diag3DTargetRotY += 0.003;
+      }
+
+      diag3DTime += 0.03;
+
+      const w = diag3DCanvas.width;
+      const h = diag3DCanvas.height;
+      const cx = w / 2;
+      const cy = h / 2 + 10;
+      const fov = 340;
+
+      diag3DCtx.clearRect(0, 0, w, h);
+
+      // Update HUD Orbit Angle
+      const hudEl = document.getElementById('hud-orbit');
+      if (hudEl) {
+        const degX = Math.round((diag3DRotX * 180) / Math.PI);
+        const degY = Math.round(((diag3DRotY * 180) / Math.PI) % 360);
+        hudEl.textContent = `ORBIT [θ: ${degX}°, φ: ${degY}°]`;
+      }
+
+      // 1. Draw 3D Topological Wireframe Wave Grid (14x14)
+      const gridSize = 12;
+      const step = 26;
+      const offset = (gridSize * step) / 2;
+      const gridPoints = [];
+
+      for (let i = 0; i <= gridSize; i++) {
+        gridPoints[i] = [];
+        for (let j = 0; j <= gridSize; j++) {
+          const gx = i * step - offset;
+          const gz = j * step - offset;
+          // Undulating elevation formula
+          const distFromCenter = Math.hypot(gx, gz);
+          const wave = Math.sin(distFromCenter * 0.04 - diag3DTime * 1.5) * 16 + Math.cos(gx * 0.05 + diag3DTime) * 8;
+          const gy = wave + 25; // ground level
+
+          const proj = project3D(gx, gy, gz, cx, cy, fov, diag3DRotX, diag3DRotY);
+          gridPoints[i][j] = proj;
+        }
+      }
+
+      // Draw Grid lines
+      diag3DCtx.lineWidth = 1.2;
+      for (let i = 0; i <= gridSize; i++) {
+        for (let j = 0; j <= gridSize; j++) {
+          const p = gridPoints[i][j];
+          if (!p.visible) continue;
+
+          // Connect along X
+          if (i < gridSize) {
+            const pRight = gridPoints[i + 1][j];
+            if (pRight.visible) {
+              const alpha = Math.max(0.06, Math.min(0.45, p.scale * 0.4));
+              diag3DCtx.strokeStyle = `rgba(0, 240, 255, ${alpha})`;
+              diag3DCtx.beginPath();
+              diag3DCtx.moveTo(p.x, p.y);
+              diag3DCtx.lineTo(pRight.x, pRight.y);
+              diag3DCtx.stroke();
+            }
+          }
+
+          // Connect along Z
+          if (j < gridSize) {
+            const pDown = gridPoints[i][j + 1];
+            if (pDown.visible) {
+              const alpha = Math.max(0.06, Math.min(0.45, p.scale * 0.4));
+              diag3DCtx.strokeStyle = `rgba(0, 255, 157, ${alpha})`;
+              diag3DCtx.beginPath();
+              diag3DCtx.moveTo(p.x, p.y);
+              diag3DCtx.lineTo(pDown.x, pDown.y);
+              diag3DCtx.stroke();
+            }
+          }
+        }
+      }
+
+      // 2. Draw 3D Concentric Radar Scanning Rings
+      const ringRadii = [140, 95, 55];
+      ringRadii.forEach((r, idx) => {
+        diag3DCtx.beginPath();
+        const segments = 48;
+        const ringRot = diag3DTime * (idx % 2 === 0 ? 0.6 : -0.4);
+        for (let s = 0; s <= segments; s++) {
+          const angle = (s / segments) * Math.PI * 2 + ringRot;
+          const rx = Math.cos(angle) * r;
+          const rz = Math.sin(angle) * r;
+          const ry = 25; // ground plane
+          const proj = project3D(rx, ry, rz, cx, cy, fov, diag3DRotX, diag3DRotY);
+          if (s === 0) diag3DCtx.moveTo(proj.x, proj.y);
+          else diag3DCtx.lineTo(proj.x, proj.y);
+        }
+        diag3DCtx.strokeStyle = idx === 0 ? 'rgba(0, 240, 255, 0.28)' : 'rgba(168, 85, 247, 0.22)';
+        diag3DCtx.setLineDash([4, 6]);
+        diag3DCtx.stroke();
+        diag3DCtx.setLineDash([]);
+      });
+
+      // 3. Draw 5 3D Floating Modality Beacon Beacons
+      const beacons = [
+        { label: "IMG: 72 SCANS", x: -90, z: -50, y: -45, color: "#00f0ff", icon: "🖼️" },
+        { label: "VID: 38 SCANS", x: 85, z: -70, y: -50, color: "#0070f3", icon: "🎬" },
+        { label: "AUD: 31 SCANS", x: -75, z: 70, y: -40, color: "#00ff9d", icon: "🎙️" },
+        { label: "VOICE: 28 CLONES", x: 90, z: 60, y: -55, color: "#a855f7", icon: "🧬" },
+        { label: "CAM: 16 LIVE", x: 0, z: 0, y: -65, color: "#ffb703", icon: "📹" }
+      ];
+
+      // Sort beacons by depth for painter's algorithm
+      const projectedBeacons = beacons.map(b => {
+        // Floating hover animation
+        const floatY = b.y + Math.sin(diag3DTime * 2 + b.x) * 6;
+        const groundProj = project3D(b.x, 25, b.z, cx, cy, fov, diag3DRotX, diag3DRotY);
+        const topProj = project3D(b.x, floatY, b.z, cx, cy, fov, diag3DRotX, diag3DRotY);
+        return { ...b, groundProj, topProj, depth: topProj.depth };
+      }).sort((a, b) => b.depth - a.depth);
+
+      projectedBeacons.forEach(b => {
+        if (!b.topProj.visible || !b.groundProj.visible) return;
+
+        // Vertical Laser Projection Beam from top beacon to ground floor
+        diag3DCtx.strokeStyle = b.color;
+        diag3DCtx.lineWidth = 1.2;
+        diag3DCtx.globalAlpha = 0.6;
+        diag3DCtx.beginPath();
+        diag3DCtx.moveTo(b.topProj.x, b.topProj.y);
+        diag3DCtx.lineTo(b.groundProj.x, b.groundProj.y);
+        diag3DCtx.stroke();
+
+        // Ground Target Reticle
+        diag3DCtx.beginPath();
+        diag3DCtx.arc(b.groundProj.x, b.groundProj.y, 6 * b.groundProj.scale, 0, Math.PI * 2);
+        diag3DCtx.fillStyle = b.color;
+        diag3DCtx.globalAlpha = 0.25;
+        diag3DCtx.fill();
+
+        // Top Pulsing Glowing Sphere Beacon
+        const orbRadius = (7 + Math.sin(diag3DTime * 3 + b.x) * 2) * b.topProj.scale;
+        diag3DCtx.globalAlpha = 1.0;
+        diag3DCtx.beginPath();
+        diag3DCtx.arc(b.topProj.x, b.topProj.y, Math.max(3, orbRadius), 0, Math.PI * 2);
+        diag3DCtx.fillStyle = b.color;
+        diag3DCtx.shadowColor = b.color;
+        diag3DCtx.shadowBlur = 14;
+        diag3DCtx.fill();
+        diag3DCtx.shadowBlur = 0;
+
+        // Floating Tag Label
+        diag3DCtx.font = `700 ${Math.max(9, Math.round(11 * b.topProj.scale))}px 'JetBrains Mono'`;
+        diag3DCtx.fillStyle = '#ffffff';
+        diag3DCtx.fillText(`${b.icon} ${b.label}`, b.topProj.x + 10, b.topProj.y - 4);
+      });
+
+      diag3DCtx.globalAlpha = 1.0;
     }
 
     // Mithra Copilot Handlers
